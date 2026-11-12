@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>東京模型店搜尋</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha384-sHL9NAb7lN7rfvG5lfHpm643Xkcjzp4jFvuavGOndn6pjVqS6ny56CAt3nsEVT4H"
+        crossorigin="anonymous">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <h1>東京模型店搜尋</h1>
+    <p class="subtitle">依地區、商品類型或關鍵字，找東京的塑膠模型、鋼彈模型與鐵道模型店。</p>
+  </header>
+
+  <main>
+    <section class="card filters" aria-label="搜尋條件">
+      <div class="field">
+        <label for="keyword">關鍵字</label>
+        <input id="keyword" type="search" placeholder="店名、地址、車站或說明" autocomplete="off">
+      </div>
+
+      <div class="field">
+        <label for="area">地區</label>
+        <select id="area">
+          <option value="">全部地區</option>
+        </select>
+      </div>
+
+      <fieldset class="field">
+        <legend>商品類型（可複選）</legend>
+        <div id="type-chips" class="chips"></div>
+      </fieldset>
+
+      <div class="filter-footer">
+        <p id="result-count" class="result-count" aria-live="polite"></p>
+        <button id="reset" type="button" class="link-button">清除條件</button>
+      </div>
+    </section>
+
+    <div class="layout">
+      <section class="card map-card" aria-label="地圖">
+        <div id="map" class="map"></div>
+        <p id="map-error" class="map-error" hidden>地圖載入失敗，仍可使用下方清單與 Google 地圖連結。</p>
+        <p class="map-note">地圖上的位置是依地址估計的概略位置，精確導航請用每家店的「Google 地圖」連結。</p>
+      </section>
+
+      <section aria-label="搜尋結果">
+        <ul id="shop-list" class="shop-list"></ul>
+        <p id="empty" class="card empty" hidden>找不到符合條件的店家，試著減少篩選條件。</p>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p>資料整理日期：<span id="updated"></span>。店址、營業時間可能變動，出發前請以各店官方公告為準；每家店都附有資料來源。</p>
+    <p>地圖資料 © OpenStreetMap 貢獻者。</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha384-cxOPjt7s7Iz04uaHJceBmS+qpjv2JkIHNVcuOrM+YHwZOmJGBXI00mdUXEq65HTH"
+          crossorigin="anonymous"></script>
+  <script src="shops.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
