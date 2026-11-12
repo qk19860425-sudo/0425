@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>日韓景點路線</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <h1>日韓景點路線</h1>
+    <p class="subtitle">東京、大阪・京都・奈良、首爾、釜山的推薦行程、景點間交通查詢與旅遊指南。</p>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="功能">
+    <button type="button" role="tab" id="tab-plans" aria-controls="panel-plans" aria-selected="true">推薦行程</button>
+    <button type="button" role="tab" id="tab-route" aria-controls="panel-route" aria-selected="false">路線查詢</button>
+    <button type="button" role="tab" id="tab-guide" aria-controls="panel-guide" aria-selected="false">旅遊指南</button>
+  </nav>
+
+  <main>
+    <!-- 推薦行程 -->
+    <section id="panel-plans" role="tabpanel" aria-labelledby="tab-plans">
+      <form id="plan-form" class="card">
+        <fieldset class="field">
+          <legend>城市</legend>
+          <div id="plan-regions" class="chips"></div>
+        </fieldset>
+        <fieldset class="field">
+          <legend>主題（可複選）</legend>
+          <div id="plan-themes" class="chips"></div>
+        </fieldset>
+        <div class="form-actions">
+          <button type="submit" class="button">確定搜尋</button>
+          <button type="button" id="plan-reset" class="button button-secondary">清除條件</button>
+        </div>
+        <p id="plan-pending" class="pending" hidden>條件已變更，按「確定搜尋」更新結果。</p>
+      </form>
+      <p id="plan-count" class="result-count" aria-live="polite"></p>
+      <div id="plan-list"></div>
+    </section>
+
+    <!-- 路線查詢 -->
+    <section id="panel-route" role="tabpanel" aria-labelledby="tab-route" hidden>
+      <form id="route-form" class="card">
+        <div class="field">
+          <label for="route-region">城市</label>
+          <select id="route-region"></select>
+        </div>
+        <div class="field">
+          <label for="route-from">出發景點</label>
+          <select id="route-from" required></select>
+        </div>
+        <div class="swap-row">
+          <button type="button" id="route-swap" class="button button-secondary button-small" aria-label="出發與目的地對調">⇅ 對調</button>
+        </div>
+        <div class="field">
+          <label for="route-to">目的地</label>
+          <select id="route-to" required></select>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="button">確定查詢</button>
+        </div>
+        <p id="route-error" class="message message-error" role="alert" hidden></p>
+      </form>
+      <div id="route-result" aria-live="polite"></div>
+    </section>
+
+    <!-- 旅遊指南 -->
+    <section id="panel-guide" role="tabpanel" aria-labelledby="tab-guide" hidden>
+      <div class="card">
+        <div id="guide-countries" class="chips" role="group" aria-label="國家"></div>
+      </div>
+      <div id="guide-content"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>資料整理日期：<span id="updated"></span>。票價與時間為約略值，會隨班次與票價調整而變動；出發前請用地圖 App 查即時班次，並以各交通公司官網為準。</p>
+  </footer>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
