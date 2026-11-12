@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>哆啦A夢搜尋入口</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <h1>哆啦A夢搜尋入口</h1>
+    <p class="subtitle">輸入關鍵字，選一個網站，一鍵搜尋哆啦A夢（多啦A夢）的相關內容。</p>
+  </header>
+
+  <main>
+    <form id="search-form" class="card" role="search">
+      <div class="field">
+        <label for="keyword">關鍵字</label>
+        <input id="keyword" type="search" placeholder="例如：任意門、大長篇電影、主題曲" autocomplete="off" enterkeyhint="search">
+      </div>
+
+      <fieldset class="field">
+        <legend>常用關鍵字</legend>
+        <div id="quick" class="chips"></div>
+      </fieldset>
+
+      <label class="check">
+        <input id="add-name" type="checkbox" checked>
+        <span>自動加上「哆啦A夢」</span>
+      </label>
+
+      <fieldset class="field">
+        <legend>搜尋網站</legend>
+        <div id="sites" class="chips" role="radiogroup" aria-label="搜尋網站"></div>
+      </fieldset>
+
+      <button type="submit" class="button">確定搜尋</button>
+      <p class="hint">會在新分頁開啟搜尋結果。</p>
+    </form>
+
+    <section id="more" class="card" hidden aria-labelledby="more-title">
+      <h2 id="more-title">用同一組關鍵字搜尋其他網站</h2>
+      <p class="query-line">搜尋字詞：<strong id="query-text"></strong></p>
+      <div id="more-links" class="link-grid"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>這是非官方的搜尋小工具，只產生各網站的搜尋連結，不收集任何資料。</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
