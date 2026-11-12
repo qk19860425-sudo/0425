@@ -17,7 +17,7 @@
   </header>
 
   <main>
-    <section class="card filters" aria-label="搜尋條件">
+    <form id="filters" class="card filters" aria-label="搜尋條件" role="search">
       <div class="field">
         <label for="keyword">關鍵字</label>
         <input id="keyword" type="search" placeholder="店名、地址、車站或說明" autocomplete="off">
@@ -35,11 +35,14 @@
         <div id="type-chips" class="chips"></div>
       </fieldset>
 
-      <div class="filter-footer">
-        <p id="result-count" class="result-count" aria-live="polite"></p>
-        <button id="reset" type="button" class="link-button">清除條件</button>
+      <div class="filter-actions">
+        <button id="search" type="submit" class="button">確定搜尋</button>
+        <button id="reset" type="button" class="button button-secondary">清除條件</button>
       </div>
-    </section>
+      <p id="pending" class="pending" hidden>條件已變更，按「確定搜尋」更新結果。</p>
+    </form>
+
+    <p id="result-count" class="result-count" aria-live="polite"></p>
 
     <div class="layout">
       <section class="card map-card" aria-label="地圖">

@@ -5,6 +5,8 @@
   const shops = Array.isArray(window.SHOPS) ? window.SHOPS : [];
   const TYPE_ORDER = ["鋼彈模型", "比例模型", "鐵道模型", "模型車・迷你四驅", "公仔・人偶", "二手・中古", "工具・塗料"];
 
+  const filterForm = document.getElementById("filters");
+  const pending = document.getElementById("pending");
   const keywordInput = document.getElementById("keyword");
   const areaSelect = document.getElementById("area");
   const chipBox = document.getElementById("type-chips");
@@ -40,7 +42,7 @@
       if (selectedTypes.has(type)) selectedTypes.delete(type);
       else selectedTypes.add(type);
       btn.setAttribute("aria-pressed", String(selectedTypes.has(type)));
-      update();
+      markPending();
     });
     chipBox.append(btn);
   }
@@ -174,6 +176,7 @@
     const area = areaSelect.value;
     const result = shops.filter((s) => matches(s, keyword, area));
 
+    pending.hidden = true;
     list.replaceChildren(...result.map(renderCard));
     empty.hidden = result.length > 0;
     resultCount.textContent = "找到 " + result.length + " 家（共 " + shops.length + " 家）";
@@ -191,8 +194,21 @@
     }
   }
 
-  keywordInput.addEventListener("input", update);
-  areaSelect.addEventListener("change", update);
+  // 條件改變時先不搜尋，等按下「確定搜尋」（或在關鍵字欄按 Enter）才套用。
+  function markPending() {
+    pending.hidden = false;
+  }
+
+  keywordInput.addEventListener("input", markPending);
+  areaSelect.addEventListener("change", markPending);
+
+  filterForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    keywordInput.blur(); // 收起手機鍵盤
+    update();
+    resultCount.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
   resetButton.addEventListener("click", () => {
     keywordInput.value = "";
     areaSelect.value = "";
