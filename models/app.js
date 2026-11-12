@@ -1,4 +1,4 @@
-// 東京模型店搜尋：篩選、清單與地圖
+// 日韓台模型玩具店搜尋：篩選、清單與地圖
 (function () {
   "use strict";
 
@@ -8,6 +8,7 @@
   const filterForm = document.getElementById("filters");
   const pending = document.getElementById("pending");
   const keywordInput = document.getElementById("keyword");
+  const countrySelect = document.getElementById("country");
   const areaSelect = document.getElementById("area");
   const chipBox = document.getElementById("type-chips");
   const resetButton = document.getElementById("reset");
@@ -19,15 +20,40 @@
 
   const selectedTypes = new Set();
 
-  // ---- 建立篩選選項 ----
-  const areas = [...new Set(shops.map((s) => s.area))];
-  for (const area of areas) {
-    const count = shops.filter((s) => s.area === area).length;
+  // ---- 建立篩選選項：國家 → 城市 ----
+  const COUNTRY_ORDER = ["日本", "韓國", "台灣"];
+  const countries = COUNTRY_ORDER.filter((c) => shops.some((s) => s.country === c))
+    .concat([...new Set(shops.map((s) => s.country))].filter((c) => !COUNTRY_ORDER.includes(c)));
+  for (const c of countries) {
     const opt = document.createElement("option");
-    opt.value = area;
-    opt.textContent = area + "（" + count + "）";
-    areaSelect.append(opt);
+    opt.value = c;
+    opt.textContent = c + "（" + shops.filter((s) => s.country === c).length + "）";
+    countrySelect.append(opt);
   }
+
+  // 城市選單依國家分組；選了國家就只列該國城市
+  function fillCities() {
+    const keep = areaSelect.value;
+    const first = document.createElement("option");
+    first.value = "";
+    first.textContent = "全部城市";
+    const groups = countries
+      .filter((c) => !countrySelect.value || c === countrySelect.value)
+      .map((c) => {
+        const g = document.createElement("optgroup");
+        g.label = c;
+        for (const city of [...new Set(shops.filter((s) => s.country === c).map((s) => s.city))]) {
+          const opt = document.createElement("option");
+          opt.value = city;
+          opt.textContent = city + "（" + shops.filter((s) => s.city === city).length + "）";
+          g.append(opt);
+        }
+        return g;
+      });
+    areaSelect.replaceChildren(first, ...groups);
+    areaSelect.value = [...areaSelect.options].some((o) => o.value === keep) ? keep : "";
+  }
+  fillCities();
 
   const usedTypes = new Set(shops.flatMap((s) => s.types));
   const types = TYPE_ORDER.filter((t) => usedTypes.has(t))
@@ -57,7 +83,7 @@
       document.getElementById("map-error").hidden = false;
       return;
     }
-    map = L.map("map", { scrollWheelZoom: false }).setView([35.69, 139.73], 11);
+    map = L.map("map", { scrollWheelZoom: false }).setView([30.5, 132.5], 4);
     L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 19,
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> 貢獻者',
@@ -71,7 +97,7 @@
       const strong = document.createElement("strong");
       strong.textContent = shop.name;
       const p = document.createElement("div");
-      p.textContent = shop.area + "・" + shop.station;
+      p.textContent = shop.country + "・" + shop.city + "・" + shop.station;
       const a = document.createElement("a");
       a.href = "#shop-" + shop.id;
       a.textContent = "看店家資料";
@@ -117,7 +143,7 @@
     li.id = "shop-" + shop.id;
 
     const head = el("div", "shop-head");
-    head.append(el("h2", "shop-name", shop.name), el("span", "area-badge", shop.area));
+    head.append(el("h2", "shop-name", shop.name), el("span", "area-badge", shop.country + "・" + (shop.area === shop.city ? shop.city : shop.city + " " + shop.area)));
 
     const tags = el("div", "tags");
     for (const t of shop.types) tags.append(el("span", "tag", t));
@@ -161,20 +187,20 @@
     return String(s || "").toLowerCase().replace(/\s+/g, "");
   }
 
-  function matches(shop, keyword, area) {
-    if (area && shop.area !== area) return false;
+  function matches(shop, keyword, country, city) {
+    if (country && shop.country !== country) return false;
+    if (city && shop.city !== city) return false;
     for (const t of selectedTypes) {
       if (!shop.types.includes(t)) return false;
     }
     if (!keyword) return true;
-    const hay = normalize([shop.name, shop.area, shop.station, shop.address, shop.description, shop.types.join(" ")].join(" "));
+    const hay = normalize([shop.name, shop.country, shop.city, shop.area, shop.station, shop.address, shop.description, shop.types.join(" ")].join(" "));
     return keyword.split(/\s+/).filter(Boolean).every((k) => hay.includes(normalize(k)));
   }
 
   function update() {
     const keyword = keywordInput.value.trim();
-    const area = areaSelect.value;
-    const result = shops.filter((s) => matches(s, keyword, area));
+    const result = shops.filter((s) => matches(s, keyword, countrySelect.value, areaSelect.value));
 
     pending.hidden = true;
     list.replaceChildren(...result.map(renderCard));
@@ -201,6 +227,7 @@
 
   keywordInput.addEventListener("input", markPending);
   areaSelect.addEventListener("change", markPending);
+  countrySelect.addEventListener("change", () => { fillCities(); markPending(); });
 
   filterForm.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -211,6 +238,8 @@
 
   resetButton.addEventListener("click", () => {
     keywordInput.value = "";
+    countrySelect.value = "";
+    fillCities();
     areaSelect.value = "";
     selectedTypes.clear();
     for (const chip of chipBox.children) chip.setAttribute("aria-pressed", "false");

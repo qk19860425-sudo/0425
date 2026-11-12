@@ -4,13 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
-  <title>東京模型店搜尋</title>
-  <meta name="description" content="依地區、商品類型或關鍵字，找東京的塑膠模型、鋼彈模型與鐵道模型店。">
+  <title>日韓台模型玩具店搜尋</title>
+  <meta name="description" content="依國家、城市、商品類型或關鍵字，找日本、韓國、台灣的模型與玩具店。">
   <meta name="theme-color" content="#dc2626">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-  <meta name="apple-mobile-web-app-title" content="模型店搜尋">
+  <meta name="apple-mobile-web-app-title" content="模型玩具搜尋">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -21,8 +21,8 @@
 </head>
 <body>
   <header class="site-header">
-    <h1>東京模型店搜尋</h1>
-    <p class="subtitle">依地區、商品類型或關鍵字，找東京的塑膠模型、鋼彈模型與鐵道模型店。</p>
+    <h1>日韓台模型玩具店搜尋</h1>
+    <p class="subtitle">依國家、城市、商品類型或關鍵字，找日本、韓國、台灣的塑膠模型、鋼彈模型、鐵道模型與玩具店。</p>
   </header>
 
   <main>
@@ -41,11 +41,19 @@
         <input id="keyword" type="search" placeholder="店名、地址、車站或說明" autocomplete="off">
       </div>
 
-      <div class="field">
-        <label for="area">地區</label>
-        <select id="area">
-          <option value="">全部地區</option>
-        </select>
+      <div class="field-row">
+        <div class="field">
+          <label for="country">國家</label>
+          <select id="country">
+            <option value="">全部國家</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="area">城市</label>
+          <select id="area">
+            <option value="">全部城市</option>
+          </select>
+        </div>
       </div>
 
       <fieldset class="field">

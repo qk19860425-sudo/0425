@@ -1,4 +1,4 @@
-/* 東京模型店搜尋：樣式（手機優先） */
+/* 日韓台模型玩具店搜尋：樣式（手機優先） */
 :root {
   --bg: #f5f5f4;
   --card: #ffffff;
@@ -66,6 +66,8 @@ h1 { margin: 0; font-size: 1.6rem; }
 
 /* ---- 篩選 ---- */
 .field { margin: 0 0 14px; padding: 0; border: 0; min-width: 0; }
+.field-row { display: flex; gap: 12px; }
+.field-row > .field { flex: 1 1 0; }
 .field label, .field legend { display: block; font-weight: 600; margin-bottom: 6px; padding: 0; }
 
 input[type="search"], select {
