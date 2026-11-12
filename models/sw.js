@@ -1,6 +1,6 @@
-// 東京模型店搜尋：Service Worker（離線快取）
+// 日韓台模型玩具店搜尋：Service Worker（離線快取）
 // 更新網站檔案時，請把 CACHE_VERSION 加 1，使用者下次開啟就會換成新版。
-const CACHE_VERSION = "v1";
+const CACHE_VERSION = "v2";
 const CACHE_NAME = "models-" + CACHE_VERSION;
 
 // 離線也要能開的檔案（路徑相對於 sw.js 所在的 models/ 資料夾）

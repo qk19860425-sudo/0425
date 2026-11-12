@@ -1,4 +1,4 @@
-// 東京模型店搜尋：註冊 Service Worker、顯示「安裝到主畫面」與離線提示
+// 日韓台模型玩具店搜尋：註冊 Service Worker、顯示「安裝到主畫面」與離線提示
 (function () {
   "use strict";
 
