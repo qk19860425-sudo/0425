@@ -10,7 +10,7 @@
 <body>
   <header class="site-header">
     <h1>哆啦A夢搜尋入口</h1>
-    <p class="subtitle">輸入關鍵字，選一個網站，一鍵搜尋哆啦A夢（多啦A夢）的相關內容。</p>
+    <p class="subtitle">輸入關鍵字，選一個網站，一鍵搜尋哆啦A夢（多啦A夢）的相關內容；下方還能搜尋日本的哆啦A夢景點與販售地點。</p>
   </header>
 
   <main>
@@ -44,12 +44,43 @@
       <p class="query-line">搜尋字詞：<strong id="query-text"></strong></p>
       <div id="more-links" class="link-grid"></div>
     </section>
+
+    <section aria-labelledby="shops-title">
+      <h2 id="shops-title" class="section-title">日本哆啦A夢景點與販售地點</h2>
+      <p class="section-desc">博物館、銅像、主題電車等景點，以及可以買到哆啦A夢商品的官方商店與期間限定店。</p>
+      <form id="shop-form" class="card" role="search" aria-label="搜尋景點與販售地點">
+        <div class="field">
+          <label for="shop-keyword">關鍵字</label>
+          <input id="shop-keyword" type="search" placeholder="例如：博物館、銅像、澀谷、高岡" autocomplete="off" enterkeyhint="search">
+        </div>
+        <fieldset class="field">
+          <legend>類型</legend>
+          <div id="shop-types" class="chips"></div>
+        </fieldset>
+        <fieldset class="field">
+          <legend>地區</legend>
+          <div id="shop-areas" class="chips"></div>
+        </fieldset>
+        <div class="form-actions">
+          <button type="submit" class="button">確定搜尋</button>
+          <button type="button" id="shop-reset" class="button button-secondary">清除條件</button>
+        </div>
+        <p id="shop-pending" class="pending" hidden>條件已變更，按「確定搜尋」更新結果。</p>
+      </form>
+      <p id="shop-count" class="result-count" aria-live="polite"></p>
+      <ul id="shop-list" class="shop-list"></ul>
+      <p id="shop-empty" class="card empty" hidden>找不到符合條件的地點，試著減少篩選條件。</p>
+      <div id="closed" class="card closed"></div>
+    </section>
   </main>
 
   <footer class="site-footer">
     <p>這是非官方的搜尋小工具，只產生各網站的搜尋連結，不收集任何資料。</p>
+    <p>販售地點資料整理日期：<span id="shops-updated"></span>。期間限定店與營業時間常變動，出發前請以官方公告為準。</p>
   </footer>
 
   <script src="app.js"></script>
+  <script src="shops.js"></script>
+  <script src="shops-app.js"></script>
 </body>
 </html>
