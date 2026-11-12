@@ -1,7 +1,29 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- 原創設計：行李箱，貼著日本（紅日）和韓國（太極）兩張圓形貼紙，下方是路線 -->
   <rect width="512" height="512" fill="#0d9488"/>
-  <path d="M150 360 C 150 270, 360 300, 360 200" fill="none" stroke="#ffffff" stroke-width="22" stroke-linecap="round" stroke-dasharray="2 44"/>
-  <circle cx="150" cy="370" r="38" fill="#ffffff"/>
-  <path d="M360 96 c-48 0 -86 38 -86 86 c0 62 86 146 86 146 s86 -84 86 -146 c0 -48 -38 -86 -86 -86z" fill="#ffffff"/>
-  <circle cx="360" cy="182" r="34" fill="#f97316"/>
+  <g transform="translate(0 -14)">
+  <!-- 把手 -->
+  <rect x="206" y="88" width="100" height="56" rx="20" fill="none" stroke="#ffffff" stroke-width="20"/>
+  <!-- 箱體 -->
+  <rect x="120" y="132" width="272" height="250" rx="34" fill="#ffffff"/>
+  <rect x="120" y="200" width="272" height="10" fill="#99f6e4"/>
+  <!-- 輪子 -->
+  <circle cx="176" cy="398" r="18" fill="#ffffff"/>
+  <circle cx="336" cy="398" r="18" fill="#ffffff"/>
+  <!-- 貼紙：紅日 -->
+  <circle cx="200" cy="290" r="50" fill="#ffffff" stroke="#e2e8f0" stroke-width="6"/>
+  <circle cx="200" cy="290" r="26" fill="#dc2626"/>
+  <!-- 貼紙：太極 -->
+  <circle cx="314" cy="290" r="50" fill="#ffffff" stroke="#e2e8f0" stroke-width="6"/>
+  <g transform="translate(314 290) rotate(-33)">
+    <path d="M-28 0 A28 28 0 0 1 28 0 A14 14 0 0 1 0 0 A14 14 0 0 0 -28 0 Z" fill="#dc2626"/>
+    <path d="M28 0 A28 28 0 0 1 -28 0 A14 14 0 0 1 0 0 A14 14 0 0 0 28 0 Z" fill="#1d4ed8"/>
+  </g>
+  <!-- 路線點 -->
+  <g fill="#ffffff">
+    <circle cx="120" cy="450" r="9"/><circle cx="168" cy="450" r="9"/><circle cx="216" cy="450" r="9"/>
+    <circle cx="264" cy="450" r="9"/><circle cx="312" cy="450" r="9"/><circle cx="360" cy="450" r="9"/>
+  </g>
+  <path d="M392 432 c-14 0 -24 10 -24 23 c0 17 24 39 24 39 s24 -22 24 -39 c0 -13 -10 -23 -24 -23z" fill="#f97316"/>
+  </g>
 </svg>
