@@ -1,0 +1,17 @@
+{
+  "name": "哆啦A夢搜尋入口",
+  "short_name": "哆啦A夢搜尋",
+  "description": "一鍵到各網站搜尋哆啦A夢，並查詢日本的哆啦A夢景點與販售地點（非官方工具）。",
+  "lang": "zh-Hant",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#eff6ff",
+  "theme_color": "#0284c7",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

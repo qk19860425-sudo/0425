@@ -5,6 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <title>哆啦A夢搜尋入口</title>
+  <meta name="description" content="一鍵到各網站搜尋哆啦A夢，並查詢日本的哆啦A夢景點與販售地點（非官方工具）。">
+  <meta name="theme-color" content="#0284c7">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-title" content="哆啦A夢搜尋">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -14,6 +23,16 @@
   </header>
 
   <main>
+    <p id="offline" class="offline" role="status" hidden>目前離線：網站搜尋需要網路，景點與販售地點清單仍可查看。</p>
+
+    <div id="install" class="card install" hidden>
+      <div>
+        <strong>安裝到主畫面</strong>
+        <p id="install-hint" class="install-hint" hidden>iPhone／iPad：在 Safari 點下方的「分享」按鈕，再選「加入主畫面」。</p>
+      </div>
+      <button id="install-button" type="button" class="button install-button" hidden>安裝</button>
+    </div>
+
     <form id="search-form" class="card" role="search">
       <div class="field">
         <label for="keyword">關鍵字</label>
@@ -82,5 +101,6 @@
   <script src="app.js"></script>
   <script src="shops.js"></script>
   <script src="shops-app.js"></script>
+  <script src="pwa.js"></script>
 </body>
 </html>
