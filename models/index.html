@@ -5,6 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <title>東京模型店搜尋</title>
+  <meta name="description" content="依地區、商品類型或關鍵字，找東京的塑膠模型、鋼彈模型與鐵道模型店。">
+  <meta name="theme-color" content="#dc2626">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-title" content="模型店搜尋">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha384-sHL9NAb7lN7rfvG5lfHpm643Xkcjzp4jFvuavGOndn6pjVqS6ny56CAt3nsEVT4H"
         crossorigin="anonymous">
@@ -17,6 +26,15 @@
   </header>
 
   <main>
+    <p id="offline" class="offline" role="status" hidden>目前離線：店家清單與篩選都能用，地圖底圖和 Google 地圖需要網路。</p>
+    <div id="install" class="card install" hidden>
+      <div>
+        <strong>安裝到主畫面</strong>
+        <p id="install-hint" class="install-hint" hidden>iPhone／iPad：在 Safari 點下方的「分享」按鈕，再選「加入主畫面」。</p>
+      </div>
+      <button id="install-button" type="button" class="button install-button" hidden>安裝</button>
+    </div>
+
     <form id="filters" class="card filters" aria-label="搜尋條件" role="search">
       <div class="field">
         <label for="keyword">關鍵字</label>
@@ -68,5 +86,6 @@
           crossorigin="anonymous"></script>
   <script src="shops.js"></script>
   <script src="app.js"></script>
+  <script src="pwa.js"></script>
 </body>
 </html>
