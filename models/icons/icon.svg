@@ -1,30 +1,41 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <!-- 原創設計：圓頂造型的金龜車，像組裝模型零件一樣掛在流道上（不含任何車廠標誌） -->
+  <!-- 原創設計：塑膠模型的「零件框（runner）」上掛著四個零件 -->
   <rect width="512" height="512" fill="#dc2626"/>
-  <!-- 上方流道與兩個澆口 -->
-  <g stroke="#ffffff" stroke-linecap="round" fill="none">
-    <line x1="112" y1="112" x2="400" y2="112" stroke-width="16"/>
-    <line x1="214" y1="112" x2="214" y2="176" stroke-width="8"/>
-    <line x1="298" y1="112" x2="298" y2="176" stroke-width="8"/>
+  <g fill="none" stroke="#ffffff" stroke-linecap="round">
+    <!-- 外框與十字流道 -->
+    <rect x="92" y="92" width="328" height="328" rx="30" stroke-width="22"/>
+    <line x1="256" y1="92" x2="256" y2="420" stroke-width="14"/>
+    <line x1="92" y1="256" x2="420" y2="256" stroke-width="14"/>
+    <!-- 澆口：零件和流道相連的小段 -->
+    <line x1="215" y1="174" x2="256" y2="174" stroke-width="8"/>
+    <line x1="338" y1="218" x2="338" y2="256" stroke-width="8"/>
+    <line x1="174" y1="256" x2="174" y2="294" stroke-width="8"/>
+    <line x1="256" y1="338" x2="297" y2="338" stroke-width="8"/>
   </g>
-  <!-- 車身：圓頂 -->
-  <path d="M112 330 C112 250 168 168 256 168 C344 168 400 250 400 330 Z" fill="#ffffff"/>
-  <!-- 前後葉子板 -->
-  <ellipse cx="170" cy="330" rx="66" ry="54" fill="#ffffff"/>
-  <ellipse cx="342" cy="330" rx="66" ry="54" fill="#ffffff"/>
-  <!-- 下車身（填滿兩個葉子板之間） -->
-  <rect x="170" y="318" width="172" height="44" fill="#ffffff"/>
-  <!-- 車窗 -->
-  <path d="M176 262 C184 224 214 202 248 200 L248 262 Z" fill="#dc2626"/>
-  <path d="M264 200 C298 202 328 224 338 262 L264 262 Z" fill="#dc2626"/>
-  <!-- 車燈、門把 -->
-  <circle cx="386" cy="300" r="10" fill="#dc2626"/>
-  <rect x="262" y="282" width="26" height="8" rx="4" fill="#dc2626"/>
-  <!-- 輪胎 -->
-  <circle cx="170" cy="352" r="38" fill="#1f2937"/>
-  <circle cx="342" cy="352" r="38" fill="#1f2937"/>
-  <circle cx="170" cy="352" r="14" fill="#ffffff"/>
-  <circle cx="342" cy="352" r="14" fill="#ffffff"/>
-  <!-- 地面 -->
-  <line x1="96" y1="396" x2="416" y2="396" stroke="#ffffff" stroke-width="10" stroke-linecap="round" opacity="0.6"/>
+  <!-- 左上：輪胎 -->
+  <circle cx="174" cy="174" r="42" fill="#ffffff"/>
+  <circle cx="174" cy="174" r="16" fill="#dc2626"/>
+  <!-- 右上：機器人頭 -->
+  <rect x="300" y="146" width="76" height="66" rx="14" fill="#ffffff"/>
+  <circle cx="324" cy="178" r="9" fill="#dc2626"/>
+  <circle cx="352" cy="178" r="9" fill="#dc2626"/>
+  <line x1="338" y1="146" x2="338" y2="124" stroke="#ffffff" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="338" cy="120" r="9" fill="#ffffff"/>
+  <!-- 左下：積木 -->
+  <rect x="132" y="318" width="84" height="54" rx="8" fill="#ffffff"/>
+  <rect x="146" y="300" width="20" height="20" rx="4" fill="#ffffff"/>
+  <rect x="182" y="300" width="20" height="20" rx="4" fill="#ffffff"/>
+  <!-- 右下：齒輪 -->
+  <g transform="translate(338 338)" fill="#ffffff">
+    <circle r="30"/>
+    <rect x="-9" y="-44" width="18" height="18" rx="3"/>
+    <rect x="-9" y="26" width="18" height="18" rx="3"/>
+    <rect x="-44" y="-9" width="18" height="18" rx="3"/>
+    <rect x="26" y="-9" width="18" height="18" rx="3"/>
+    <rect x="-9" y="-44" width="18" height="18" rx="3" transform="rotate(45)"/>
+    <rect x="-9" y="26" width="18" height="18" rx="3" transform="rotate(45)"/>
+    <rect x="-44" y="-9" width="18" height="18" rx="3" transform="rotate(45)"/>
+    <rect x="26" y="-9" width="18" height="18" rx="3" transform="rotate(45)"/>
+    <circle r="12" fill="#dc2626"/>
+  </g>
 </svg>
