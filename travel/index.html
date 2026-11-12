@@ -5,6 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <title>日韓景點路線</title>
+  <meta name="description" content="東京、大阪・京都・奈良、首爾、釜山的推薦行程、景點間交通查詢與旅遊指南。">
+  <meta name="theme-color" content="#0d9488">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-title" content="日韓路線">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,6 +21,17 @@
     <h1>日韓景點路線</h1>
     <p class="subtitle">東京、大阪・京都・奈良、首爾、釜山的推薦行程、景點間交通查詢與旅遊指南。</p>
   </header>
+
+  <div class="pwa-bar">
+    <p id="offline" class="offline" role="status" hidden>目前離線：行程、路線查詢與指南都能看，地圖連結需要網路。</p>
+    <div id="install" class="card install" hidden>
+      <div>
+        <strong>安裝到主畫面</strong>
+        <p id="install-hint" class="install-hint" hidden>iPhone／iPad：在 Safari 點下方的「分享」按鈕，再選「加入主畫面」。</p>
+      </div>
+      <button id="install-button" type="button" class="button button-small install-button" hidden>安裝</button>
+    </div>
+  </div>
 
   <nav class="tabs" role="tablist" aria-label="功能">
     <button type="button" role="tab" id="tab-plans" aria-controls="panel-plans" aria-selected="true">推薦行程</button>
@@ -82,5 +102,6 @@
 
   <script src="data.js"></script>
   <script src="app.js"></script>
+  <script src="pwa.js"></script>
 </body>
 </html>
