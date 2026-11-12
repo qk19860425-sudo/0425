@@ -1,0 +1,176 @@
+/* 東京模型店搜尋：樣式（手機優先） */
+:root {
+  --bg: #f5f5f4;
+  --card: #ffffff;
+  --text: #1c1917;
+  --muted: #57534e;
+  --border: #d6d3d1;
+  --accent: #dc2626;
+  --accent-text: #ffffff;
+  --focus: #fca5a5;
+  --chip: #f5f5f4;
+  --tag: #fee2e2;
+  --tag-text: #991b1b;
+  --area: #e7e5e4;
+  --note-bg: #fffbeb;
+  --note-text: #92400e;
+  --highlight: #fef2f2;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0c0a09;
+    --card: #1c1917;
+    --text: #f5f5f4;
+    --muted: #a8a29e;
+    --border: #44403c;
+    --accent: #ef4444;
+    --focus: #7f1d1d;
+    --chip: #292524;
+    --tag: #450a0a;
+    --tag-text: #fecaca;
+    --area: #292524;
+    --note-bg: #422006;
+    --note-text: #fde68a;
+    --highlight: #3f1d1d;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.site-header, main, .site-footer {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+.site-header { padding-top: 24px; }
+h1 { margin: 0; font-size: 1.6rem; }
+.subtitle { margin: 4px 0 16px; color: var(--muted); }
+
+.card {
+  background: var(--card);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+/* ---- 篩選 ---- */
+.field { margin: 0 0 14px; padding: 0; border: 0; min-width: 0; }
+.field label, .field legend { display: block; font-weight: 600; margin-bottom: 6px; padding: 0; }
+
+input[type="search"], select {
+  width: 100%;
+  font: inherit;
+  font-size: 16px;
+  color: var(--text);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  min-height: 46px;
+}
+
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  font: inherit;
+  font-size: 0.95rem;
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--chip);
+  color: var(--text);
+  cursor: pointer;
+}
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-text); font-weight: 600; }
+
+input:focus, select:focus, .chip:focus-visible, .button:focus-visible, .link-button:focus-visible, a:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 1px;
+}
+
+.filter-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.result-count { margin: 0; font-weight: 600; }
+.link-button {
+  font: inherit;
+  background: none;
+  border: 0;
+  color: var(--accent);
+  cursor: pointer;
+  padding: 8px 0;
+  min-height: 40px;
+}
+
+/* ---- 版面：手機上下排，寬螢幕左右排 ---- */
+.map { height: 45vh; min-height: 260px; border-radius: 8px; z-index: 0; }
+.map-card { padding: 8px; }
+.map-note, .map-error { margin: 8px 4px 0; color: var(--muted); font-size: 0.85rem; }
+.map-error { color: var(--note-text); }
+
+@media (min-width: 900px) {
+  .layout { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+  .map-card { position: sticky; top: 16px; }
+  .map { height: 70vh; }
+}
+
+/* ---- 店家卡片 ---- */
+.shop-list { list-style: none; margin: 0; padding: 0; }
+.shop { transition: background-color 0.3s; scroll-margin-top: 16px; }
+.shop.highlight { background: var(--highlight); }
+.shop-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.shop-name { margin: 0; font-size: 1.15rem; line-height: 1.4; }
+.area-badge {
+  flex-shrink: 0;
+  font-size: 0.8rem;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--area);
+  color: var(--muted);
+  white-space: nowrap;
+}
+.tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+.tag { font-size: 0.8rem; font-weight: 600; padding: 2px 10px; border-radius: 999px; background: var(--tag); color: var(--tag-text); }
+.shop-desc { margin: 0 0 8px; }
+
+.shop-info { display: grid; grid-template-columns: auto 1fr; gap: 2px 12px; margin: 0 0 8px; font-size: 0.95rem; }
+.shop-info dt { color: var(--muted); }
+.shop-info dd { margin: 0; overflow-wrap: anywhere; }
+
+.shop-note { margin: 0 0 10px; padding: 8px 10px; border-radius: 8px; background: var(--note-bg); color: var(--note-text); font-size: 0.9rem; }
+
+.actions { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 16px;
+  font: inherit;
+  font-weight: 600;
+  border-radius: 8px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--accent-text);
+  text-decoration: none;
+  cursor: pointer;
+  flex: 1 1 140px;
+}
+.button-secondary { background: transparent; color: var(--accent); }
+
+.source { margin: 0; font-size: 0.8rem; color: var(--muted); overflow-wrap: anywhere; }
+.source a { color: inherit; }
+
+.empty { color: var(--muted); }
+
+.site-footer { color: var(--muted); font-size: 0.85rem; padding-bottom: 24px; }
+.site-footer p { margin: 4px 0; }
