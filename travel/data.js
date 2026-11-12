@@ -294,6 +294,7 @@ window.GUIDES = [
         id: "airport",
         title: "機場進市區",
         items: [
+          { title: "直接查機場到景點", body: "在「路線查詢」分頁的出發地或目的地選「✈️ 機場」，就能比較每種機場交通方案，並接上到景點的最後一段，依總時間排序。" },
           { title: "成田機場 → 東京市區", body: "京成 Skyliner 到日暮里、上野約 40 分鐘，約 2,570 日圓，最快。JR 成田特快（N'EX）到東京站約 60 分鐘，約 3,250 日圓，也直達新宿、澀谷。最便宜的是京成 Access 特急，到京成上野約 80 分鐘，約 1,240 日圓。" },
           { title: "羽田機場 → 東京市區", body: "京急線到品川站約 20 分鐘，約 330 日圓；東京單軌電車到浜松町站約 13–19 分鐘，約 520 日圓。兩者都可用 IC 卡。" },
           { title: "關西機場 → 大阪、京都", body: "南海特急 Rapi:t 到難波約 40 分鐘。JR 特急 HARUKA 到京都站約 80 分鐘，約 3,060 日圓（自由席，依查詢日而定）。省錢可搭 JR 關空快速到大阪，或轉車到京都，約 1,800–1,900 日圓。" },
@@ -348,6 +349,7 @@ window.GUIDES = [
         id: "airport",
         title: "機場進市區",
         items: [
+          { title: "直接查機場到景點", body: "在「路線查詢」分頁的出發地或目的地選「✈️ 機場」，就能比較每種機場交通方案，並接上到景點的最後一段，依總時間排序。" },
           { title: "仁川機場 → 首爾", body: "機場鐵路 AREX 直達列車到首爾站，第一航廈約 43 分鐘、第二航廈約 51 分鐘，中途不停，票價約 11,000–13,000 韓元（請以官網為準）。普通列車停靠弘大入口等站，約 60 分鐘，較便宜。機場巴士（6000 系列）約 17,000–18,000 韓元，可直達飯店附近，適合行李多的人。" },
           { title: "金海機場 → 釜山市區", body: "搭金海輕軌到沙上站，出站再轉地鐵 2 號線（轉乘約 10 分鐘，刷交通卡有轉乘優惠）。到西面約 30 分鐘、約 2,100 韓元；到海雲台約 60 分鐘、約 2,300 韓元。行李多可搭計程車，到西面、南浦約 20,000 韓元起。" },
         ],
@@ -385,3 +387,91 @@ window.GUIDES = [
     ],
   },
 ];
+
+// ===================================================================
+// 機場交通：每個方案寫到「抵達的車站」為止，之後到景點的路段由程式依距離估算。
+// verified: false 表示票價或時間沒有找到資料來源，畫面上會提醒以官網為準。
+// to.hub 對應 regions[].hubs 的 id，用來判斷是否還要跨城市移動。
+// direct: true 表示直接到目的地（例如計程車），時間依距離估算。
+// ===================================================================
+window.AIRPORTS = {
+  tokyo: [
+    {
+      id: "nrt", name: "成田機場", lat: 35.7720, lng: 140.3929,
+      options: [
+        { mode: "電車", title: "京成 Skyliner", detail: "京成 Skyliner 直達日暮里、京成上野，全車對號座，最快", minutes: 45, cost: "約 2,570 日圓", verified: true,
+          to: { name: "京成上野站", hub: "tokyo-center", lat: 35.7114, lng: 139.7740 } },
+        { mode: "電車", title: "JR 成田特快（N'EX）→ 東京站", detail: "JR 成田特快 直達東京站，全車對號座", minutes: 60, cost: "約 3,250 日圓", verified: true,
+          to: { name: "東京站", hub: "tokyo-center", lat: 35.6812, lng: 139.7671 } },
+        { mode: "電車", title: "JR 成田特快（N'EX）→ 新宿站", detail: "JR 成田特快 部分班次直達澀谷、新宿", minutes: 80, cost: "約 3,000 多日圓", verified: false,
+          to: { name: "新宿站", hub: "tokyo-center", lat: 35.6896, lng: 139.7006 } },
+        { mode: "電車", title: "京成 Access 特急（最便宜）", detail: "京成 Access 特急到京成上野；部分班次直通都營淺草線到押上、淺草", minutes: 80, cost: "約 1,240 日圓", verified: true,
+          to: { name: "京成上野站", hub: "tokyo-center", lat: 35.7114, lng: 139.7740 } },
+      ],
+    },
+    {
+      id: "hnd", name: "羽田機場", lat: 35.5494, lng: 139.7798,
+      options: [
+        { mode: "電車", title: "京急線 → 品川站", detail: "京急線 機場快特或急行到品川站，可轉 JR 山手線", minutes: 20, cost: "約 330 日圓", verified: true,
+          to: { name: "品川站", hub: "tokyo-center", lat: 35.6285, lng: 139.7387 } },
+        { mode: "電車", title: "東京單軌電車 → 浜松町站", detail: "東京單軌電車到浜松町站，可轉 JR 山手線或都營地鐵（大門站）", minutes: 18, cost: "約 520 日圓", verified: true,
+          to: { name: "浜松町站", hub: "tokyo-center", lat: 35.6555, lng: 139.7570 } },
+        { mode: "電車", title: "京急線 → 橫濱站", detail: "京急線往橫濱方向（部分班次需在京急蒲田轉車）", minutes: 30, cost: "約 400–500 日圓", verified: false,
+          to: { name: "橫濱站", hub: "yokohama", lat: 35.4660, lng: 139.6223 } },
+      ],
+    },
+  ],
+  kansai: [
+    {
+      id: "kix", name: "關西機場", lat: 34.4320, lng: 135.2304,
+      options: [
+        { mode: "電車", title: "南海特急 Rapi:t → 難波", detail: "南海特急 Rapi:t 到難波站，全車對號座", minutes: 40, cost: "約 1,500 日圓", verified: false,
+          to: { name: "難波站", hub: "osaka", lat: 34.6627, lng: 135.5016 } },
+        { mode: "電車", title: "南海 機場急行 → 難波", detail: "南海 機場急行到難波站，不用另付特急費", minutes: 45, cost: "約 1,000 日圓", verified: false,
+          to: { name: "難波站", hub: "osaka", lat: 34.6627, lng: 135.5016 } },
+        { mode: "電車", title: "JR 關空快速 → 大阪站", detail: "JR 關空快速直達大阪站（部分班次在天王寺停靠）", minutes: 70, cost: "約 1,200 日圓", verified: false,
+          to: { name: "大阪站", hub: "osaka", lat: 34.7025, lng: 135.4959 } },
+        { mode: "電車", title: "JR 特急 HARUKA → 京都站", detail: "JR 特急 HARUKA 直達京都站，途經天王寺、新大阪", minutes: 80, cost: "約 3,060 日圓", verified: true,
+          to: { name: "京都站", hub: "kyoto", lat: 34.9858, lng: 135.7588 } },
+      ],
+    },
+  ],
+  seoul: [
+    {
+      id: "icn", name: "仁川機場", lat: 37.4602, lng: 126.4407,
+      options: [
+        { mode: "電車", title: "AREX 直達列車 → 首爾站", detail: "機場鐵路直達列車，中途不停；第一航廈約 43 分鐘、第二航廈約 51 分鐘", minutes: 48, cost: "約 11,000–13,000 韓元", verified: false,
+          to: { name: "首爾站", hub: "seoul", lat: 37.5547, lng: 126.9707 } },
+        { mode: "電車", title: "AREX 普通列車 → 弘大入口", detail: "機場鐵路普通列車，停靠弘大入口、孔德、首爾站，可轉地鐵", minutes: 55, cost: "約 4,000–5,000 韓元", verified: false,
+          to: { name: "弘大入口站", hub: "seoul", lat: 37.5577, lng: 126.9245 } },
+        { mode: "公車", title: "機場巴士 → 明洞", detail: "機場豪華巴士（6000 系列）到明洞一帶，免轉車、適合行李多", minutes: 80, cost: "約 17,000–18,000 韓元", verified: true,
+          to: { name: "明洞", hub: "seoul", lat: 37.5609, lng: 126.9862 } },
+      ],
+    },
+    {
+      id: "gmp", name: "金浦機場", lat: 37.5583, lng: 126.7906,
+      options: [
+        { mode: "電車", title: "AREX 普通列車 → 弘大入口", detail: "機場鐵路普通列車往首爾站方向", minutes: 15, cost: "約 1,500–2,000 韓元", verified: false,
+          to: { name: "弘大入口站", hub: "seoul", lat: 37.5577, lng: 126.9245 } },
+        { mode: "電車", title: "AREX 普通列車 → 首爾站", detail: "機場鐵路普通列車終點首爾站", minutes: 22, cost: "約 1,500–2,000 韓元", verified: false,
+          to: { name: "首爾站", hub: "seoul", lat: 37.5547, lng: 126.9707 } },
+      ],
+    },
+  ],
+  busan: [
+    {
+      id: "pus", name: "金海機場", lat: 35.1795, lng: 128.9382,
+      options: [
+        { mode: "電車", title: "輕軌＋地鐵 2 號線 → 西面", detail: "金海輕軌到沙上站，出站轉地鐵 2 號線（轉乘步行約 10 分鐘，刷交通卡有轉乘優惠）", minutes: 30, cost: "約 2,100 韓元", verified: true,
+          to: { name: "西面站", hub: "busan", lat: 35.1578, lng: 129.0600 } },
+        { mode: "電車", title: "輕軌＋地鐵 → 南浦", detail: "金海輕軌到沙上站，轉 2 號線到西面，再轉 1 號線到南浦站", minutes: 50, cost: "約 2,300 韓元", verified: true,
+          to: { name: "南浦站", hub: "busan", lat: 35.0981, lng: 129.0346 } },
+        { mode: "電車", title: "輕軌＋地鐵 2 號線 → 海雲台", detail: "金海輕軌到沙上站，轉地鐵 2 號線坐到海雲台站", minutes: 60, cost: "約 2,300 韓元", verified: true,
+          to: { name: "海雲台站", hub: "busan", lat: 35.1634, lng: 129.1588 } },
+        { mode: "計程車", title: "計程車（直達目的地）", detail: "行李多或多人同行適合，直接坐到目的地；到西面、南浦洞約 20,000 韓元起，依距離跳錶", minutes: 35, cost: "約 20,000 韓元起", verified: true,
+          direct: true,
+          to: { name: "西面", hub: "busan", lat: 35.1578, lng: 129.0600 } },
+      ],
+    },
+  ],
+};

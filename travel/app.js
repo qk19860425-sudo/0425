@@ -205,9 +205,23 @@
     regionSelect.append(o);
   }
 
+  const AIRPORTS = window.AIRPORTS || {};
+  const AIRPORT_PREFIX = "airport:";
+
+  function airportsOf(region) {
+    return AIRPORTS[region.id] || [];
+  }
+
   function fillSpotSelect(select, region, placeholder) {
     const first = el("option", "", placeholder);
     first.value = "";
+    const airportGroup = document.createElement("optgroup");
+    airportGroup.label = "✈️ 機場";
+    for (const ap of airportsOf(region)) {
+      const o = el("option", "", "✈️ " + ap.name);
+      o.value = AIRPORT_PREFIX + ap.id;
+      airportGroup.append(o);
+    }
     const groups = region.hubs.map((hub) => {
       const g = document.createElement("optgroup");
       g.label = hub.name;
@@ -218,12 +232,12 @@
       }
       return g;
     });
-    select.replaceChildren(first, ...groups);
+    select.replaceChildren(first, ...(airportGroup.children.length ? [airportGroup] : []), ...groups);
   }
 
   function onRegionChange() {
     const region = findRegion(regionSelect.value);
-    fillSpotSelect(fromSelect, region, "請選擇出發景點");
+    fillSpotSelect(fromSelect, region, "請選擇出發地");
     fillSpotSelect(toSelect, region, "請選擇目的地");
     $("route-result").replaceChildren();
     $("route-error").hidden = true;
@@ -292,11 +306,130 @@
     return { step, minutes: opts[0].minutes };
   }
 
+  // ---- 機場路線 ----
+  // 一個方案 = 機場交通（抵達某車站）＋（必要時）跨城市＋到景點的最後一段
+  function airportPlan(region, airport, option, spot) {
+    if (option.direct) {
+      // 直達目的地（計程車）：走高速公路，依距離估算時間
+      const km = distanceKm(airport, spot) * 1.3;
+      const minutes = 10 + km / 35 * 60;
+      return { option, total: minutes, segs: [{
+        mode: option.mode, from: airport.name, to: spot.name, minutes, cost: option.cost, note: option.detail, estimated: true,
+      }] };
+    }
+    const segs = [{
+      mode: option.mode, from: airport.name, to: option.to.name, title: option.title,
+      minutes: option.minutes, cost: option.cost, note: option.detail, verified: option.verified,
+    }];
+
+    function addLocal(a, aName, b, bName) {
+      if (distanceKm(a, b) <= 0.3) return;
+      const best = localOptions(a, b).opts[0];
+      segs.push({ mode: best.mode, from: aName, to: bName, minutes: best.minutes, note: best.note, estimated: true });
+    }
+
+    if (option.to.hub === spot.hub) {
+      addLocal(option.to, option.to.name, spot, spot.name);
+    } else {
+      const hubFrom = findHub(region, option.to.hub);
+      const hubTo = findHub(region, spot.hub);
+      addLocal(option.to, option.to.name, hubFrom, hubFrom.station);
+      const inter = intercityLeg(region, hubFrom.id, hubTo.id);
+      if (inter) {
+        segs.push({ mode: inter.leg.mode, from: hubFrom.station, to: hubTo.station, minutes: inter.leg.minutes, cost: inter.leg.cost,
+          note: inter.leg.detail + (inter.reversed ? "（反方向搭同一條路線）" : "") });
+      } else {
+        segs.push({ mode: "大眾運輸", from: hubFrom.station, to: hubTo.station, minutes: 0, note: "這兩個城市之間沒有整理資料，請用地圖 App 查詢。", estimated: true });
+      }
+      addLocal(hubTo, hubTo.station, spot, spot.name);
+    }
+    const total = segs.reduce((s, x) => s + x.minutes, 0);
+    return { option, segs, total };
+  }
+
+  // 景點 → 機場：把機場 → 景點的方案整個反過來
+  function reversePlan(plan) {
+    const segs = plan.segs.slice().reverse().map((s) => Object.assign({}, s, {
+      from: s.to, to: s.from,
+      note: s.note + (s.estimated || s.note.includes("反方向") ? "" : "（反方向搭同一條路線）"),
+    }));
+    return { option: plan.option, segs, total: plan.total };
+  }
+
+  function renderPlan(region, plan, index, start, end) {
+    const card = el("div", "card route-step");
+    const title = el("h3", "step-title", "方案 " + (index + 1) + "：" + plan.option.title);
+    if (index === 0) title.append(" ", el("span", "badge badge-accent", "最快"));
+    card.append(title, el("p", "plan-total", "合計 " + formatMinutes(plan.total) + "（不含等車，部分為估算）"));
+
+    const ol = el("ol", "segments");
+    for (const s of plan.segs) {
+      const li = el("li", "segment");
+      const top = el("p", "leg-top");
+      top.append(el("strong", "", modeLabel(s.mode)), " " + s.from + " → " + s.to);
+      const meta = el("p", "stop-meta", (s.minutes ? formatMinutes(s.minutes) : "時間未知") + (s.cost ? "・" + s.cost : "") + (s.estimated ? "（估算）" : ""));
+      li.append(top, meta, el("p", "leg-detail", s.note));
+      if (s.verified === false) li.append(el("p", "unverified", "⚠️ 票價或時間未查證，請以交通公司官網為準"));
+      ol.append(li);
+    }
+    card.append(ol, mapLinks(region, start, end));
+    return card;
+  }
+
+  function updateAirportRoute(region, fromVal, toVal) {
+    const err = $("route-error");
+    const out = $("route-result");
+    const fromAirport = fromVal.startsWith(AIRPORT_PREFIX);
+    const airportId = (fromAirport ? fromVal : toVal).slice(AIRPORT_PREFIX.length);
+    const otherVal = fromAirport ? toVal : fromVal;
+
+    if (otherVal.startsWith(AIRPORT_PREFIX)) {
+      err.textContent = "出發地和目的地不能都是機場，請選一個景點。";
+      err.hidden = false;
+      return;
+    }
+    const airport = airportsOf(region).find((a) => a.id === airportId);
+    const spot = findSpot(region, otherVal);
+
+    let plans = airport.options.map((o) => airportPlan(region, airport, o, spot));
+    if (!fromAirport) plans = plans.map(reversePlan);
+    plans.sort((x, y) => x.total - y.total);
+
+    const start = fromAirport ? airport : spot;
+    const end = fromAirport ? spot : airport;
+    const header = el("div", "card route-summary");
+    header.append(el("h2", "plan-title", "✈️ " + start.name + " → " + end.name));
+    header.append(el("p", "stop-meta", "共 " + plans.length + " 個方案，依總時間由快到慢排列。行李多可優先選直達、對號座或機場巴士。"));
+    header.append(mapLinks(region, start, end));
+
+    const parts = [header, ...plans.map((p, i) => renderPlan(region, p, i, start, end))];
+    parts.push(el("p", "card hint", "機場交通的時間、票價為約略值；到景點的最後一段依距離估算。出發前請用地圖連結查即時班次。" +
+      (region.country === "kr" ? "韓國建議搭配 Naver 地圖或 KakaoMap。" : "")));
+    parts.push(el("p", "card tip", "💡 " + region.transportTip));
+    out.replaceChildren(...parts);
+    out.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
   function updateRoute() {
     const region = findRegion(regionSelect.value);
     const err = $("route-error");
     const out = $("route-result");
     err.hidden = true;
+
+    if (fromSelect.value === toSelect.value && fromSelect.value) {
+      err.textContent = "出發地和目的地是同一個地方。";
+      err.hidden = false;
+      return;
+    }
+    if (fromSelect.value.startsWith(AIRPORT_PREFIX) || toSelect.value.startsWith(AIRPORT_PREFIX)) {
+      if (!fromSelect.value || !toSelect.value) {
+        err.textContent = "請選擇出發地和目的地。";
+        err.hidden = false;
+        return;
+      }
+      updateAirportRoute(region, fromSelect.value, toSelect.value);
+      return;
+    }
 
     const a = findSpot(region, fromSelect.value);
     const b = findSpot(region, toSelect.value);
