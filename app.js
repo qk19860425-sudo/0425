@@ -108,6 +108,11 @@
       showMessage(formMessage, errors.join("、") + "。", "error");
       return;
     }
+    if (!navigator.onLine) {
+      // 離線時直接提醒，不必等連線逾時；填好的內容保留在表單上
+      showMessage(formMessage, "目前離線，無法送出。請連上網路後再按一次「送出報修」，填好的內容會保留。", "error");
+      return;
+    }
 
     submitButton.disabled = true;
     submitButton.textContent = "送出中…";
@@ -172,6 +177,10 @@
 
   async function loadList() {
     if (!client) return;
+    if (!navigator.onLine) {
+      showMessage(listMessage, "目前離線，無法讀取報修清單。連上網路後請按「重新整理」。", "error");
+      return;
+    }
     refreshButton.disabled = true;
     showMessage(listMessage, "載入中…", "");
     try {
@@ -195,6 +204,8 @@
   }
 
   refreshButton.addEventListener("click", loadList);
+  // 從離線恢復連線時，自動重新讀取清單
+  window.addEventListener("online", loadList);
 
   // ---- 字數計數 ----
   function updateCount() {
