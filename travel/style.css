@@ -206,4 +206,12 @@ button:focus-visible, select:focus, a:focus-visible, summary:focus-visible {
 .source-list li { margin-bottom: 4px; overflow-wrap: anywhere; }
 .source-list a { color: var(--accent); }
 
+/* ---- PWA：安裝與離線提示 ---- */
+.pwa-bar { max-width: 760px; margin: 0 auto; padding: 0 16px; }
+.install { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.install[hidden], .offline[hidden], .install-hint[hidden], .install-button[hidden] { display: none; }
+.install-hint { margin: 4px 0 0; color: var(--muted); font-size: 0.9rem; }
+.install-button { flex-shrink: 0; }
+.offline { margin: 0 0 10px; padding: 10px 12px; border-radius: 8px; background: var(--tip-bg); color: var(--tip-text); font-weight: 600; font-size: 0.9rem; }
+
 .site-footer { color: var(--muted); font-size: 0.85rem; padding-bottom: 24px; }
