@@ -199,6 +199,20 @@ button:focus-visible, select:focus, a:focus-visible, summary:focus-visible {
 .tip { background: var(--tip-bg); color: var(--tip-text); font-size: 0.93rem; }
 .empty { color: var(--muted); }
 
+.segments { list-style: none; margin: 8px 0 0; padding: 0; counter-reset: seg; }
+.segment { position: relative; padding: 0 0 10px 34px; margin: 0 0 6px; border-left: 3px dashed var(--line); margin-left: 12px; }
+.segment:last-child { border-left-color: transparent; }
+.segment::before {
+  counter-increment: seg;
+  content: counter(seg);
+  position: absolute; left: -15px; top: 0;
+  width: 26px; height: 26px; border-radius: 50%;
+  background: var(--accent); color: var(--accent-text);
+  font-weight: 700; font-size: 0.85rem;
+  display: flex; align-items: center; justify-content: center;
+}
+.unverified { margin: 0 0 4px; font-size: 0.85rem; color: var(--tip-text); background: var(--tip-bg); padding: 4px 8px; border-radius: 6px; }
+
 /* ---- 指南 ---- */
 .guide-section h3 { margin-top: 12px; }
 .guide-summary { font-weight: 700; font-size: 1.1rem; cursor: pointer; min-height: 32px; }
