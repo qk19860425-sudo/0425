@@ -489,6 +489,271 @@ window.REGIONS = [
       },
     ],
   },
+  // ===================================================================
+  {
+    id: "sendai",
+    name: "仙台・松島（東北）",
+    country: "jp",
+    currency: "日圓",
+    transportTip: "仙台機場搭仙台機場線約 17–25 分鐘到仙台站。市區景點可搭觀光循環巴士「Loople 仙台」或地鐵；日本三景之一的松島從仙台搭 JR 仙石線約 40 分鐘。",
+    hubs: [
+      { id: "sendai", name: "仙台", station: "仙台站", lat: 38.2601, lng: 140.8822 },
+      { id: "matsushima", name: "松島", station: "松島海岸站", lat: 38.3693, lng: 141.0610 },
+    ],
+    intercity: [
+      { from: "sendai", to: "matsushima", mode: "電車", detail: "JR 仙石線 仙台站 → 松島海岸站；票價請以 JR 東日本官網為準", minutes: 40, cost: "約 400–500 日圓（未查證）" },
+    ],
+    spots: [
+      { id: "sendai-castle", name: "仙台城跡（青葉城）", hub: "sendai", station: "仙台站搭 Loople 仙台巴士約 20 分鐘", tags: ["歷史", "景觀"], stay: "1 小時", lat: 38.2526, lng: 140.8564 },
+      { id: "zuihoden", name: "瑞鳳殿", hub: "sendai", station: "仙台站搭 Loople 仙台巴士約 15 分鐘", tags: ["歷史", "寺廟神社"], stay: "45 分鐘", lat: 38.2510, lng: 140.8770 },
+      { id: "jozenji-dori", name: "定禪寺通", hub: "sendai", station: "勾當台公園站（地鐵南北線）", tags: ["購物", "夜景"], stay: "1 小時", lat: 38.2655, lng: 140.8690 },
+      { id: "sendai-asaichi", name: "仙台朝市", hub: "sendai", station: "仙台站，步行約 5 分鐘", tags: ["美食", "市場"], stay: "45 分鐘", lat: 38.2585, lng: 140.8800 },
+      { id: "zuiganji", name: "瑞巖寺", hub: "matsushima", station: "松島海岸站，步行約 10 分鐘", tags: ["寺廟神社", "歷史"], stay: "1 小時", lat: 38.3714, lng: 141.0614 },
+      { id: "godaido", name: "五大堂（松島）", hub: "matsushima", station: "松島海岸站，步行約 10 分鐘", tags: ["海景", "寺廟神社"], stay: "30 分鐘", lat: 38.3699, lng: 141.0644 },
+    ],
+    itineraries: [
+      {
+        id: "sendai-matsushima",
+        title: "松島半日：瑞巖寺・五大堂",
+        days: 0.5, themes: ["近郊", "寺廟", "海景"],
+        summary: "從仙台搭 JR 仙石線到松島海岸，參觀瑞巖寺，再走到海邊的五大堂看松島灣；也可以搭遊覽船。",
+        stops: ["zuiganji", "godaido"],
+        legs: [
+          { mode: "步行", detail: "從瑞巖寺參道往海邊走，過紅色的透橋就是五大堂", minutes: 5, cost: "步行免費" },
+        ],
+      },
+      {
+        id: "sendai-city",
+        title: "仙台市區：瑞鳳殿・仙台城跡・定禪寺通",
+        days: 1, themes: ["第一次去", "歷史"],
+        summary: "搭 Loople 仙台觀光巴士串起瑞鳳殿和仙台城跡，傍晚回到定禪寺通散步、吃牛舌。",
+        stops: ["zuihoden", "sendai-castle", "jozenji-dori"],
+        legs: [
+          { mode: "公車", detail: "Loople 仙台觀光循環巴士，約 10–15 分鐘（一日券較划算）", minutes: 15, cost: "單程約 260 日圓（未查證）" },
+          { mode: "公車", detail: "Loople 仙台到市中心，或搭計程車約 10 分鐘", minutes: 20, cost: "單程約 260 日圓（未查證）" },
+        ],
+      },
+    ],
+  },
+  // ===================================================================
+  {
+    id: "kanazawa",
+    name: "金澤（北陸）",
+    country: "jp",
+    currency: "日圓",
+    transportTip: "從東京搭北陸新幹線約 2.5–3 小時到金澤；從小松機場搭機場巴士約 40 分鐘。市區景點集中，用步行加觀光循環巴士就能逛完。",
+    hubs: [{ id: "kanazawa", name: "金澤", station: "金澤站", lat: 36.5781, lng: 136.6478 }],
+    intercity: [],
+    spots: [
+      { id: "kenrokuen", name: "兼六園", hub: "kanazawa", station: "金澤站搭公車約 15 分鐘", tags: ["自然", "歷史"], stay: "1–1.5 小時", lat: 36.5621, lng: 136.6627 },
+      { id: "kanazawa-castle", name: "金澤城公園", hub: "kanazawa", station: "兼六園旁", tags: ["歷史"], stay: "1 小時", lat: 36.5649, lng: 136.6596 },
+      { id: "higashi-chaya", name: "東茶屋街", hub: "kanazawa", station: "金澤站搭公車約 10 分鐘", tags: ["歷史", "拍照"], stay: "1 小時", lat: 36.5725, lng: 136.6666 },
+      { id: "omicho", name: "近江町市場", hub: "kanazawa", station: "金澤站步行約 15 分鐘", tags: ["美食", "市場"], stay: "1 小時", lat: 36.5716, lng: 136.6564 },
+      { id: "21st-century-museum", name: "金澤 21 世紀美術館", hub: "kanazawa", station: "兼六園步行約 5 分鐘", tags: ["博物館"], stay: "1–1.5 小時", lat: 36.5609, lng: 136.6582 },
+    ],
+    itineraries: [
+      {
+        id: "kanazawa-classic",
+        title: "金澤一日：近江町市場・東茶屋街・兼六園",
+        days: 1, themes: ["第一次去", "歷史", "美食"],
+        summary: "早上到近江町市場吃海鮮丼，再到東茶屋街看老街，下午逛兼六園和 21 世紀美術館。",
+        stops: ["omicho", "higashi-chaya", "kenrokuen", "21st-century-museum"],
+        legs: [
+          { mode: "步行", detail: "往東過淺野川大橋到東茶屋街；也可搭公車約 5 分鐘", minutes: 15, cost: "步行免費" },
+          { mode: "步行", detail: "沿淺野川往南走到兼六園；或搭公車約 10 分鐘", minutes: 20, cost: "步行免費" },
+          { mode: "步行", detail: "從兼六園真彌坂口往西走就是 21 世紀美術館", minutes: 5, cost: "步行免費" },
+        ],
+      },
+    ],
+  },
+  // ===================================================================
+  {
+    id: "hiroshima",
+    name: "廣島・宮島（中國地方）",
+    country: "jp",
+    currency: "日圓",
+    transportTip: "廣島市區有路面電車，到原爆圓頂館約 15 分鐘。去宮島搭 JR 到宮島口，再搭渡輪約 10 分鐘（渡輪 200 日圓，另收宮島訪問稅 100 日圓）。",
+    hubs: [
+      { id: "hiroshima", name: "廣島", station: "廣島站", lat: 34.3978, lng: 132.4753 },
+      { id: "miyajima", name: "宮島", station: "宮島口站（再轉渡輪）", lat: 34.3122, lng: 132.3035 },
+    ],
+    intercity: [
+      { from: "hiroshima", to: "miyajima", mode: "電車", detail: "JR 山陽本線 廣島站 → 宮島口站（約 30 分鐘），轉渡輪到宮島（約 10 分鐘）", minutes: 45, cost: "JR 票價未查證＋渡輪 200 日圓＋宮島訪問稅 100 日圓" },
+    ],
+    spots: [
+      { id: "atomic-bomb-dome", name: "原爆圓頂館", hub: "hiroshima", station: "原爆圓頂館前（路面電車）", tags: ["歷史"], stay: "30 分鐘", lat: 34.3955, lng: 132.4536 },
+      { id: "peace-park", name: "和平紀念公園・和平紀念資料館", hub: "hiroshima", station: "原爆圓頂館前、中電前（路面電車）", tags: ["歷史", "博物館"], stay: "1.5–2 小時", lat: 34.3915, lng: 132.4524 },
+      { id: "hiroshima-castle", name: "廣島城", hub: "hiroshima", station: "紙屋町東（路面電車），步行約 15 分鐘", tags: ["歷史"], stay: "1 小時", lat: 34.4027, lng: 132.4594 },
+      { id: "shukkeien", name: "縮景園", hub: "hiroshima", station: "縮景園前（路面電車）", tags: ["自然"], stay: "1 小時", lat: 34.4004, lng: 132.4672 },
+      { id: "itsukushima", name: "嚴島神社", hub: "miyajima", station: "宮島棧橋，步行約 15 分鐘", tags: ["寺廟神社", "海景"], stay: "1.5–2 小時", lat: 34.2959, lng: 132.3198 },
+    ],
+    itineraries: [
+      {
+        id: "hiroshima-peace",
+        title: "廣島和平紀念公園半日",
+        days: 0.5, themes: ["第一次去", "歷史"],
+        summary: "從原爆圓頂館走進和平紀念公園，參觀和平紀念資料館。",
+        stops: ["atomic-bomb-dome", "peace-park"],
+        legs: [
+          { mode: "步行", detail: "過相生橋就是和平紀念公園", minutes: 5, cost: "步行免費" },
+        ],
+      },
+    ],
+  },
+  // ===================================================================
+  {
+    id: "takamatsu",
+    name: "高松・琴平（四國）",
+    country: "jp",
+    currency: "日圓",
+    transportTip: "高松機場搭機場巴士約 45 分鐘到高松站。市區有琴電（高松琴平電氣鐵道）；到金刀比羅宮搭 JR 或琴電約 1 小時。也是前往直島等瀨戶內海島嶼的渡輪起點。",
+    hubs: [
+      { id: "takamatsu", name: "高松", station: "高松站", lat: 34.3505, lng: 134.0465 },
+      { id: "kotohira", name: "琴平", station: "琴平站", lat: 34.1914, lng: 133.8228 },
+    ],
+    intercity: [
+      { from: "takamatsu", to: "kotohira", mode: "電車", detail: "JR 土讚線 或 琴電琴平線 往琴平；票價請以官網為準", minutes: 60, cost: "約 700–900 日圓（未查證）" },
+    ],
+    spots: [
+      { id: "ritsurin", name: "栗林公園", hub: "takamatsu", station: "栗林公園站（琴電）", tags: ["自然", "歷史"], stay: "1.5 小時", lat: 34.3292, lng: 134.0442 },
+      { id: "tamamo", name: "玉藻公園（高松城跡）", hub: "takamatsu", station: "高松築港站（琴電），高松站步行約 5 分鐘", tags: ["歷史"], stay: "45 分鐘", lat: 34.3504, lng: 134.0516 },
+      { id: "yashima", name: "屋島", hub: "takamatsu", station: "琴電屋島站轉山上接駁巴士", tags: ["景觀", "歷史"], stay: "1.5 小時", lat: 34.3580, lng: 134.1010 },
+      { id: "kotohiragu", name: "金刀比羅宮", hub: "kotohira", station: "琴平站，步行約 15 分鐘到參道", tags: ["寺廟神社"], stay: "2 小時（石階很多）", lat: 34.1838, lng: 133.8098 },
+    ],
+    itineraries: [
+      {
+        id: "takamatsu-city",
+        title: "高松半日：玉藻公園・栗林公園",
+        days: 0.5, themes: ["第一次去", "自然", "歷史"],
+        summary: "從高松站旁的玉藻公園開始，再搭琴電到栗林公園，中午吃讚岐烏龍麵。",
+        stops: ["tamamo", "ritsurin"],
+        legs: [
+          { mode: "電車", detail: "琴電琴平線 高松築港站 → 栗林公園站，步行約 10 分鐘", minutes: 20, cost: "約 200–250 日圓（未查證）" },
+        ],
+      },
+    ],
+  },
+  // ===================================================================
+  {
+    id: "nagasaki",
+    name: "長崎（九州）",
+    country: "jp",
+    currency: "日圓",
+    transportTip: "長崎機場搭機場巴士約 45 分鐘到長崎站前。市區靠路面電車就能到大部分景點，一日乘車券很划算；稻佐山夜景要搭纜車。",
+    hubs: [{ id: "nagasaki", name: "長崎", station: "長崎站", lat: 32.7524, lng: 129.8696 }],
+    intercity: [],
+    spots: [
+      { id: "peace-park-nagasaki", name: "長崎平和公園", hub: "nagasaki", station: "平和公園（路面電車）", tags: ["歷史"], stay: "45 分鐘", lat: 32.7765, lng: 129.8636 },
+      { id: "atomic-bomb-museum", name: "長崎原爆資料館", hub: "nagasaki", station: "原爆資料館（路面電車）", tags: ["歷史", "博物館"], stay: "1 小時", lat: 32.7724, lng: 129.8636 },
+      { id: "meganebashi", name: "眼鏡橋", hub: "nagasaki", station: "公會堂前、市民會館（路面電車）", tags: ["歷史", "拍照"], stay: "30 分鐘", lat: 32.7489, lng: 129.8800 },
+      { id: "glover-garden", name: "哥拉巴園・大浦天主堂", hub: "nagasaki", station: "大浦天主堂（路面電車）", tags: ["歷史", "景觀"], stay: "1.5 小時", lat: 32.7341, lng: 129.8693 },
+      { id: "inasayama", name: "稻佐山展望台", hub: "nagasaki", station: "長崎站搭公車到纜車站，再搭纜車", tags: ["夜景"], stay: "1.5 小時", lat: 32.7468, lng: 129.8455 },
+    ],
+    itineraries: [
+      {
+        id: "nagasaki-day",
+        title: "長崎一日：平和公園・眼鏡橋・哥拉巴園",
+        days: 1, themes: ["第一次去", "歷史", "夜景"],
+        summary: "上午到平和公園和原爆資料館，下午逛眼鏡橋和哥拉巴園，晚上上稻佐山看夜景。",
+        stops: ["peace-park-nagasaki", "atomic-bomb-museum", "meganebashi", "glover-garden"],
+        legs: [
+          { mode: "步行", detail: "從平和公園往南走到原爆資料館", minutes: 10, cost: "步行免費" },
+          { mode: "電車", detail: "路面電車往市中心方向，在公會堂前或市民會館下車", minutes: 20, cost: "約 140 日圓（未查證）" },
+          { mode: "電車", detail: "路面電車往大浦天主堂方向（可能需轉車）", minutes: 20, cost: "約 140 日圓（未查證）" },
+        ],
+      },
+    ],
+  },
+  // ===================================================================
+  {
+    id: "gangneung",
+    name: "江陵（江原道）",
+    country: "kr",
+    currency: "韓元",
+    transportTip: "從首爾站搭 KTX 約 2 小時到江陵站（約 27,600 韓元）。江陵市區景點分散，公車班次少，建議搭計程車或租車。",
+    hubs: [{ id: "gangneung", name: "江陵", station: "江陵站（KTX）", lat: 37.7643, lng: 128.8996 }],
+    intercity: [],
+    spots: [
+      { id: "ojukheon", name: "烏竹軒", hub: "gangneung", station: "江陵站搭計程車約 10 分鐘", tags: ["歷史"], stay: "45 分鐘", lat: 37.7792, lng: 128.8786 },
+      { id: "gyeongpo", name: "鏡浦臺・鏡浦海水浴場", hub: "gangneung", station: "江陵站搭計程車約 15 分鐘", tags: ["海景", "自然"], stay: "1–1.5 小時", lat: 37.7956, lng: 128.8960 },
+      { id: "anmok", name: "安木咖啡街", hub: "gangneung", station: "江陵站搭計程車約 15 分鐘", tags: ["海景", "咖啡"], stay: "1–1.5 小時", lat: 37.7725, lng: 128.9475 },
+      { id: "gangneung-market", name: "江陵中央市場", hub: "gangneung", station: "江陵站步行約 15 分鐘", tags: ["美食", "市場"], stay: "1 小時", lat: 37.7546, lng: 128.8995 },
+      { id: "jeongdongjin", name: "正東津", hub: "gangneung", station: "正東津站，或江陵站搭計程車約 30 分鐘", tags: ["海景", "拍照"], stay: "1 小時", lat: 37.6904, lng: 129.0340 },
+    ],
+    itineraries: [
+      {
+        id: "gangneung-day",
+        title: "江陵一日：烏竹軒・鏡浦臺・安木咖啡街",
+        days: 1, themes: ["近郊", "海景", "咖啡"],
+        summary: "從首爾搭 KTX 當天來回：上午參觀烏竹軒，再到鏡浦海邊，下午在安木咖啡街看海喝咖啡。",
+        stops: ["ojukheon", "gyeongpo", "anmok"],
+        legs: [
+          { mode: "計程車", detail: "計程車約 10 分鐘", minutes: 10, cost: "約 6,000–8,000 韓元（未查證）" },
+          { mode: "計程車", detail: "沿海岸往南，計程車約 15 分鐘", minutes: 15, cost: "約 8,000–12,000 韓元（未查證）" },
+        ],
+      },
+    ],
+  },
+  // ===================================================================
+  {
+    id: "jeonju",
+    name: "全州（全羅道）",
+    country: "kr",
+    currency: "韓元",
+    transportTip: "從首爾龍山站搭 KTX 約 1 小時 40 分鐘–2 小時 20 分鐘到全州站（約 32,900 韓元）。全州站離韓屋村較遠，搭公車或計程車約 20 分鐘；韓屋村一帶步行就能逛完。",
+    hubs: [{ id: "jeonju", name: "全州", station: "全州站（KTX）", lat: 35.8497, lng: 127.1617 }],
+    intercity: [],
+    spots: [
+      { id: "jeondong", name: "殿洞聖堂", hub: "jeonju", station: "全州站搭公車或計程車約 20 分鐘", tags: ["歷史", "拍照"], stay: "30 分鐘", lat: 35.8132, lng: 127.1490 },
+      { id: "gyeonggijeon", name: "慶基殿", hub: "jeonju", station: "韓屋村入口", tags: ["歷史"], stay: "45 分鐘", lat: 35.8152, lng: 127.1497 },
+      { id: "hanok-village", name: "全州韓屋村", hub: "jeonju", station: "全州站搭公車或計程車約 20 分鐘", tags: ["歷史", "美食", "拍照"], stay: "2–3 小時", lat: 35.8150, lng: 127.1530 },
+      { id: "nambu-market", name: "南部市場", hub: "jeonju", station: "韓屋村步行約 10 分鐘", tags: ["美食", "市場"], stay: "1 小時", lat: 35.8122, lng: 127.1460 },
+      { id: "omokdae", name: "梧木台", hub: "jeonju", station: "韓屋村東側，步行約 10 分鐘", tags: ["景觀", "歷史"], stay: "30 分鐘", lat: 35.8114, lng: 127.1559 },
+    ],
+    itineraries: [
+      {
+        id: "jeonju-hanok",
+        title: "全州韓屋村一日",
+        days: 1, themes: ["近郊", "歷史", "美食"],
+        summary: "全程步行：殿洞聖堂、慶基殿、韓屋村巷弄，晚上到南部市場吃拌飯和小吃。",
+        stops: ["jeondong", "gyeonggijeon", "hanok-village", "nambu-market"],
+        legs: [
+          { mode: "步行", detail: "過馬路就是慶基殿", minutes: 5, cost: "步行免費" },
+          { mode: "步行", detail: "從慶基殿往東走進韓屋村主街", minutes: 5, cost: "步行免費" },
+          { mode: "步行", detail: "往西南走過豐南門就是南部市場", minutes: 10, cost: "步行免費" },
+        ],
+      },
+    ],
+  },
+  // ===================================================================
+  {
+    id: "daegu",
+    name: "大邱（慶尚北道）",
+    country: "kr",
+    currency: "韓元",
+    transportTip: "大邱機場離市區很近，計程車到市中心約 15–20 分鐘。KTX 主站是東大邱站（與地鐵 1 號線共構），從釜山約 1 小時、首爾約 2 小時。市區靠地鐵 1、2、3 號線就夠。",
+    hubs: [{ id: "daegu", name: "大邱", station: "東大邱站（KTX）", lat: 35.8794, lng: 128.6285 }],
+    intercity: [],
+    spots: [
+      { id: "seomun-market", name: "西門市場", hub: "daegu", station: "西門市場站（地鐵 3 號線）", tags: ["美食", "市場"], stay: "1–1.5 小時", lat: 35.8689, lng: 128.5810 },
+      { id: "dongseongno", name: "東城路・半月堂", hub: "daegu", station: "半月堂站、中央路站（地鐵 1 號線）", tags: ["購物", "美食"], stay: "1.5–2 小時", lat: 35.8656, lng: 128.5935 },
+      { id: "kim-kwangseok", name: "金光石路", hub: "daegu", station: "慶大醫院站（地鐵 2 號線），步行約 10 分鐘", tags: ["拍照"], stay: "45 分鐘", lat: 35.8604, lng: 128.6064 },
+      { id: "83-tower", name: "83 塔（E-World）", hub: "daegu", station: "頭流站（地鐵 2 號線），步行約 10 分鐘", tags: ["夜景", "親子"], stay: "1.5 小時", lat: 35.8533, lng: 128.5664 },
+    ],
+    itineraries: [
+      {
+        id: "daegu-day",
+        title: "大邱一日：西門市場・東城路・83 塔夜景",
+        days: 1, themes: ["第一次去", "美食", "夜景"],
+        summary: "上午逛西門市場吃扁餃子，下午在東城路購物，晚上上 83 塔看夜景。",
+        stops: ["seomun-market", "dongseongno", "83-tower"],
+        legs: [
+          { mode: "地鐵", detail: "地鐵 3 號線 西門市場站 → 明德站轉 1 號線到半月堂站；或計程車約 10 分鐘", minutes: 15, cost: "約 1,500–1,800 韓元（未查證）" },
+          { mode: "地鐵", detail: "地鐵 2 號線 半月堂站 → 頭流站，步行約 10 分鐘", minutes: 20, cost: "約 1,500–1,800 韓元（未查證）" },
+        ],
+      },
+    ],
+  },
 ];
 
 // ===================================================================
@@ -554,6 +819,10 @@ window.GUIDES = [
       { title: "名古屋 Concierge：中部國際機場交通", url: "https://www.nagoya-info.jp/access/centrair/" },
       { title: "travelist：那霸機場 Yui Rail", url: "https://travelist.jp/airport_OKA/guide/posts/p428" },
       { title: "Time Out：首里城正殿重新開放", url: "https://www.timeout.jp/tokyo/ja/news/shuri-castle-reopen-102126" },
+      { title: "宮城縣：仙台機場線概要", url: "https://www.pref.miyagi.jp/soshiki/kurin/railway001.html" },
+      { title: "廣島市：交通 FAQ（機場巴士）", url: "https://www.city.hiroshima.lg.jp/faq/tourism-culture/1001621/1028190/1006400.html" },
+      { title: "travelist：小松機場到金澤", url: "https://travelist.jp/airport_KMQ/guide/posts/p1497" },
+      { title: "travelist：長崎機場巴士", url: "https://travelist.jp/airport_NGS/guide/posts/p1048" },
     ],
   },
   {
@@ -611,6 +880,9 @@ window.GUIDES = [
       { title: "LG U+：韓國旅遊必備 App", url: "https://lguplus.com/korea-sim/eng/pc/support/blog/korea_travel_essential_apps_guide" },
       { title: "KTX 時刻表：釜山 → 慶州", url: "https://train.asamaru.net/%EC%8B%9C%EA%B0%84%ED%91%9C/%EB%B6%80%EC%82%B0%EC%97%AD-%EA%B2%BD%EB%B6%80%EC%84%A0-%EA%B3%A0%EC%86%8D%EC%B2%A0%EB%8F%84/%EC%B6%9C%EB%B0%9C/%EC%8B%A0%EA%B2%BD%EC%A3%BC%EC%97%AD-%EA%B2%BD%EB%B6%80%EC%84%A0/%EB%8F%84%EC%B0%A9/" },
       { title: "mileasia：濟州機場到西歸浦 2026", url: "https://mileasia.com/korea/jeju-airport-to-seogwipo/" },
+      { title: "KTX 時刻表：首爾 → 江陵", url: "https://train.asamaru.net/%EC%8B%9C%EA%B0%84%ED%91%9C/%EA%B0%95%EB%A6%89%EC%97%AD-%EA%B0%95%EB%A6%89%EC%84%A0/%EC%B6%9C%EB%B0%9C/%EC%84%9C%EC%9A%B8%EC%97%AD-%EA%B2%BD%EB%B6%80%EC%84%A0-%EA%B3%A0%EC%86%8D%EC%B2%A0%EB%8F%84/%EB%8F%84%EC%B0%A9/" },
+      { title: "KTX 時刻表：龍山 → 全州", url: "https://info.koreacharts.com/traintime/10008/10216/contents.html?date=2026-11-02" },
+      { title: "Creatrip：大邱機場到市區", url: "https://creatrip.com/blog/12889" },
     ],
   },
 ];
@@ -622,6 +894,64 @@ window.GUIDES = [
 // direct: true 表示直接到目的地（例如計程車），時間依距離估算。
 // ===================================================================
 window.AIRPORTS = {
+  sendai: [
+    {
+      id: "sdj", name: "仙台機場", lat: 38.1397, lng: 140.9170,
+      options: [
+        { mode: "電車", title: "仙台機場線 → 仙台站", detail: "仙台機場站直達仙台站，快速約 17 分鐘、普通約 25 分鐘，每小時 2–3 班", minutes: 20, cost: "約 660 日圓", verified: true,
+          to: { name: "仙台站", hub: "sendai", lat: 38.2601, lng: 140.8822 } },
+      ],
+    },
+  ],
+  kanazawa: [
+    {
+      id: "kmq", name: "小松機場", lat: 36.3946, lng: 136.4069,
+      options: [
+        { mode: "公車", title: "機場巴士 → 金澤站西口", detail: "配合航班到站時間發車，約每小時 1 班；到香林坊約 55 分鐘", minutes: 40, cost: "約 1,130–1,300 日圓", verified: false,
+          to: { name: "金澤站", hub: "kanazawa", lat: 36.5781, lng: 136.6478 } },
+      ],
+    },
+  ],
+  hiroshima: [
+    {
+      id: "hij", name: "廣島機場", lat: 34.4361, lng: 132.9194,
+      options: [
+        { mode: "公車", title: "機場巴士 → 廣島站", detail: "機場巴士直達廣島站新幹線口", minutes: 50, cost: "約 1,500 日圓", verified: true,
+          to: { name: "廣島站", hub: "hiroshima", lat: 34.3978, lng: 132.4753 } },
+        { mode: "公車", title: "公車＋JR（較便宜）", detail: "路線巴士到 JR 白市站（約 15 分鐘），轉 JR 山陽本線到廣島站（約 45 分鐘）", minutes: 65, cost: "約 1,200–1,300 日圓", verified: false,
+          to: { name: "廣島站", hub: "hiroshima", lat: 34.3978, lng: 132.4753 } },
+      ],
+    },
+  ],
+  takamatsu: [
+    {
+      id: "tak", name: "高松機場", lat: 34.2142, lng: 134.0156,
+      options: [
+        { mode: "公車", title: "機場巴士 → 高松站", detail: "機場巴士直達高松站一帶", minutes: 45, cost: "約 1,000 日圓", verified: false,
+          to: { name: "高松站", hub: "takamatsu", lat: 34.3505, lng: 134.0465 } },
+      ],
+    },
+  ],
+  nagasaki: [
+    {
+      id: "ngs", name: "長崎機場", lat: 32.9169, lng: 129.9136,
+      options: [
+        { mode: "公車", title: "機場巴士 → 長崎站前", detail: "不用預約，可刷 Suica 等交通 IC 卡；依路線約 43–60 分鐘", minutes: 45, cost: "約 1,400 日圓", verified: true,
+          to: { name: "長崎站", hub: "nagasaki", lat: 32.7524, lng: 129.8696 } },
+      ],
+    },
+  ],
+  daegu: [
+    {
+      id: "tae", name: "大邱機場", lat: 35.8941, lng: 128.6588,
+      options: [
+        { mode: "計程車", title: "計程車（直達目的地）", detail: "大邱機場離市區很近；到峨洋橋站約 4,100–4,500 韓元，到半月堂、東城路通常 10,000 韓元以下", minutes: 15, cost: "依距離跳錶；到市中心約 10,000 韓元以下", verified: true, direct: true,
+          to: { name: "半月堂", hub: "daegu", lat: 35.8656, lng: 128.5935 } },
+        { mode: "公車", title: "公車＋地鐵 1 號線 → 半月堂", detail: "機場 2、3 號門前搭 101 號公車到峨洋橋站，轉地鐵 1 號線到半月堂站", minutes: 40, cost: "約 1,500–2,000 韓元", verified: false,
+          to: { name: "半月堂站", hub: "daegu", lat: 35.8656, lng: 128.5935 } },
+      ],
+    },
+  ],
   fukuoka: [
     {
       id: "fuk", name: "福岡機場", lat: 33.5859, lng: 130.4507,

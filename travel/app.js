@@ -2,10 +2,18 @@
 (function () {
   "use strict";
 
-  // 日本的城市排在前面、韓國在後；同一國家內維持資料檔的順序
-  const COUNTRY_ORDER = { jp: 0, kr: 1 };
-  const REGIONS = (window.REGIONS || []).slice().sort((a, b) => (COUNTRY_ORDER[a.country] ?? 9) - (COUNTRY_ORDER[b.country] ?? 9));
-  const GUIDES = window.GUIDES || [];
+  // 只顯示某一國家：日本 App 設 window.APP_COUNTRY = "jp"，韓國 App 設 "kr"；未設定則兩國都顯示
+  const APP_COUNTRY = window.APP_COUNTRY || "";
+  const inCountry = (x) => !APP_COUNTRY || x.country === APP_COUNTRY;
+
+  // 地區依地理位置由北到南排列；不在清單裡的排在最後
+  const REGION_ORDER = [
+    "sapporo", "sendai", "tokyo", "nagoya", "kanazawa", "kansai", "hiroshima", "takamatsu", "fukuoka", "nagasaki", "okinawa",
+    "seoul", "gangneung", "daegu", "busan", "jeonju", "jeju",
+  ];
+  const orderOf = (id) => { const i = REGION_ORDER.indexOf(id); return i < 0 ? 999 : i; };
+  const REGIONS = (window.REGIONS || []).filter(inCountry).slice().sort((a, b) => orderOf(a.id) - orderOf(b.id));
+  const GUIDES = (window.GUIDES || []).filter(inCountry);
   const $ = (id) => document.getElementById(id);
 
   $("updated").textContent = window.TRAVEL_UPDATED || "";
@@ -611,6 +619,8 @@
   let guideCountry = GUIDES[0] ? GUIDES[0].country : "";
 
   function renderGuide() {
+    // 只有一個國家時不需要切換按鈕
+    $("guide-countries").closest(".card").hidden = GUIDES.length <= 1;
     $("guide-countries").replaceChildren(...GUIDES.map((g) =>
       chip(g.name, g.country === guideCountry, () => { guideCountry = g.country; renderGuide(); })
     ));

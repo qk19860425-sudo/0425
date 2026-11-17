@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- 原創設計：紅底、粉紅色圓形與白色韓屋門樓 -->
+  <rect width="512" height="512" fill="#e11d48"/>
+  <circle cx="256" cy="230" r="128" fill="#fda4af"/>
+  <g fill="#ffffff">
+    <!-- 兩端上翹的屋頂 -->
+    <path d="M80 214 Q 120 230 150 200 L362 200 Q 392 230 432 214 Q 410 262 362 250 L150 250 Q 102 262 80 214 Z"/>
+    <path d="M176 200 L200 164 L312 164 L336 200 Z"/>
+    <rect x="150" y="250" width="212" height="22" rx="4"/>
+    <!-- 柱子 -->
+    <rect x="166" y="272" width="30" height="154" rx="5"/>
+    <rect x="316" y="272" width="30" height="154" rx="5"/>
+  </g>
+  <rect x="196" y="290" width="120" height="18" rx="4" fill="#fda4af"/>
+  <rect x="96" y="426" width="320" height="14" rx="7" fill="#ffffff" opacity="0.7"/>
+</svg>

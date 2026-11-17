@@ -27,8 +27,11 @@
     try { localStorage.setItem(key, value); } catch (e) { /* 無法儲存時忽略 */ }
   }
 
+  // 日本 App 只顯示日文、韓國 App 只顯示韓文
+  const ONLY_LANG = { jp: "ja", kr: "ko" }[window.APP_COUNTRY || ""] || "";
+
   const state = {
-    lang: LANGS[readPref("travel-phrase-lang", "ja")] ? readPref("travel-phrase-lang", "ja") : "ja",
+    lang: ONLY_LANG || (LANGS[readPref("travel-phrase-lang", "ja")] ? readPref("travel-phrase-lang", "ja") : "ja"),
     category: CATEGORIES[0] || "",
   };
 
@@ -76,7 +79,7 @@
     $("overlay-text").textContent = phrase[lang.text];
     $("overlay-text").lang = lang.text;
     $("overlay-roma").textContent = phrase[lang.roma];
-    $("overlay-zh").textContent = phrase.zh;
+    $("overlay-zh").textContent = ONLY_LANG ? phrase.zh.replace("日文／韓文", lang.label) : phrase.zh;
     $("overlay-speak").hidden = !canSpeak;
     $("overlay-speak").onclick = () => speak(phrase[lang.text], lang.speech);
     lastFocus = document.activeElement;
@@ -105,6 +108,7 @@
   }
 
   function renderControls() {
+    $("phrase-langs").closest("fieldset").hidden = !!ONLY_LANG;
     $("phrase-langs").replaceChildren(...Object.entries(LANGS).map(([id, l]) =>
       chip(l.label, id === state.lang, () => {
         state.lang = id;
@@ -126,7 +130,7 @@
     const list = PHRASES.filter((p) => p.category === state.category);
     $("phrase-list").replaceChildren(...list.map((p) => {
       const li = el("li", "card phrase");
-      li.append(el("p", "phrase-zh", p.zh));
+      li.append(el("p", "phrase-zh", ONLY_LANG ? p.zh.replace("日文／韓文", lang.label) : p.zh));
       const target = el("p", "phrase-target", p[lang.text]);
       target.lang = lang.text;
       li.append(target, el("p", "phrase-roma", p[lang.roma]));
@@ -186,6 +190,7 @@
     o.value = id;
     $("free-target").append(o);
   }
+  if (ONLY_LANG) $("free-target").value = ONLY_LANG;
   for (const ev of ["input", "change", "compositionend", "keyup"]) {
     $("free-text").addEventListener(ev, () => { updateLinkLook(); if ($("free-text").value.trim()) showFreeMessage("", ""); });
   }
