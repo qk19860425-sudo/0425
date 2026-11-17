@@ -199,6 +199,17 @@ window.REGIONS = [
     emoji: "👑",
     country: "kr",
     currency: "韓元",
+    // 「機場 → 市區」快捷入口
+    quickRoutes: [
+      { airport: "icn", to: "myeongdong", label: "仁川機場 → 明洞" },
+      { airport: "icn", to: "hongdae", label: "仁川機場 → 弘大" },
+      { airport: "icn", to: "seoul-station", label: "仁川機場 → 首爾站" },
+      { airport: "icn", to: "ddp", label: "仁川機場 → 東大門" },
+      { airport: "gmp", to: "hongdae", label: "金浦機場 → 弘大" },
+      { airport: "gmp", to: "myeongdong", label: "金浦機場 → 明洞" },
+    ],
+    // 市區大眾運輸的官方票價／班次查詢
+    localLink: { name: "首爾交通公社官網", url: "https://www.seoulmetro.co.kr/" },
     transportTip: "首爾地鐵路線多、標示有中文，用 T-money 卡或氣候同行卡最方便。地鐵和公車 30 分鐘內轉乘有優惠，下公車記得也要刷卡。計程車比日本便宜，叫車用 Kakao T 或 K.Ride。",
     hubs: [{ id: "seoul", name: "首爾", station: "首爾站", lat: 37.5547, lng: 126.9707 }],
     intercity: [],
@@ -207,6 +218,7 @@ window.REGIONS = [
       { id: "bukchon", name: "北村韓屋村", hub: "seoul", station: "安國站（3 號線）", tags: ["歷史"], stay: "1 小時", lat: 37.5826, lng: 126.9830 },
       { id: "insadong", name: "仁寺洞", hub: "seoul", station: "安國站（3 號線）", tags: ["購物", "美食"], stay: "1 小時", lat: 37.5740, lng: 126.9850 },
       { id: "gwangjang", name: "廣藏市場", hub: "seoul", station: "鍾路 5 街站（1 號線）", tags: ["美食"], stay: "1 小時", lat: 37.5700, lng: 126.9996 },
+      { id: "seoul-station", name: "首爾站（首爾站一帶）", hub: "seoul", station: "首爾站（1、4 號線、機場鐵路、KTX）", tags: ["交通樞紐", "購物"], stay: "—", lat: 37.5547, lng: 126.9707 },
       { id: "myeongdong", name: "明洞", hub: "seoul", station: "明洞站（4 號線）", tags: ["購物", "美食"], stay: "1.5–3 小時", lat: 37.5636, lng: 126.9827 },
       { id: "namsan", name: "N 首爾塔（南山）", hub: "seoul", station: "明洞站，步行到南山纜車", tags: ["夜景"], stay: "1.5 小時", lat: 37.5512, lng: 126.9882 },
       { id: "ddp", name: "東大門設計廣場（DDP）", hub: "seoul", station: "東大門歷史文化公園站（2、4、5 號線）", tags: ["購物", "夜景"], stay: "1–2 小時", lat: 37.5665, lng: 127.0092 },
@@ -259,6 +271,14 @@ window.REGIONS = [
     emoji: "🏖️",
     country: "kr",
     currency: "韓元",
+    // 「機場 → 市區」快捷入口
+    quickRoutes: [
+      { airport: "pus", to: "seomyeon", label: "金海機場 → 西面" },
+      { airport: "pus", to: "haeundae", label: "金海機場 → 海雲台" },
+      { airport: "pus", to: "gukje", label: "金海機場 → 南浦洞" },
+    ],
+    // 市區大眾運輸的官方票價／班次查詢
+    localLink: { name: "釜山交通公社官網", url: "https://www.humetro.busan.kr/" },
     transportTip: "釜山景點分散在海雲台（東）和南浦洞（西南）兩區，兩區間搭地鐵 2 號線或 1 號線約 40–60 分鐘。山區景點（甘川文化村、海東龍宮寺）建議搭計程車或公車。到慶州從釜山站搭 KTX 約 30 分鐘。T-money 在釜山、慶州都能用。",
     hubs: [
       { id: "busan", name: "釜山", station: "釜山站", lat: 35.1151, lng: 129.0422 },
@@ -517,6 +537,14 @@ window.REGIONS = [
     emoji: "🍊",
     country: "kr",
     currency: "韓元",
+    // 「機場 → 市區」快捷入口
+    quickRoutes: [
+      { airport: "cju", to: "dongmun-market", label: "濟州機場 → 濟州市區（東門市場）" },
+      { airport: "cju", to: "jusangjeolli", label: "濟州機場 → 中文觀光區" },
+      { airport: "cju", to: "cheonjiyeon", label: "濟州機場 → 西歸浦" },
+    ],
+    // 市區大眾運輸的官方票價／班次查詢
+    localLink: { name: "濟州公車資訊系統", url: "https://bus.jeju.go.kr/" },
     transportTip: "濟州島沒有地鐵，景點分散在島的北、南、東三區，多數旅客會租車或包車。搭公車也可以，但單程常要 1–1.5 小時。濟州機場在北部的濟州市。",
     hubs: [
       { id: "jeju-city", name: "濟州市（北部）", station: "濟州市區", lat: 33.4996, lng: 126.5312 },
@@ -809,6 +837,13 @@ window.REGIONS = [
     emoji: "🍎",
     country: "kr",
     currency: "韓元",
+    // 「機場 → 市區」快捷入口
+    quickRoutes: [
+      { airport: "tae", to: "dongseongno", label: "大邱機場 → 東城路・半月堂" },
+      { airport: "tae", to: "seomun-market", label: "大邱機場 → 西門市場" },
+    ],
+    // 市區大眾運輸的官方票價／班次查詢
+    localLink: { name: "大邱交通公社官網", url: "https://www.dtro.or.kr/" },
     transportTip: "大邱機場離市區很近，計程車到市中心約 15–20 分鐘。KTX 主站是東大邱站（與地鐵 1 號線共構），從釜山約 1 小時、首爾約 2 小時。市區靠地鐵 1、2、3 號線就夠。",
     hubs: [{ id: "daegu", name: "大邱", station: "東大邱站（KTX）", lat: 35.8794, lng: 128.6285 }],
     intercity: [],
@@ -1049,9 +1084,10 @@ window.AIRPORTS = {
     {
       id: "tae", name: "大邱機場", lat: 35.8941, lng: 128.6588,
       options: [
-        { mode: "計程車", title: "計程車（直達目的地）", detail: "大邱機場離市區很近；到峨洋橋站約 4,100–4,500 韓元，到半月堂、東城路通常 10,000 韓元以下", minutes: 15, cost: "依距離跳錶；到市中心約 10,000 韓元以下", verified: true, direct: true,
+        { mode: "計程車", title: "計程車（直達目的地）", detail: "大邱機場離市區很近；到峨洋橋站約 4,100–4,500 韓元，到半月堂、東城路通常 10,000 韓元以下", detailBack: "大邱機場離市區很近，直接坐到機場；從半月堂、東城路通常 10,000 韓元以下", transfers: 0, minutes: 15, cost: "依距離跳錶；到市中心約 10,000 韓元以下", verified: true, direct: true,
           to: { name: "半月堂", hub: "daegu", lat: 35.8656, lng: 128.5935 } },
-        { mode: "公車", title: "公車＋地鐵 1 號線 → 半月堂", detail: "機場 2、3 號門前搭 101 號公車到峨洋橋站，轉地鐵 1 號線到半月堂站", minutes: 40, cost: "約 1,500–2,000 韓元", luggage: "hard", luggageNote: "公車再轉地鐵，大型行李較辛苦；大邱機場離市區近，搭計程車較省力。", verified: false,
+        { mode: "公車", title: "公車＋地鐵 1 號線 → 半月堂", detail: "101 號公車 大邱機場 → 峨洋橋站，轉地鐵 1 號線 峨洋橋站 → 半月堂站（機場 2、3 號門前上車）", detailBack: "地鐵 1 號線 半月堂站 → 峨洋橋站，轉 101 號公車 峨洋橋站 → 大邱機場", transfers: 1, minutes: 40, cost: "約 1,500–2,000 韓元", luggage: "hard", luggageNote: "公車再轉地鐵，大型行李較辛苦；大邱機場離市區近，搭計程車較省力。", verified: false,
+          official: { name: "大邱交通公社官網（地鐵）", url: "https://www.dtro.or.kr/" },
           to: { name: "半月堂站", hub: "daegu", lat: 35.8656, lng: 128.5935 } },
       ],
     },
@@ -1140,9 +1176,17 @@ window.AIRPORTS = {
     {
       id: "cju", name: "濟州機場", lat: 33.5113, lng: 126.4930,
       options: [
-        { mode: "公車", title: "機場巴士 600 → 中文觀光區・西歸浦", detail: "入境大廳 5 號門附近上車，可刷 T-money；到中文觀光區約 1 小時", minutes: 60, cost: "約 4,500–6,000 韓元", luggage: "good", luggageNote: "行李放在車底行李艙，直達中文觀光區、西歸浦的飯店區。", verified: false,
-          to: { name: "中文觀光區", hub: "seogwipo", lat: 33.2490, lng: 126.4120 } },
-        { mode: "計程車", title: "計程車（直達目的地）", detail: "到濟州市區約 15 分鐘；到西歸浦約 50 分鐘。多數旅客會在機場租車", minutes: 15, cost: "依距離跳錶；到濟州市區約 6,000–10,000 韓元", verified: false, direct: true,
+        { mode: "公車", title: "機場巴士 600 → 中文觀光區・西歸浦", detail: "機場巴士 600 濟州機場 → 中文觀光區 → 西歸浦市區，入境大廳 5 號門附近上車，可刷 T-money", detailBack: "機場巴士 600 西歸浦市區 → 中文觀光區 → 濟州機場，可刷 T-money", transfers: 0, minutes: 60, cost: "約 4,500–6,000 韓元", luggage: "good", luggageNote: "行李放在車底行李艙，直達中文觀光區、西歸浦的飯店區。", verified: false,
+          official: { name: "濟州公車資訊系統（班次）", url: "https://bus.jeju.go.kr/" },
+          stops: [
+            { name: "中文觀光區（巴士站）", lat: 33.2490, lng: 126.4120, minutes: 60 },
+            { name: "西歸浦市區（巴士站）", lat: 33.2470, lng: 126.5620, minutes: 80 },
+          ],
+          to: { name: "中文觀光區（巴士站）", hub: "seogwipo", lat: 33.2490, lng: 126.4120 } },
+        { mode: "公車", title: "市區公車 → 濟州市區", detail: "市區公車 濟州機場 → 濟州市區（多條路線，往東門市場、濟州市廳方向），可刷 T-money", detailBack: "市區公車 濟州市區 → 濟州機場（多條路線），可刷 T-money", minutes: 25, cost: "約 1,200–1,500 韓元", transfers: 0, luggage: "ok", luggageNote: "一般市區公車，車內行李空間有限；行李多建議搭計程車。", verified: false,
+          official: { name: "濟州公車資訊系統（班次）", url: "https://bus.jeju.go.kr/" },
+          to: { name: "濟州市區（巴士站）", hub: "jeju-city", lat: 33.5110, lng: 126.5250 } },
+        { mode: "計程車", title: "計程車（直達目的地）", detail: "到濟州市區約 15 分鐘；到西歸浦約 50 分鐘。多數旅客會在機場租車", detailBack: "直接坐到濟州機場；租車的旅客多半在機場附近還車後搭接駁車到航廈", transfers: 0, minutes: 15, cost: "依距離跳錶；到濟州市區約 6,000–10,000 韓元", verified: false, direct: true,
           to: { name: "濟州市區", hub: "jeju-city", lat: 33.4996, lng: 126.5312 } },
       ],
     },
@@ -1214,20 +1258,32 @@ window.AIRPORTS = {
     {
       id: "icn", name: "仁川機場", lat: 37.4602, lng: 126.4407,
       options: [
-        { mode: "電車", title: "AREX 直達列車 → 首爾站", detail: "機場鐵路直達列車，中途不停；第一航廈約 43 分鐘、第二航廈約 51 分鐘", minutes: 48, cost: "約 11,000–13,000 韓元", luggage: "good", luggageNote: "直達、全車對號座，車廂有行李架；到首爾站後若轉地鐵要走一段。", verified: false,
+        { mode: "電車", title: "AREX 直達列車 → 首爾站", detail: "機場鐵路直達列車 仁川機場站 → 首爾站，中途不停；第一航廈約 43 分鐘、第二航廈約 51 分鐘", detailBack: "機場鐵路直達列車 首爾站 → 仁川機場站，中途不停；到第一航廈約 43 分鐘、第二航廈約 51 分鐘", transfers: 0, minutes: 48, cost: "約 11,000–13,000 韓元", luggage: "good", luggageNote: "直達、全車對號座，車廂有行李架；到首爾站後若轉地鐵要走一段。", verified: false,
+          official: { name: "機場鐵路 AREX 官網（票價・班次）", url: "https://www.arex.or.kr/" },
           to: { name: "首爾站", hub: "seoul", lat: 37.5547, lng: 126.9707 } },
-        { mode: "電車", title: "AREX 普通列車 → 弘大入口", detail: "機場鐵路普通列車，停靠弘大入口、孔德、首爾站，可轉地鐵", minutes: 55, cost: "約 4,000–5,000 韓元", luggage: "ok", luggageNote: "通勤型車廂，可放在座位旁；尖峰時段擁擠。", verified: false,
+        { mode: "電車", title: "AREX 普通列車 → 弘大入口・首爾站", detail: "機場鐵路普通列車 仁川機場站 → 弘大入口站 → 孔德站 → 首爾站，可轉地鐵", detailBack: "機場鐵路普通列車 首爾站 → 孔德站 → 弘大入口站 → 仁川機場站", transfers: 0, minutes: 55, cost: "約 4,000–5,000 韓元", luggage: "ok", luggageNote: "通勤型車廂，可放在座位旁；尖峰時段擁擠。", verified: false,
+          official: { name: "機場鐵路 AREX 官網（票價・班次）", url: "https://www.arex.or.kr/" },
+          stops: [
+            { name: "弘大入口站", lat: 37.5577, lng: 126.9245, minutes: 50 },
+            { name: "孔德站", lat: 37.5440, lng: 126.9516, minutes: 55 },
+            { name: "首爾站", lat: 37.5547, lng: 126.9707, minutes: 60 },
+          ],
           to: { name: "弘大入口站", hub: "seoul", lat: 37.5577, lng: 126.9245 } },
-        { mode: "公車", title: "機場巴士 → 明洞", detail: "機場豪華巴士（6000 系列）到明洞一帶，免轉車、適合行李多", minutes: 80, cost: "約 17,000–18,000 韓元", luggage: "good", luggageNote: "行李放在車底行李艙，直達飯店附近，免轉乘。", verified: true,
-          to: { name: "明洞", hub: "seoul", lat: 37.5609, lng: 126.9862 } },
+        { mode: "公車", title: "機場巴士 → 明洞", detail: "機場豪華巴士（6000 系列）仁川機場 → 明洞一帶，免轉車、適合行李多；依路況約 70–90 分鐘", detailBack: "機場豪華巴士（6000 系列）明洞一帶 → 仁川機場，行李放車底；依路況約 70–90 分鐘，請預留塞車時間", transfers: 0, minutes: 80, cost: "約 17,000–18,000 韓元", luggage: "good", luggageNote: "行李放在車底行李艙，直達飯店附近，免轉乘。", verified: true,
+          official: { name: "仁川機場官網（交通・巴士）", url: "https://www.airport.kr/" },
+          to: { name: "明洞（巴士站）", hub: "seoul", lat: 37.5609, lng: 126.9862 } },
       ],
     },
     {
       id: "gmp", name: "金浦機場", lat: 37.5583, lng: 126.7906,
       options: [
-        { mode: "電車", title: "AREX 普通列車 → 弘大入口", detail: "機場鐵路普通列車往首爾站方向", minutes: 15, cost: "約 1,500–2,000 韓元", luggage: "ok", luggageNote: "通勤型車廂，可放在座位旁；尖峰時段擁擠。", verified: false,
-          to: { name: "弘大入口站", hub: "seoul", lat: 37.5577, lng: 126.9245 } },
-        { mode: "電車", title: "AREX 普通列車 → 首爾站", detail: "機場鐵路普通列車終點首爾站", minutes: 22, cost: "約 1,500–2,000 韓元", luggage: "ok", luggageNote: "通勤型車廂，可放在座位旁；尖峰時段擁擠。", verified: false,
+        { mode: "電車", title: "AREX 普通列車 → 弘大入口・首爾站", detail: "機場鐵路普通列車 金浦機場站 → 弘大入口站 → 孔德站 → 首爾站，可轉地鐵", detailBack: "機場鐵路普通列車 首爾站 → 孔德站 → 弘大入口站 → 金浦機場站", minutes: 22, cost: "約 1,500–2,000 韓元", transfers: 0, luggage: "ok", luggageNote: "通勤型車廂，可放在座位旁；尖峰時段擁擠。", verified: false,
+          official: { name: "機場鐵路 AREX 官網（票價・班次）", url: "https://www.arex.or.kr/" },
+          stops: [
+            { name: "弘大入口站", lat: 37.5577, lng: 126.9245, minutes: 15 },
+            { name: "孔德站", lat: 37.5440, lng: 126.9516, minutes: 18 },
+            { name: "首爾站", lat: 37.5547, lng: 126.9707, minutes: 22 },
+          ],
           to: { name: "首爾站", hub: "seoul", lat: 37.5547, lng: 126.9707 } },
       ],
     },
@@ -1235,9 +1291,9 @@ window.AIRPORTS = {
       // 清州機場在忠清北道，離首爾約 120 公里，沒有機場鐵路直達首爾
       id: "cjj", name: "清州機場", lat: 36.7166, lng: 127.4991,
       options: [
-        { mode: "公車", title: "高速巴士 → 首爾高速巴士轉運站", detail: "清州機場 1 號門前 1 號站牌上車，直達首爾高速巴士轉運站（江南，可轉地鐵 3、7、9 號線）。一天約 8 班；網路訂票需要韓國身分認證，外國旅客可能要找代訂或到現場買票", minutes: 100, cost: "票價請以訂票平台為準", luggage: "good", luggageNote: "行李放在車底行李艙；到轉運站後還要轉地鐵或計程車。", verified: false,
+        { mode: "公車", title: "高速巴士 → 首爾高速巴士轉運站", detail: "清州機場 1 號門前 1 號站牌上車，直達首爾高速巴士轉運站（江南，可轉地鐵 3、7、9 號線）。一天約 8 班；網路訂票需要韓國身分認證，外國旅客可能要找代訂或到現場買票", detailBack: "高速巴士 首爾高速巴士轉運站（江南）→ 清州機場，一天約 8 班；外國旅客請到現場買票或找代訂", transfers: 0, minutes: 100, cost: "票價請以訂票平台為準", luggage: "good", luggageNote: "行李放在車底行李艙；到轉運站後還要轉地鐵或計程車。", verified: false,
           to: { name: "首爾高速巴士轉運站", hub: "seoul", lat: 37.5049, lng: 127.0049 } },
-        { mode: "電車", title: "火車到五松站，轉 KTX → 首爾站", detail: "從航廈步行到清州機場站，搭無窮花號或 ITX-마음 到五松站（約 18 分鐘，一天約 12 班），再轉 KTX 到首爾站。含轉乘等車約 1.5 小時", minutes: 90, cost: "火車到五松約 2,600–4,800 韓元，另加 KTX 票價", luggage: "hard", luggageNote: "要在五松站轉 KTX，還要從航廈走到清州機場站；大型行李較辛苦。", verified: false,
+        { mode: "電車", title: "火車到五松站，轉 KTX → 首爾站", detail: "從航廈步行到清州機場站，搭無窮花號或 ITX-마음 到五松站（約 18 分鐘，一天約 12 班），再轉 KTX 到首爾站。含轉乘等車約 1.5 小時", detailBack: "KTX 首爾站 → 五松站，轉無窮花號或 ITX-마음 到清州機場站（約 18 分鐘，一天約 12 班），再步行到航廈。含轉乘等車約 1.5 小時", transfers: 1, minutes: 90, cost: "火車到五松約 2,600–4,800 韓元，另加 KTX 票價", luggage: "hard", luggageNote: "要在五松站轉 KTX，還要從航廈走到清州機場站；大型行李較辛苦。", verified: false,
           to: { name: "首爾站", hub: "seoul", lat: 37.5547, lng: 126.9707 } },
       ],
     },
@@ -1246,13 +1302,16 @@ window.AIRPORTS = {
     {
       id: "pus", name: "金海機場", lat: 35.1795, lng: 128.9382,
       options: [
-        { mode: "電車", title: "輕軌＋地鐵 2 號線 → 西面", detail: "金海輕軌到沙上站，出站轉地鐵 2 號線（轉乘步行約 10 分鐘，刷交通卡有轉乘優惠）", minutes: 30, cost: "約 2,100 韓元", luggage: "hard", luggageNote: "沙上站要出站再進站轉乘，步行約 10 分鐘；大型行李較辛苦。", verified: true,
+        { mode: "電車", title: "輕軌＋地鐵 2 號線 → 西面", detail: "金海輕軌 機場站 → 沙上站，出站轉地鐵 2 號線 沙上站 → 西面站（轉乘步行約 10 分鐘，刷交通卡有轉乘優惠）", detailBack: "地鐵 2 號線 西面站 → 沙上站，出站轉金海輕軌 沙上站 → 機場站（轉乘步行約 10 分鐘）", transfers: 1, minutes: 30, cost: "約 2,100 韓元", luggage: "hard", luggageNote: "沙上站要出站再進站轉乘，步行約 10 分鐘；大型行李較辛苦。", verified: true,
+          official: { name: "釜山金海輕軌官網（票價・班次）", url: "https://www.bgl.co.kr/" },
           to: { name: "西面站", hub: "busan", lat: 35.1578, lng: 129.0600 } },
-        { mode: "電車", title: "輕軌＋地鐵 → 南浦", detail: "金海輕軌到沙上站，轉 2 號線到西面，再轉 1 號線到南浦站", minutes: 50, cost: "約 2,300 韓元", luggage: "hard", luggageNote: "沙上站要出站再進站轉乘，步行約 10 分鐘；大型行李較辛苦。", verified: true,
+        { mode: "電車", title: "輕軌＋地鐵 → 南浦", detail: "金海輕軌 機場站 → 沙上站，轉地鐵 2 號線到西面站，再轉 1 號線 西面站 → 南浦站", detailBack: "地鐵 1 號線 南浦站 → 西面站，轉 2 號線到沙上站，再轉金海輕軌 沙上站 → 機場站", transfers: 2, minutes: 50, cost: "約 2,300 韓元", luggage: "hard", luggageNote: "沙上站要出站再進站轉乘，步行約 10 分鐘；大型行李較辛苦。", verified: true,
+          official: { name: "釜山金海輕軌官網（票價・班次）", url: "https://www.bgl.co.kr/" },
           to: { name: "南浦站", hub: "busan", lat: 35.0981, lng: 129.0346 } },
-        { mode: "電車", title: "輕軌＋地鐵 2 號線 → 海雲台", detail: "金海輕軌到沙上站，轉地鐵 2 號線坐到海雲台站", minutes: 60, cost: "約 2,300 韓元", luggage: "hard", luggageNote: "沙上站要出站再進站轉乘，步行約 10 分鐘；大型行李較辛苦。", verified: true,
+        { mode: "電車", title: "輕軌＋地鐵 2 號線 → 海雲台", detail: "金海輕軌 機場站 → 沙上站，出站轉地鐵 2 號線 沙上站 → 海雲台站", detailBack: "地鐵 2 號線 海雲台站 → 沙上站，出站轉金海輕軌 沙上站 → 機場站", transfers: 1, minutes: 60, cost: "約 2,300 韓元", luggage: "hard", luggageNote: "沙上站要出站再進站轉乘，步行約 10 分鐘；大型行李較辛苦。", verified: true,
+          official: { name: "釜山金海輕軌官網（票價・班次）", url: "https://www.bgl.co.kr/" },
           to: { name: "海雲台站", hub: "busan", lat: 35.1634, lng: 129.1588 } },
-        { mode: "計程車", title: "計程車（直達目的地）", detail: "行李多或多人同行適合，直接坐到目的地；到西面、南浦洞約 20,000 韓元起，依距離跳錶", minutes: 35, cost: "約 20,000 韓元起", verified: true,
+        { mode: "計程車", title: "計程車（直達目的地）", detail: "行李多或多人同行適合，直接坐到目的地；到西面、南浦洞約 20,000 韓元起，依距離跳錶", detailBack: "行李多或多人同行適合，直接坐到金海機場（國際線、國內線航廈不同，請告訴司機）", transfers: 0, minutes: 35, cost: "約 20,000 韓元起", verified: true,
           direct: true,
           to: { name: "西面", hub: "busan", lat: 35.1578, lng: 129.0600 } },
       ],
