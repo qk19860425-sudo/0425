@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>App 下載總覽</title>
+  <meta name="description" content="日本、韓國景點路線、模型玩具店搜尋、哆啦A夢搜尋與報修登記的安裝連結與安裝步驟。">
+  <meta name="theme-color" content="#e11d48">
+  <link rel="icon" type="image/png" sizes="192x192" href="../japan/icons/icon-192.png?v=20261117">
+  <style>
+    /* App 下載總覽：手機優先，紅＋粉為主色 */
+    :root {
+      --bg: #fff1f2;
+      --card: #ffffff;
+      --text: #3b0a18;
+      --muted: #7a4b57;
+      --line: #fecdd3;
+      --accent: #e11d48;
+      --accent-text: #ffffff;
+      --soft: #ffe4e6;
+      --soft-text: #9f1239;
+      --pink: #db2777;
+      --tip-bg: #fefce8;
+      --tip-text: #854d0e;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #1a0a0f;
+        --card: #2a1219;
+        --text: #ffe4e6;
+        --muted: #d4a5b0;
+        --line: #5b2130;
+        --accent: #fb7185;
+        --accent-text: #1f0a10;
+        --soft: #4c0519;
+        --soft-text: #fecdd3;
+        --pink: #f472b6;
+        --tip-bg: #422006;
+        --tip-text: #fde68a;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+    main { max-width: 720px; margin: 0 auto; padding: 16px 16px 32px; }
+    .hero {
+      background: linear-gradient(135deg, #e11d48, #db2777 55%, #f472b6);
+      color: #fff;
+      border-radius: 20px;
+      padding: 22px 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 6px 18px rgba(225, 29, 72, 0.25);
+    }
+    .hero h1 { margin: 0 0 6px; font-size: 1.6rem; line-height: 1.3; }
+    .hero p { margin: 0; opacity: 0.95; }
+    .motifs { margin-top: 10px !important; font-size: 1.5rem; letter-spacing: 6px; }
+
+    h2 { font-size: 1.1rem; margin: 22px 4px 10px; color: var(--soft-text); }
+    .apps { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+    .app {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px;
+      display: grid;
+      grid-template-columns: 64px 1fr;
+      gap: 12px;
+      align-items: start;
+    }
+    .app.new { border: 2px solid var(--accent); }
+    .app img { width: 64px; height: 64px; border-radius: 14px; background: var(--soft); }
+    .app h3 { margin: 0; font-size: 1.08rem; line-height: 1.4; }
+    .badge {
+      display: inline-block;
+      margin-left: 6px;
+      padding: 1px 8px;
+      border-radius: 999px;
+      background: var(--accent);
+      color: var(--accent-text);
+      font-size: 0.75rem;
+      font-weight: 700;
+      vertical-align: 2px;
+    }
+    .home-name { margin: 2px 0 6px; color: var(--muted); font-size: 0.85rem; }
+    .desc { margin: 0 0 10px; font-size: 0.95rem; }
+    .url { margin: 0 0 10px; font-size: 0.8rem; color: var(--muted); overflow-wrap: anywhere; }
+    .actions { display: flex; flex-wrap: wrap; gap: 8px; grid-column: 1 / -1; }
+    .button {
+      flex: 1 1 140px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      padding: 0 14px;
+      border-radius: 10px;
+      border: 1px solid var(--accent);
+      background: var(--accent);
+      color: var(--accent-text);
+      font: inherit;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .button-secondary { background: transparent; color: var(--accent); }
+    .button:focus-visible { outline: 3px solid var(--pink); outline-offset: 2px; }
+
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 14px 16px; }
+    .steps { margin: 0; padding-left: 22px; }
+    .steps li { margin-bottom: 6px; }
+    .device { display: flex; gap: 8px; margin-bottom: 12px; }
+    .device button {
+      flex: 1;
+      min-height: 42px;
+      border-radius: 999px;
+      border: 1px solid var(--accent);
+      background: transparent;
+      color: var(--accent);
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .device button[aria-pressed="true"] { background: var(--accent); color: var(--accent-text); }
+    .tip { margin-top: 12px; padding: 10px 12px; border-radius: 10px; background: var(--tip-bg); color: var(--tip-text); font-size: 0.9rem; }
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      transform: translateX(-50%);
+      background: var(--text);
+      color: var(--bg);
+      padding: 10px 16px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+    .toast[hidden] { display: none; }
+    footer { margin-top: 24px; color: var(--muted); font-size: 0.8rem; text-align: center; }
+  </style>
+</head>
+<body>
+  <main>
+    <header class="hero">
+      <h1>📲 App 下載總覽</h1>
+      <p>點「打開 App」後，依下方步驟加入主畫面，就能像一般 App 一樣使用，離線也能看大部分內容。</p>
+      <p class="motifs" aria-hidden="true">🌸 ⛩️ 👑 🍊 🚗 🔵</p>
+    </header>
+
+    <h2>✈️ 旅遊路線（2026-11-17 更新：機場 → 市區快捷查詢）</h2>
+    <ul class="apps">
+      <li class="app new">
+        <img src="../japan/icons/icon-192.png?v=20261117" alt="" width="64" height="64">
+        <div>
+          <h3>🗾 日本景點路線<span class="badge">已更新</span></h3>
+          <p class="home-name">主畫面名稱：日本路線</p>
+          <p class="desc">推薦行程、路線查詢、旅遊指南與翻譯。6 個城市共 23 個「機場 → 市區」快捷查詢（札幌、東京、名古屋、大阪、福岡、沖繩）。</p>
+          <p class="url">https://qk19860425-sudo.github.io/0425/japan/</p>
+        </div>
+        <div class="actions">
+          <a class="button" href="../japan/">打開 App</a>
+          <button class="button button-secondary" type="button" data-copy="https://qk19860425-sudo.github.io/0425/japan/">複製網址</button>
+        </div>
+      </li>
+      <li class="app new">
+        <img src="../korea/icons/icon-192.png?v=20261117" alt="" width="64" height="64">
+        <div>
+          <h3>🇰🇷 韓國景點路線<span class="badge">已更新</span></h3>
+          <p class="home-name">主畫面名稱：韓國路線</p>
+          <p class="desc">推薦行程、路線查詢、旅遊指南與翻譯。17 個「機場 → 市區」快捷查詢（首爾含清州機場、大邱、釜山、濟州）。</p>
+          <p class="url">https://qk19860425-sudo.github.io/0425/korea/</p>
+        </div>
+        <div class="actions">
+          <a class="button" href="../korea/">打開 App</a>
+          <button class="button button-secondary" type="button" data-copy="https://qk19860425-sudo.github.io/0425/korea/">複製網址</button>
+        </div>
+      </li>
+    </ul>
+
+    <h2>🧩 其他 App</h2>
+    <ul class="apps">
+      <li class="app">
+        <img src="../models/icons/icon-192.png?v=20261117" alt="" width="64" height="64">
+        <div>
+          <h3>🚗 日韓台模型玩具店搜尋</h3>
+          <p class="home-name">主畫面名稱：模型玩具搜尋</p>
+          <p class="desc">日本、韓國、台灣的模型玩具店地圖與篩選，附模型玩具指南（含遙控模型 RC）。</p>
+          <p class="url">https://qk19860425-sudo.github.io/0425/models/</p>
+        </div>
+        <div class="actions">
+          <a class="button" href="../models/">打開 App</a>
+          <button class="button button-secondary" type="button" data-copy="https://qk19860425-sudo.github.io/0425/models/">複製網址</button>
+        </div>
+      </li>
+      <li class="app">
+        <img src="../doraemon/icons/icon-192.png" alt="" width="64" height="64">
+        <div>
+          <h3>🔵 哆啦A夢搜尋入口</h3>
+          <p class="home-name">主畫面名稱：哆啦A夢搜尋</p>
+          <p class="desc">日本的哆啦A夢景點與商店搜尋。</p>
+          <p class="url">https://qk19860425-sudo.github.io/0425/doraemon/</p>
+        </div>
+        <div class="actions">
+          <a class="button" href="../doraemon/">打開 App</a>
+          <button class="button button-secondary" type="button" data-copy="https://qk19860425-sudo.github.io/0425/doraemon/">複製網址</button>
+        </div>
+      </li>
+      <li class="app">
+        <img src="../icons/icon-192.png" alt="" width="64" height="64">
+        <div>
+          <h3>🛠️ 報修登記</h3>
+          <p class="home-name">主畫面名稱：報修登記</p>
+          <p class="desc">填寫報修需求並查看報修清單（示範用）。</p>
+          <p class="url">https://qk19860425-sudo.github.io/0425/</p>
+        </div>
+        <div class="actions">
+          <a class="button" href="../">打開 App</a>
+          <button class="button button-secondary" type="button" data-copy="https://qk19860425-sudo.github.io/0425/">複製網址</button>
+        </div>
+      </li>
+      <li class="app">
+        <img src="../travel/icons/icon-192.png?v=20261117" alt="" width="64" height="64">
+        <div>
+          <h3>⛩️ 日韓景點路線（合併版）</h3>
+          <p class="home-name">主畫面名稱：日韓路線</p>
+          <p class="desc">日本和韓國合在一起的舊版，內容與上面兩個 App 相同。已安裝日本、韓國 App 的話可以不用裝。</p>
+          <p class="url">https://qk19860425-sudo.github.io/0425/travel/</p>
+        </div>
+        <div class="actions">
+          <a class="button" href="../travel/">打開 App</a>
+          <button class="button button-secondary" type="button" data-copy="https://qk19860425-sudo.github.io/0425/travel/">複製網址</button>
+        </div>
+      </li>
+    </ul>
+
+    <h2>📥 怎麼加入主畫面</h2>
+    <section class="card">
+      <div class="device" role="group" aria-label="選擇手機">
+        <button type="button" data-device="ios" aria-pressed="true">iPhone／iPad</button>
+        <button type="button" data-device="android" aria-pressed="false">Android</button>
+      </div>
+      <ol class="steps" data-steps="ios">
+        <li>用 <strong>Safari</strong> 打開 App（其他瀏覽器不能加到主畫面）。</li>
+        <li>點下方的「分享」按鈕（方框加向上箭頭）。</li>
+        <li>往下滑，選「加入主畫面」，再按右上角「新增」。</li>
+      </ol>
+      <ol class="steps" data-steps="android" hidden>
+        <li>用 <strong>Chrome</strong> 打開 App。</li>
+        <li>點右上角「⋮」。</li>
+        <li>選「安裝應用程式」或「加到主畫面」，再按「安裝」。</li>
+      </ol>
+      <p class="tip">💡 已經安裝過的不用重裝：把 App 完全關掉再打開，通常第二次開啟就會換成新版。還是舊畫面時，iPhone 到「設定 → Safari → 進階 → 網站資料」搜尋 github.io 刪除後再打開（App 裡記住的設定會清空）。</p>
+    </section>
+
+    <footer>整理日期：2026-11-17</footer>
+  </main>
+
+  <p id="toast" class="toast" role="status" hidden>已複製網址</p>
+
+  <script>
+    (function () {
+      "use strict";
+      var toast = document.getElementById("toast");
+      var timer = null;
+      function showToast(text) {
+        toast.textContent = text;
+        toast.hidden = false;
+        clearTimeout(timer);
+        timer = setTimeout(function () { toast.hidden = true; }, 1800);
+      }
+
+      // 複製網址：不支援剪貼簿時改用選取文字的方式
+      function copyText(text) {
+        if (navigator.clipboard && window.isSecureContext) {
+          return navigator.clipboard.writeText(text);
+        }
+        return new Promise(function (resolve, reject) {
+          var area = document.createElement("textarea");
+          area.value = text;
+          area.setAttribute("readonly", "");
+          area.style.position = "fixed";
+          area.style.opacity = "0";
+          document.body.appendChild(area);
+          area.select();
+          try { document.execCommand("copy") ? resolve() : reject(); } catch (e) { reject(e); }
+          document.body.removeChild(area);
+        });
+      }
+      document.querySelectorAll("[data-copy]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          copyText(btn.getAttribute("data-copy")).then(
+            function () { showToast("已複製網址"); },
+            function () { showToast("無法複製，請長按網址手動複製"); }
+          );
+        });
+      });
+
+      // 安裝步驟：依手機切換；預設依瀏覽器判斷
+      var buttons = document.querySelectorAll("[data-device]");
+      function selectDevice(name) {
+        buttons.forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-device") === name)); });
+        document.querySelectorAll("[data-steps]").forEach(function (ol) { ol.hidden = ol.getAttribute("data-steps") !== name; });
+      }
+      buttons.forEach(function (b) {
+        b.addEventListener("click", function () { selectDevice(b.getAttribute("data-device")); });
+      });
+      selectDevice(/android/i.test(navigator.userAgent) ? "android" : "ios");
+    })();
+  </script>
+</body>
+</html>
