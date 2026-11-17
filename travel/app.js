@@ -296,6 +296,7 @@
   }
   luggageBox.checked = readLuggagePref();
   luggageBox.addEventListener("change", () => {
+    document.querySelectorAll(".quick-luggage-box").forEach((x) => { x.checked = luggageBox.checked; });
     try { localStorage.setItem("travel-luggage", luggageBox.checked ? "1" : "0"); } catch (e) { /* 無法儲存時忽略 */ }
   });
   const withLuggage = () => luggageBox.checked;
@@ -326,18 +327,92 @@
     return box;
   }
 
+  // ---- 等車時間、票價、轉乘（結果卡的總計用） ----
+  // 每段的「等車」時間為估算：班次間隔一半左右
+  const WAIT = { airport: 10, intercity: 5, transit: 5 };
+  // 市區大眾運輸與計程車的票價估算（依國家）
+  const LOCAL_FARE = {
+    jp: { transit: [190, 300], taxiBase: 600, taxiPerKm: 400 },
+    kr: { transit: [1500, 1800], taxiBase: 4800, taxiPerKm: 760 },
+  };
+
+  // 從「約 1,450–1,670 日圓」之類的文字取出金額範圍；取不到就回傳 null
+  function parseCost(text) {
+    if (!text) return null;
+    const nums = [];
+    String(text).replace(/(\d[\d,]*(?:\.\d+)?)\s*(萬)?/g, (m, n, wan) => {
+      nums.push(parseFloat(n.replace(/,/g, "")) * (wan ? 10000 : 1));
+      return m;
+    });
+    if (!nums.length) return null;
+    const ranged = nums.length >= 2 && /[–~〜-]/.test(text);
+    const min = nums[0];
+    const max = ranged ? nums[1] : nums[0];
+    const open = /起|另加|請以|以上/.test(text);
+    return { min, max, open };
+  }
+
+  function formatMoney(n) {
+    const step = n >= 10000 ? 100 : 10;
+    return (Math.round(n / step) * step).toLocaleString("en-US");
+  }
+
+  function costEstimate(region, mode, km) {
+    const f = LOCAL_FARE[region.country] || LOCAL_FARE.jp;
+    if (mode === "步行") return { min: 0, max: 0 };
+    if (mode === "大眾運輸") return { min: f.transit[0], max: f.transit[1], estimated: true };
+    if (mode === "計程車") {
+      const base = f.taxiBase + Math.max(km - 1.5, 0) * f.taxiPerKm;
+      return { min: base * 0.9, max: base * 1.2, estimated: true };
+    }
+    return null;
+  }
+
+  // 機場交通方案本身要轉幾次車：資料有寫 transfers 就照資料，否則依「＋」「轉」推估
+  function optionTransfers(o) {
+    if (typeof o.transfers === "number") return { n: o.transfers, sure: true };
+    const plus = ((o.title || "").match(/＋/g) || []).length;
+    const turns = ((o.detail || "").match(/再?轉(?!乘優惠)(?:地鐵|搭|KTX|JR|西鐵|\s*\d)/g) || []).length;
+    return { n: Math.max(plus, turns), sure: false };
+  }
+
+  // ---- 方向一致：回程時把說明文字的起訖站對調 ----
+  function reverseText(text) {
+    let t = String(text || "");
+    let changed = false;
+    const swap = (re, fn) => { const n = t.replace(re, fn); if (n !== t) { changed = true; t = n; } };
+    swap(/([^\s，、；：。（）()]+?)\s*→\s*([^\s，、；：。（）()]+)/g, (m, a, b) => b + " → " + a);
+    swap(/([^\s，、；：。（）()]+?站)直達([^\s，、；：。（）()]+?站)/g, (m, a, b) => b + "直達" + a);
+    return { text: t, changed };
+  }
+
+  // 回程的說明：資料有 detailBack 就用；否則自動對調箭頭；
+  // 還是看不出方向時，明確寫出回程要從哪裡搭到哪裡，原說明標成「去程說明」
+  function backNote(seg) {
+    if (seg.noteBack) return seg.noteBack;
+    if (seg.estimated && !seg.kind) return seg.note;
+    if (seg.kind === "transit" || seg.kind === "walk" || seg.kind === "taxi") return seg.note;
+    const r = reverseText(seg.note);
+    const directional = /到|往|直達|出發|→/.test(seg.note);
+    if (r.changed && !/(^|[^→])到[^達]/.test(r.text)) return r.text;
+    if (!directional) return seg.note;
+    return "回程：在 " + seg.to + " 搭同一條路線往 " + seg.from + " 方向。（去程說明：" + seg.note + "）";
+  }
+
   // 同城市內：依距離估算交通方式
+  // minutes 為乘車＋步行時間，不含等車；wait 為估算的等車時間
   function localOptions(a, b) {
     const km = distanceKm(a, b) * 1.3; // 直線距離乘上繞路係數
     const opts = [];
     const luggage = withLuggage();
     if (km <= (luggage ? 1.0 : 1.5)) {
-      opts.push({ mode: "步行", minutes: km / 4.5 * 60, note: luggage ? "距離很近，拖著行李走過去即可。" : "距離很近，建議步行。" });
+      opts.push({ mode: "步行", kind: "walk", minutes: km / 4.5 * 60, wait: 0, note: luggage ? "距離很近，拖著行李走過去即可。" : "距離很近，建議步行。" });
       return { km, opts };
     }
-    const transit = { mode: "大眾運輸", minutes: 8 + km / 22 * 60, note: "搭地鐵、電車或公車，含步行到車站與等車時間；實際路線請用下方地圖連結查詢。" +
+    const transit = { mode: "大眾運輸", kind: "transit", minutes: 3 + km / 22 * 60, wait: WAIT.transit,
+      note: "搭地鐵、電車或公車，時間含步行到車站，另估等車約 " + WAIT.transit + " 分鐘；實際路線請用下方地圖連結查詢。" +
       (luggage ? "帶大型行李請找電梯、避開上下班尖峰（約 7:30–9:30、17:30–19:30）。" : "") };
-    const taxi = { mode: "計程車", minutes: 5 + km / 20 * 60, note: luggage
+    const taxi = { mode: "計程車", kind: "taxi", minutes: 5 + km / 20 * 60, wait: 0, note: luggage
       ? "帶大型行李建議搭計程車，省去轉乘和樓梯；多人同行時分攤也划算。"
       : "三到四人同行、行李多或趕時間時適合。" };
     if (luggage && km <= 20) {
@@ -347,23 +422,35 @@
       if (km <= 12) opts.push(taxi);
     }
     if (!luggage && km <= 3) {
-      opts.push({ mode: "步行", minutes: km / 4.5 * 60, note: "天氣好也可以散步過去。" });
+      opts.push({ mode: "步行", kind: "walk", minutes: km / 4.5 * 60, wait: 0, note: "天氣好也可以散步過去。" });
     }
     return { km, opts };
   }
 
+  // 城際路段：同方向的資料直接用；只有反方向的資料時，說明與起訖站都要對調
   function intercityLeg(region, fromHub, toHub) {
+    const hubA = findHub(region, fromHub);
+    const hubB = findHub(region, toHub);
+    const stopOf = (hub, stop) => stop ? Object.assign({ station: stop.name }, stop) : { name: hub.station, station: hub.station, lat: hub.lat, lng: hub.lng };
     const direct = region.intercity.find((x) => x.from === fromHub && x.to === toHub);
-    if (direct) return { leg: direct, reversed: false };
+    if (direct) {
+      return { leg: direct, reversed: false, note: direct.detail, noteBack: direct.detailBack,
+        fromStop: stopOf(hubA, direct.fromStop), toStop: stopOf(hubB, direct.toStop) };
+    }
     const back = region.intercity.find((x) => x.from === toHub && x.to === fromHub);
-    if (back) return { leg: back, reversed: true };
+    if (back) {
+      const fromStop = stopOf(hubA, back.toStop);
+      const toStop = stopOf(hubB, back.fromStop);
+      const note = back.detailBack || backNote({ note: back.detail, from: toStop.name, to: fromStop.name, kind: "intercity" });
+      return { leg: back, reversed: true, note, noteBack: back.detail, fromStop, toStop };
+    }
     return null;
   }
 
   function renderOption(opt, primary) {
     const box = el("div", "option" + (primary ? " option-primary" : ""));
     const top = el("p", "leg-top");
-    top.append(modeTag(opt.mode), " " + formatMinutes(opt.minutes) + (opt.cost ? "・" + opt.cost : ""));
+    top.append(modeTag(opt.mode), " " + formatMinutes(opt.minutes) + (opt.wait ? "＋等車約 " + opt.wait + " 分" : "") + (opt.cost ? "・" + opt.cost : ""));
     if (primary) top.append(" ", el("span", "badge badge-accent", "推薦"));
     box.append(top, el("p", "leg-detail", opt.note));
     return box;
@@ -377,30 +464,37 @@
     step.append(el("p", "stop-meta", "距離約 " + km.toFixed(1) + " 公里（估算）"));
     opts.forEach((o, i) => step.append(renderOption(o, i === 0)));
     step.append(mapLinks(region, a, b));
-    return { step, minutes: opts[0].minutes };
+    return { step, minutes: opts[0].minutes, wait: opts[0].wait || 0 };
   }
 
   // ---- 機場路線 ----
   // 一個方案 = 機場交通（抵達某車站）＋（必要時）跨城市＋到景點的最後一段
   function airportPlan(region, airport, option, spot) {
+    const tr = optionTransfers(option);
     if (option.direct) {
       // 直達目的地（計程車）：依距離估算時間。前 20 公里以市區時速約 30 公里計，
       // 之後以高速公路時速約 65 公里計（避免長距離時高估）
       const km = distanceKm(airport, spot) * 1.3;
       const minutes = 10 + Math.min(km, 20) / 30 * 60 + Math.max(km - 20, 0) / 65 * 60;
-      return { option, total: minutes, segs: [{
-        mode: option.mode, from: airport.name, to: spot.name, minutes, cost: option.cost, note: option.detail, estimated: true,
-      }] };
+      return finishPlan(region, option, [{
+        mode: option.mode, kind: "taxi", from: airport.name, to: spot.name, minutes, wait: 0, cost: option.cost, costRange: parseCost(option.cost),
+        note: option.detail, noteBack: option.detailBack, estimated: true, official: option.official, transfers: 0,
+      }]);
     }
     const segs = [{
-      mode: option.mode, from: airport.name, to: option.to.name, title: option.title,
-      minutes: option.minutes, cost: option.cost, note: option.detail, verified: option.verified,
+      mode: option.mode, kind: "airport", from: airport.name, to: option.to.name, title: option.title,
+      minutes: option.minutes, wait: WAIT.airport, cost: option.cost, costRange: parseCost(option.cost),
+      note: option.detail, noteBack: option.detailBack, verified: option.verified, official: option.official,
+      transfers: tr.n, transfersSure: tr.sure,
     }];
 
     function addLocal(a, aName, b, bName) {
       if (distanceKm(a, b) <= 0.3) return;
-      const best = localOptions(a, b).opts[0];
-      segs.push({ mode: best.mode, from: aName, to: bName, minutes: best.minutes, note: best.note, estimated: true });
+      const { km, opts } = localOptions(a, b);
+      const best = opts[0];
+      segs.push({ mode: best.mode, kind: best.kind, from: aName, to: bName, minutes: best.minutes, wait: best.wait,
+        costRange: costEstimate(region, best.mode, km), note: best.note, estimated: true,
+        official: best.kind === "transit" ? region.localLink : null });
     }
 
     if (option.to.hub === spot.hub) {
@@ -408,34 +502,116 @@
     } else {
       const hubFrom = findHub(region, option.to.hub);
       const hubTo = findHub(region, spot.hub);
-      addLocal(option.to, option.to.name, hubFrom, hubFrom.station);
       const inter = intercityLeg(region, hubFrom.id, hubTo.id);
       if (inter) {
-        segs.push({ mode: inter.leg.mode, from: hubFrom.station, to: hubTo.station, minutes: inter.leg.minutes, cost: inter.leg.cost,
-          note: inter.leg.detail + (inter.reversed ? "（反方向搭同一條路線）" : "") });
+        addLocal(option.to, option.to.name, inter.fromStop, inter.fromStop.name);
+        segs.push({ mode: inter.leg.mode, kind: "intercity", from: inter.fromStop.name, to: inter.toStop.name,
+          minutes: inter.leg.minutes, wait: WAIT.intercity, cost: inter.leg.cost, costRange: parseCost(inter.leg.cost),
+          note: inter.note, noteBack: inter.noteBack, official: inter.leg.official });
+        addLocal(inter.toStop, inter.toStop.name, spot, spot.name);
       } else {
-        segs.push({ mode: "大眾運輸", from: hubFrom.station, to: hubTo.station, minutes: 0, note: "這兩個城市之間沒有整理資料，請用地圖 App 查詢。", estimated: true });
+        addLocal(option.to, option.to.name, hubFrom, hubFrom.station);
+        segs.push({ mode: "大眾運輸", kind: "intercity", from: hubFrom.station, to: hubTo.station, minutes: 0, wait: 0, note: "這兩個城市之間沒有整理資料，請用地圖 App 查詢。", estimated: true, unknown: true });
+        addLocal(hubTo, hubTo.station, spot, spot.name);
       }
-      addLocal(hubTo, hubTo.station, spot, spot.name);
     }
-    const total = segs.reduce((s, x) => s + x.minutes, 0);
-    return { option, segs, total };
+    return finishPlan(region, option, segs);
   }
 
-  // 景點 → 機場：把機場 → 景點的方案整個反過來
+  // 計算方案的總時間（含／不含等車）、總票價、轉乘次數
+  function finishPlan(region, option, segs) {
+    const ride = segs.reduce((s, x) => s + x.minutes, 0);
+    const wait = segs.reduce((s, x) => s + (x.wait || 0), 0);
+    const vehicles = segs.filter((x) => x.kind !== "walk");
+    let transfers = Math.max(vehicles.length - 1, 0);
+    let transfersSure = true;
+    for (const x of segs) {
+      if (x.transfers) transfers += x.transfers;
+      if (x.transfersSure === false && x.transfers) transfersSure = false;
+      if (x.kind === "transit" || x.unknown) transfersSure = false; // 市區段可能還要轉車
+    }
+    let min = 0, max = 0, open = false, estimated = false, unknown = false;
+    for (const x of segs) {
+      if (!x.costRange) { if (x.kind !== "walk") unknown = true; continue; }
+      min += x.costRange.min;
+      max += x.costRange.max;
+      if (x.costRange.open) open = true;
+      if (x.costRange.estimated) estimated = true;
+    }
+    const fare = { min, max, open, estimated, unknown, currency: region.currency };
+    return { option, segs, total: ride, ride, wait, transfers, transfersSure, fare };
+  }
+
+  // 景點 → 機場：把機場 → 景點的方案整個反過來，每段說明也換成回程方向
   function reversePlan(plan) {
     const segs = plan.segs.slice().reverse().map((s) => Object.assign({}, s, {
-      from: s.to, to: s.from,
-      note: s.note + (s.estimated || s.note.includes("反方向") ? "" : "（反方向搭同一條路線）"),
+      from: s.to, to: s.from, note: backNote(s), noteBack: s.note,
     }));
-    return { option: plan.option, segs, total: plan.total };
+    return Object.assign({}, plan, { segs });
+  }
+
+  // 會「先去別的城市再折返」的方案：機場交通的終點不在目的地所在的城市，
+  // 而且下車的地方離目的地跟機場差不多遠或更遠（等於坐過頭再回來）。
+  // 例：去大阪卻先搭 HARUKA 到京都；但去京都時先到大阪再轉車是順路，不算折返
+  function isDetour(airport, plan, spot) {
+    const o = plan.option;
+    if (o.direct || !o.to || o.to.hub === spot.hub) return false;
+    return distanceKm(o.to, spot) >= 0.9 * distanceKm(airport, spot);
+  }
+
+  function fareText(fare) {
+    if (fare.unknown && !fare.max) return "票價未知，請以官網為準";
+    const range = fare.min === fare.max || Math.round(fare.min) === Math.round(fare.max)
+      ? formatMoney(fare.min)
+      : formatMoney(fare.min) + "–" + formatMoney(fare.max);
+    if (fare.unknown) return "部分票價未知：已知部分約 " + range + " " + fare.currency + "，其餘請以官網為準";
+    return "約 " + range + " " + fare.currency + (fare.open ? " 起" : "") +
+      (fare.estimated ? "（市區段為估算）" : "") + (fare.open ? "，部分票價請以官網為準" : "");
+  }
+
+  // 結果卡上方的總計
+  function planSummary(region, plan, start, end) {
+    const box = el("div", "plan-summary");
+    const dl = el("dl", "summary-grid");
+    function row(label, value, sub) {
+      const d = el("div", "summary-item");
+      d.append(el("dt", "", label));
+      const dd = el("dd", "", value);
+      if (sub) dd.append(el("span", "summary-sub", sub));
+      d.append(dd);
+      dl.append(d);
+    }
+    if (plan.wait) {
+      row("⏱️ 預估總時間", "含等車 " + formatMinutes(plan.ride + plan.wait),
+        "乘車＋步行 " + formatMinutes(plan.ride) + "（不含等車）＋等車約 " + Math.round(plan.wait) + " 分鐘（估算）");
+    } else {
+      row("⏱️ 預估總時間", formatMinutes(plan.ride), "不含等車：計程車直接搭，排班等候時間另計");
+    }
+    const hasTaxi = plan.segs.some((x) => x.kind === "taxi");
+    row("💴 總票價", fareText(plan.fare), hasTaxi ? "電車為每人單程；計程車為一車的費用，多人同行可分攤" : "每人單程");
+    row("🔁 轉乘次數", (plan.transfersSure ? "" : "約 ") + plan.transfers + " 次",
+      plan.transfers === 0 ? "一車到底" : (plan.transfersSure ? "" : "市區段依實際路線可能再多轉一次"));
+    box.append(dl);
+
+    // 官方票價／班次連結（重複的只列一次），沒有官方資料的段落用 Google 地圖
+    const links = el("div", "map-links official-links");
+    const seen = new Set();
+    for (const s of plan.segs) {
+      if (s.official && !seen.has(s.official.url)) {
+        seen.add(s.official.url);
+        links.append(link("🔗 " + s.official.name, s.official.url, "button button-small"));
+      }
+    }
+    if (!seen.size) links.append(el("p", "stop-meta", "這條路線沒有整理官方連結，請用下方地圖查即時班次與票價。"));
+    box.append(links);
+    return box;
   }
 
   function renderPlan(region, plan, index, start, end) {
     const card = el("div", "card route-step");
     const title = el("h3", "step-title", "方案 " + (index + 1) + "：" + plan.option.title);
     if (index === 0) title.append(" ", el("span", "badge badge-accent", withLuggage() ? "推薦" : "最快"));
-    card.append(title, el("p", "plan-total", "合計 " + formatMinutes(plan.total) + "（不含等車，部分為估算）"));
+    card.append(title, planSummary(region, plan, start, end));
     if (withLuggage()) card.append(luggageBadge(plan.option));
 
     const ol = el("ol", "segments");
@@ -443,7 +619,9 @@
       const li = el("li", "segment");
       const top = el("p", "leg-top");
       top.append(modeTag(s.mode), " " + s.from + " → " + s.to);
-      const meta = el("p", "stop-meta", (s.minutes ? formatMinutes(s.minutes) : "時間未知") + (s.cost ? "・" + s.cost : "") + (s.estimated ? "（估算）" : ""));
+      const time = s.minutes ? formatMinutes(s.minutes) + (s.wait ? "＋等車約 " + s.wait + " 分" : "（不用等車）") : "時間未知";
+      const cost = s.cost || (s.costRange && s.costRange.max ? "約 " + formatMoney(s.costRange.min) + (s.costRange.max !== s.costRange.min ? "–" + formatMoney(s.costRange.max) : "") + " " + region.currency : "");
+      const meta = el("p", "stop-meta", time + (cost ? "・" + cost : "") + (s.estimated ? "（估算）" : ""));
       li.append(top, meta, el("p", "leg-detail", s.note));
       if (s.verified === false) li.append(el("p", "unverified", "⚠️ 票價或時間未查證，請以交通公司官網為準"));
       ol.append(li);
@@ -468,13 +646,17 @@
     const spot = findSpot(region, otherVal);
 
     let plans = airport.options.map((o) => airportPlan(region, airport, o, spot));
+    // 拿掉「先到別的城市再折返」的方案（例如去大阪卻先搭到京都）
+    const detours = plans.filter((p) => isDetour(airport, p, spot));
+    plans = plans.filter((p) => !detours.includes(p));
     if (!fromAirport) plans = plans.map(reversePlan);
+    const fullTime = (p) => p.ride + p.wait;
     if (withLuggage()) {
-      // 大型行李：好走的排前面，同等級再比時間
+      // 大型行李：好走的排前面，同等級再比轉乘次數、時間
       const score = (p) => LUGGAGE_LEVEL[luggageInfo(p.option).level].score;
-      plans.sort((x, y) => score(x) - score(y) || x.total - y.total);
+      plans.sort((x, y) => (score(x) + x.transfers) - (score(y) + y.transfers) || fullTime(x) - fullTime(y));
     } else {
-      plans.sort((x, y) => x.total - y.total);
+      plans.sort((x, y) => fullTime(x) - fullTime(y));
     }
 
     const start = fromAirport ? airport : spot;
@@ -483,11 +665,17 @@
     header.append(el("h2", "plan-title", "✈️ " + start.name + " → " + end.name));
     header.append(el("p", "stop-meta", withLuggage()
       ? "共 " + plans.length + " 個方案。已依「大型行李」排序：直達、免轉乘、有行李空間的方式排在前面。"
-      : "共 " + plans.length + " 個方案，依總時間由快到慢排列。帶大型行李時，可勾選上方「我帶著大型行李」重新查詢。"));
+      : "共 " + plans.length + " 個方案，依含等車的總時間由快到慢排列。帶大型行李時，可勾選上方「我帶著大型行李」重新查詢。"));
+    if (detours.length) {
+      header.append(el("p", "stop-meta detour-note", "已略過要先到其他城市再折返的方案：" +
+        detours.map((p) => p.option.title).join("、") + "。"));
+    }
+    header.append(el("p", "stop-meta", "⏱️ 時間說明：「含等車」是加上每段估算的等車時間（機場線約 " + WAIT.airport + " 分、城際約 " +
+      WAIT.intercity + " 分、市區約 " + WAIT.transit + " 分）；「不含等車」只算乘車和步行。"));
     header.append(mapLinks(region, start, end));
 
     const parts = [header, ...plans.map((p, i) => renderPlan(region, p, i, start, end))];
-    parts.push(el("p", "card hint", "機場交通的時間、票價為約略值；到景點的最後一段依距離估算。出發前請用地圖連結查即時班次。" +
+    parts.push(el("p", "card hint", "機場交通的時間、票價為約略值；到景點的最後一段依距離估算。出發前請用官方連結或地圖連結查即時班次。" +
       (region.country === "kr" ? "韓國建議搭配 Naver 地圖或 KakaoMap。" : "")));
     parts.push(el("p", "card tip", "💡 " + region.transportTip));
     out.replaceChildren(...parts);
@@ -638,32 +826,37 @@
       const hubA = findHub(region, a.hub);
       const hubB = findHub(region, b.hub);
       const inter = intercityLeg(region, hubA.id, hubB.id);
+      // 城際路段的上下車站（例如近鐵是大阪難波站，不是大阪站）
+      const stopA = inter ? inter.fromStop : { name: hubA.station, lat: hubA.lat, lng: hubA.lng };
+      const stopB = inter ? inter.toStop : { name: hubB.station, lat: hubB.lat, lng: hubB.lng };
       let total = 0;
+      let wait = 0;
       const steps = [];
+      const num = ["① ", "② ", "③ "];
 
-      if (distanceKm(a, hubA) > 0.3) {
-        const s1 = renderLocalStep(region, "① " + a.name + " → " + hubA.station, a, hubA, a.station, hubA.station);
-        steps.push(s1.step); total += s1.minutes;
+      if (distanceKm(a, stopA) > 0.3) {
+        const s1 = renderLocalStep(region, num[steps.length] + a.name + " → " + stopA.name, a, stopA, a.station, stopA.name);
+        steps.push(s1.step); total += s1.minutes; wait += s1.wait;
       }
 
       const mid = el("div", "card route-step");
-      mid.append(el("h3", "step-title", (steps.length ? "② " : "① ") + hubA.name + " → " + hubB.name));
+      mid.append(el("h3", "step-title", num[steps.length] + stopA.name + " → " + stopB.name));
       if (inter) {
-        mid.append(renderOption({ mode: inter.leg.mode, minutes: inter.leg.minutes, cost: inter.leg.cost, note: inter.leg.detail + (inter.reversed ? "（反方向搭同一條路線）" : "") }, true));
-        total += inter.leg.minutes;
+        mid.append(renderOption({ mode: inter.leg.mode, minutes: inter.leg.minutes, wait: WAIT.intercity, cost: inter.leg.cost, note: inter.note }, true));
+        total += inter.leg.minutes; wait += WAIT.intercity;
       } else {
         mid.append(el("p", "leg-detail", "這兩個城市之間沒有整理資料，請用地圖 App 查詢。"));
       }
-      mid.append(mapLinks(region, hubA, hubB));
+      mid.append(mapLinks(region, stopA, stopB));
       steps.push(mid);
 
-      if (distanceKm(hubB, b) > 0.3) {
-        const s3 = renderLocalStep(region, (steps.length + 1 === 3 ? "③ " : "② ") + hubB.station + " → " + b.name, hubB, b, hubB.station, b.station);
-        steps.push(s3.step); total += s3.minutes;
+      if (distanceKm(stopB, b) > 0.3) {
+        const s3 = renderLocalStep(region, num[steps.length] + stopB.name + " → " + b.name, stopB, b, stopB.name, b.station);
+        steps.push(s3.step); total += s3.minutes; wait += s3.wait;
       }
 
-      header.append(el("p", "stop-meta", "跨城市移動，建議先到 " + hubA.station + "，再前往 " + hubB.name + "。"));
-      header.append(el("p", "plan-total", "交通時間合計 " + formatMinutes(total) + "（估算）"));
+      header.append(el("p", "stop-meta", "跨城市移動，建議先到 " + stopA.name + "，再前往 " + hubB.name + "。"));
+      header.append(el("p", "plan-total", "交通時間合計：含等車 " + formatMinutes(total + wait) + "；不含等車 " + formatMinutes(total) + "（估算）"));
       header.append(mapLinks(region, a, b));
       parts.push(...steps);
     }
@@ -728,6 +921,57 @@
     parts.push(src);
 
     content.replaceChildren(...parts);
+  }
+
+  // ---------------------------------------------------------------
+  // 「機場 → 市區」快捷入口：一鍵帶入城市、機場與目的地並查詢
+  // ---------------------------------------------------------------
+  function runQuickRoute(region, q) {
+    showTab("route");
+    regionSelect.value = region.id;
+    onRegionChange();
+    fromSelect.value = AIRPORT_PREFIX + q.airport;
+    toSelect.value = q.to;
+    $("route-to-text").value = "";
+    updateRoute();
+  }
+
+  function quickRouteCard() {
+    const list = REGIONS.filter((r) => (r.quickRoutes || []).length);
+    if (!list.length) return null;
+    const card = el("div", "card quick-routes");
+    card.append(el("h2", "quick-title", "✈️ 機場 → 市區 快捷查詢"));
+    card.append(el("p", "stop-meta", "剛下飛機？點一下直接比較各種交通方式的時間、票價與轉乘。"));
+    // 大型行李勾選框：和路線查詢裡的「我帶著大型行李」同步
+    const lab = el("label", "check quick-luggage");
+    const box = document.createElement("input");
+    box.type = "checkbox";
+    box.className = "quick-luggage-box";
+    box.checked = luggageBox.checked;
+    box.addEventListener("change", () => {
+      luggageBox.checked = box.checked;
+      luggageBox.dispatchEvent(new Event("change"));
+    });
+    lab.append(box, el("span", "", "🧳 我帶著大型行李（直達、免轉乘的方式排前面）"));
+    card.append(lab);
+    for (const r of list) {
+      const box = el("div", "chips quick-chips");
+      for (const q of r.quickRoutes) {
+        const spot = findSpot(r, q.to);
+        const ap = airportsOf(r).find((a) => a.id === q.airport);
+        if (!spot || !ap) continue;
+        const b = el("button", "chip quick-chip", q.label || ap.name + " → " + spot.name);
+        b.type = "button";
+        b.addEventListener("click", () => runQuickRoute(r, q));
+        box.append(b);
+      }
+      card.append(box);
+    }
+    return card;
+  }
+  for (const panel of ["panel-plans", "panel-route"]) {
+    const card = quickRouteCard();
+    if (card) $(panel).prepend(card);
   }
 
   // ---------------------------------------------------------------

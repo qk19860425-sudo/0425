@@ -420,3 +420,21 @@ body {
 
 /* 地區的特色圖案 */
 .region-emoji { margin-right: 4px; }
+
+/* ---- 機場 → 市區 快捷入口 ---- */
+.quick-routes { border: 2px solid var(--accent); background: linear-gradient(135deg, var(--accent-soft), var(--card) 70%); }
+.quick-title { margin: 0 0 4px; font-size: 1.1rem; color: var(--accent-soft-text); }
+.quick-chips { margin-top: 8px; }
+.quick-chip { background: var(--card); border-color: var(--accent); color: var(--accent); font-weight: 700; }
+.quick-chip:hover { background: var(--accent); color: var(--accent-text); }
+
+/* ---- 結果卡總計 ---- */
+.plan-summary { margin: 4px 0 8px; padding: 10px 12px; border-radius: 10px; background: var(--accent-soft); color: var(--accent-soft-text); }
+.summary-grid { display: grid; grid-template-columns: 1fr; gap: 6px; margin: 0; }
+.summary-item { display: grid; grid-template-columns: 7.2em 1fr; gap: 8px; align-items: baseline; }
+.summary-item dt { font-weight: 700; font-size: 0.9rem; }
+.summary-item dd { margin: 0; font-weight: 700; overflow-wrap: anywhere; }
+.summary-sub { display: block; font-weight: 400; font-size: 0.82rem; opacity: 0.9; }
+.official-links { margin-top: 8px; }
+.official-links .button { flex: 1 1 100%; }
+.detour-note { color: var(--accent-soft-text); font-weight: 600; }
