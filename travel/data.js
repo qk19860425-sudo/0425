@@ -207,6 +207,9 @@ window.REGIONS = [
       { airport: "icn", to: "ddp", label: "仁川機場 → 東大門" },
       { airport: "gmp", to: "hongdae", label: "金浦機場 → 弘大" },
       { airport: "gmp", to: "myeongdong", label: "金浦機場 → 明洞" },
+      { airport: "cjj", to: "seoul-station", label: "清州機場 → 首爾站" },
+      { airport: "cjj", to: "express-terminal", label: "清州機場 → 江南（高速巴士轉運站）" },
+      { airport: "cjj", to: "myeongdong", label: "清州機場 → 明洞" },
     ],
     // 市區大眾運輸的官方票價／班次查詢
     localLink: { name: "首爾交通公社官網", url: "https://www.seoulmetro.co.kr/" },
@@ -225,6 +228,7 @@ window.REGIONS = [
       { id: "hongdae", name: "弘大", hub: "seoul", station: "弘大入口站（2 號線、機場鐵路）", tags: ["購物", "美食"], stay: "2–3 小時", lat: 37.5563, lng: 126.9236 },
       { id: "yeouido", name: "汝矣島漢江公園", hub: "seoul", station: "汝矣渡口站（5 號線）", tags: ["自然", "夜景"], stay: "1–2 小時", lat: 37.5284, lng: 126.9327 },
       { id: "seongsu", name: "聖水洞", hub: "seoul", station: "聖水站（2 號線）", tags: ["購物", "咖啡"], stay: "2 小時", lat: 37.5446, lng: 127.0557 },
+      { id: "express-terminal", name: "江南 高速巴士轉運站（高速巴士客運站）", hub: "seoul", station: "高速巴士客運站（3、7、9 號線）", tags: ["交通樞紐", "購物"], stay: "—", lat: 37.5049, lng: 127.0049 },
       { id: "lotte-tower", name: "樂天世界塔", hub: "seoul", station: "蠶室站（2、8 號線）", tags: ["夜景", "親子", "購物"], stay: "2–3 小時", lat: 37.5126, lng: 127.1025 },
     ],
     itineraries: [
@@ -1291,9 +1295,11 @@ window.AIRPORTS = {
       // 清州機場在忠清北道，離首爾約 120 公里，沒有機場鐵路直達首爾
       id: "cjj", name: "清州機場", lat: 36.7166, lng: 127.4991,
       options: [
-        { mode: "公車", title: "高速巴士 → 首爾高速巴士轉運站", detail: "清州機場 1 號門前 1 號站牌上車，直達首爾高速巴士轉運站（江南，可轉地鐵 3、7、9 號線）。一天約 8 班；網路訂票需要韓國身分認證，外國旅客可能要找代訂或到現場買票", detailBack: "高速巴士 首爾高速巴士轉運站（江南）→ 清州機場，一天約 8 班；外國旅客請到現場買票或找代訂", transfers: 0, minutes: 100, cost: "票價請以訂票平台為準", luggage: "good", luggageNote: "行李放在車底行李艙；到轉運站後還要轉地鐵或計程車。", verified: false,
+        { mode: "公車", title: "高速巴士 → 首爾高速巴士轉運站（江南）", detail: "高速巴士 清州機場（1 號門前 1 號站牌）→ 首爾高速巴士轉運站（江南的 Central City 湖南線一側，可轉地鐵 3、7、9 號線），一天約 8 班；網路訂票需要韓國身分認證，外國旅客可能要找代訂或到現場買票", detailBack: "高速巴士 首爾高速巴士轉運站（江南 Central City 湖南線一側）→ 清州機場，一天約 12 班；外國旅客請到現場買票或找代訂", transfers: 0, minutes: 110, cost: "約 12,800 韓元（優等）", luggage: "good", luggageNote: "行李放在車底行李艙，直達江南；到轉運站後還要轉地鐵或計程車。", verified: false,
+          official: { name: "KOBUS 高速巴士官網（班次・訂票）", url: "https://www.kobus.co.kr/" },
           to: { name: "首爾高速巴士轉運站", hub: "seoul", lat: 37.5049, lng: 127.0049 } },
-        { mode: "電車", title: "火車到五松站，轉 KTX → 首爾站", detail: "從航廈步行到清州機場站，搭無窮花號或 ITX-마음 到五松站（約 18 分鐘，一天約 12 班），再轉 KTX 到首爾站。含轉乘等車約 1.5 小時", detailBack: "KTX 首爾站 → 五松站，轉無窮花號或 ITX-마음 到清州機場站（約 18 分鐘，一天約 12 班），再步行到航廈。含轉乘等車約 1.5 小時", transfers: 1, minutes: 90, cost: "火車到五松約 2,600–4,800 韓元，另加 KTX 票價", luggage: "hard", luggageNote: "要在五松站轉 KTX，還要從航廈走到清州機場站；大型行李較辛苦。", verified: false,
+        { mode: "電車", title: "火車到五松站，轉 KTX → 首爾站", detail: "從航廈步行到清州機場站，搭無窮花號或 ITX-마음 清州機場站 → 五松站（約 18 分鐘，一天約 12 班），再轉 KTX 五松站 → 首爾站（約 46–57 分鐘）；加上轉乘約 1.5 小時", detailBack: "KTX 首爾站 → 五松站（約 46–57 分鐘），轉無窮花號或 ITX-마음 五松站 → 清州機場站（約 18 分鐘，一天約 12 班），再步行到航廈；加上轉乘約 1.5 小時", transfers: 1, minutes: 90, cost: "約 21,100–23,300 韓元（火車到五松約 2,600–4,800 韓元＋KTX 約 18,500 韓元）", luggage: "hard", luggageNote: "要在五松站轉 KTX，還要從航廈走到清州機場站；大型行李較辛苦。", verified: false,
+          official: { name: "KORAIL 官網（KTX・火車班次）", url: "https://www.letskorail.com/" },
           to: { name: "首爾站", hub: "seoul", lat: 37.5547, lng: 126.9707 } },
       ],
     },
