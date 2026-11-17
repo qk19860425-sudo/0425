@@ -23,6 +23,7 @@
   <header class="site-header">
     <h1>日韓台模型玩具店搜尋</h1>
     <p class="subtitle">依國家、城市、商品類型或關鍵字，找日本、韓國、台灣的塑膠模型、鋼彈模型、鐵道模型與玩具店。</p>
+    <p class="header-links"><a href="#guide">📘 看模型玩具指南（比例、工具、退稅、展覽）</a></p>
   </header>
 
   <main>
@@ -82,6 +83,12 @@
         <p id="empty" class="card empty" hidden>找不到符合條件的店家，試著減少篩選條件。</p>
       </section>
     </div>
+
+    <section id="guide" class="guide" aria-labelledby="guide-title">
+      <h2 id="guide-title" class="guide-title">📘 模型玩具指南</h2>
+      <p class="guide-desc">第一次逛日本、韓國模型店前可以先看：比例與等級、工具、退稅、怎麼帶回台灣，以及每年的模型展覽。整理日期：<span id="guide-updated"></span>。</p>
+      <div id="guide-content"></div>
+    </section>
   </main>
 
   <footer class="site-footer">
@@ -94,6 +101,8 @@
           crossorigin="anonymous"></script>
   <script src="shops.js"></script>
   <script src="app.js"></script>
+  <script src="guide.js"></script>
+  <script src="guide-app.js"></script>
   <script src="pwa.js"></script>
 </body>
 </html>

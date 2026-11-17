@@ -31,6 +31,10 @@
     countrySelect.append(opt);
   }
 
+  // 城市由北到南排列；不在清單裡的排最後
+  const CITY_ORDER = ["札幌", "仙台", "東京", "名古屋", "金澤", "京都", "大阪", "廣島", "福岡", "首爾", "台北", "台中", "高雄"];
+  const cityOrder = (c) => { const i = CITY_ORDER.indexOf(c); return i < 0 ? 999 : i; };
+
   // 城市選單依國家分組；選了國家就只列該國城市
   function fillCities() {
     const keep = areaSelect.value;
@@ -42,7 +46,7 @@
       .map((c) => {
         const g = document.createElement("optgroup");
         g.label = c;
-        for (const city of [...new Set(shops.filter((s) => s.country === c).map((s) => s.city))]) {
+        for (const city of [...new Set(shops.filter((s) => s.country === c).map((s) => s.city))].sort((x, y) => cityOrder(x) - cityOrder(y))) {
           const opt = document.createElement("option");
           opt.value = city;
           opt.textContent = city + "（" + shops.filter((s) => s.city === city).length + "）";
