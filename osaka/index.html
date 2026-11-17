@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#e11d48">
+  <title>大阪旅遊</title>
+  <meta name="description" content="大阪旅遊示範 App：關西機場交通比較、景點與美食篩選。">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <button id="back" type="button" class="back" aria-label="回首頁" hidden>‹ 首頁</button>
+    <h1 id="page-title" class="topbar-title">大阪旅遊</h1>
+    <span class="demo-badge" title="目前使用本機範例資料">示範資料</span>
+  </header>
+
+  <main>
+    <p class="demo-notice">⚠️ 示範資料：票價、時間、營業時間都是約略值，美食店家為虛構示範；出發前請以官方資訊為準。</p>
+    <p id="data-problems" class="data-problems" role="alert" hidden></p>
+
+    <!-- 首頁 -->
+    <section id="page-home" aria-label="首頁">
+      <p class="lead">第一次去大阪？從機場怎麼進市區、去哪裡玩、吃什麼，都在這裡。</p>
+      <nav class="entries" aria-label="功能入口">
+        <a class="entry entry-transport" href="#/transport">
+          <span class="entry-icon" aria-hidden="true">✈️</span>
+          <span class="entry-text"><strong>機場交通</strong><span>關西機場 → 難波、梅田</span></span>
+          <span id="home-counts-transport" class="entry-count"></span>
+        </a>
+        <a class="entry entry-spots" href="#/spots">
+          <span class="entry-icon" aria-hidden="true">🏯</span>
+          <span class="entry-text"><strong>景點</strong><span>依區域、類型篩選</span></span>
+          <span id="home-counts-spots" class="entry-count"></span>
+        </a>
+        <a class="entry entry-food" href="#/food">
+          <span class="entry-icon" aria-hidden="true">🐙</span>
+          <span class="entry-text"><strong>美食</strong><span>依區域、料理、價位篩選</span></span>
+          <span id="home-counts-food" class="entry-count"></span>
+        </a>
+      </nav>
+    </section>
+
+    <!-- 機場交通 -->
+    <section id="page-transport" aria-label="機場交通" hidden>
+      <div class="card controls">
+        <fieldset class="field">
+          <legend>從關西國際機場前往</legend>
+          <div id="dest-chips" class="chips"></div>
+        </fieldset>
+        <fieldset class="field">
+          <legend>排序</legend>
+          <div id="sort-chips" class="chips"></div>
+        </fieldset>
+      </div>
+      <p id="transport-summary" class="result-count"></p>
+      <ul id="transport-list" class="list"></ul>
+    </section>
+
+    <!-- 景點 -->
+    <section id="page-spots" aria-label="景點" hidden>
+      <form id="spots-form" class="card controls">
+        <fieldset class="field">
+          <legend>區域</legend>
+          <div id="spot-areas" class="chips"></div>
+        </fieldset>
+        <fieldset class="field">
+          <legend>類型（可複選）</legend>
+          <div id="spot-types" class="chips"></div>
+        </fieldset>
+        <div class="actions">
+          <button type="submit" class="button">確定篩選</button>
+          <button type="button" id="spots-reset" class="button button-secondary">清除條件</button>
+        </div>
+        <p id="spots-pending" class="pending" hidden>條件已變更，按「確定篩選」更新結果。</p>
+      </form>
+      <p id="spots-count" class="result-count"></p>
+      <ul id="spots-list" class="list"></ul>
+      <p id="spots-empty" class="card empty" hidden>沒有符合條件的景點，試著減少篩選條件。</p>
+    </section>
+
+    <!-- 美食 -->
+    <section id="page-food" aria-label="美食" hidden>
+      <form id="food-form" class="card controls">
+        <fieldset class="field">
+          <legend>區域</legend>
+          <div id="food-areas" class="chips"></div>
+        </fieldset>
+        <fieldset class="field">
+          <legend>料理類型</legend>
+          <div id="food-cuisines" class="chips"></div>
+        </fieldset>
+        <fieldset class="field">
+          <legend>價位（可複選）</legend>
+          <div id="food-prices" class="chips"></div>
+        </fieldset>
+        <div class="actions">
+          <button type="submit" class="button">確定篩選</button>
+          <button type="button" id="food-reset" class="button button-secondary">清除條件</button>
+        </div>
+        <p id="food-pending" class="pending" hidden>條件已變更，按「確定篩選」更新結果。</p>
+      </form>
+      <p id="food-count" class="result-count"></p>
+      <ul id="food-list" class="list"></ul>
+      <p id="food-empty" class="card empty" hidden>沒有符合條件的店家，試著減少篩選條件。</p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>大阪旅遊 原型版本。資料檔在 <code>data/</code> 資料夾，修改後重新整理頁面即可看到。</p>
+  </footer>
+
+  <!-- 資料（可單獨修改）→ 邏輯 → 畫面 -->
+  <script src="data/transport.js"></script>
+  <script src="data/spots.js"></script>
+  <script src="data/food.js"></script>
+  <script src="js/logic.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -12,6 +12,8 @@ When implementation begins, group application code under `src/`, automated tests
 
 No build, development, lint, or test commands are currently configured. Do not assume commands such as `npm test` or `npm run build` work.
 
+The Osaka travel prototype (`osaka/`) has no build step. Serve the repository root with `python3 -m http.server 8000` and open `http://localhost:8000/osaka/`. Run its tests from `osaka/` with `node --test` (Node.js 18 or later). See `osaka/README.md` for where to edit the demo data.
+
 When introducing a framework, commit its dependency manifest and lockfile, and document the exact installation, local development, build, and test commands here. Keep generated outputs and installed dependencies out of version control.
 
 ## Coding Style & Naming Conventions
