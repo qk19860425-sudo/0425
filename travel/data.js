@@ -7,7 +7,7 @@
 //   regions[].intercity ：hub 之間的交通建議
 //   regions[].spots     ：景點，hub 表示屬於哪個城市
 //   regions[].itineraries：推薦行程，legs[i] 是 stops[i] 到 stops[i+1] 的交通
-window.TRAVEL_UPDATED = "2026-11-12";
+window.TRAVEL_UPDATED = "2026-11-17";
 
 window.REGIONS = [
   // ===================================================================
@@ -227,12 +227,17 @@ window.REGIONS = [
   // ===================================================================
   {
     id: "busan",
-    name: "釜山",
+    name: "釜山・慶州",
     country: "kr",
     currency: "韓元",
-    transportTip: "釜山景點分散在海雲台（東）和南浦洞（西南）兩區，兩區間搭地鐵 2 號線或 1 號線約 40–60 分鐘。山區景點（甘川文化村、海東龍宮寺）建議搭計程車或公車。T-money 在釜山也能用。",
-    hubs: [{ id: "busan", name: "釜山", station: "西面站", lat: 35.1578, lng: 129.0600 }],
-    intercity: [],
+    transportTip: "釜山景點分散在海雲台（東）和南浦洞（西南）兩區，兩區間搭地鐵 2 號線或 1 號線約 40–60 分鐘。山區景點（甘川文化村、海東龍宮寺）建議搭計程車或公車。到慶州從釜山站搭 KTX 約 30 分鐘。T-money 在釜山、慶州都能用。",
+    hubs: [
+      { id: "busan", name: "釜山", station: "釜山站", lat: 35.1151, lng: 129.0422 },
+      { id: "gyeongju", name: "慶州", station: "慶州站（KTX）", lat: 35.7981, lng: 129.1394 },
+    ],
+    intercity: [
+      { from: "busan", to: "gyeongju", mode: "電車", detail: "KTX 釜山站 → 慶州站（原新慶州站），一天約 34 班；慶州站離市區古蹟約 30 分鐘車程，可轉公車或計程車", minutes: 30, cost: "約 11,000 韓元" },
+    ],
     spots: [
       { id: "haeundae", name: "海雲台海水浴場", hub: "busan", station: "海雲台站（2 號線）", tags: ["自然", "海景"], stay: "1–2 小時", lat: 35.1587, lng: 129.1604 },
       { id: "gwangalli", name: "廣安里海水浴場", hub: "busan", station: "廣安站、金蓮山站（2 號線）", tags: ["夜景", "海景"], stay: "1–2 小時", lat: 35.1532, lng: 129.1187 },
@@ -243,6 +248,10 @@ window.REGIONS = [
       { id: "busan-tower", name: "龍頭山公園・釜山塔", hub: "busan", station: "南浦站（1 號線）", tags: ["夜景"], stay: "45 分鐘", lat: 35.1007, lng: 129.0324 },
       { id: "seomyeon", name: "西面", hub: "busan", station: "西面站（1、2 號線）", tags: ["購物", "美食"], stay: "1.5–2 小時", lat: 35.1578, lng: 129.0600 },
       { id: "taejongdae", name: "太宗台", hub: "busan", station: "南浦洞搭公車或計程車約 25 分鐘", tags: ["自然", "海景"], stay: "1.5–2 小時", lat: 35.0517, lng: 129.0870 },
+      { id: "daereungwon", name: "大陵苑（慶州）", hub: "gyeongju", station: "慶州站搭公車或計程車約 30 分鐘", tags: ["歷史"], stay: "1 小時", lat: 35.8383, lng: 129.2114 },
+      { id: "cheomseongdae", name: "瞻星臺（慶州）", hub: "gyeongju", station: "大陵苑步行約 10 分鐘", tags: ["歷史"], stay: "30 分鐘", lat: 35.8347, lng: 129.2190 },
+      { id: "donggung", name: "東宮與月池（慶州）", hub: "gyeongju", station: "瞻星臺步行約 15 分鐘", tags: ["歷史", "夜景"], stay: "1 小時", lat: 35.8348, lng: 129.2265 },
+      { id: "bulguksa", name: "佛國寺（慶州）", hub: "gyeongju", station: "慶州市區搭公車或計程車約 30 分鐘", tags: ["寺廟神社", "歷史"], stay: "1.5 小時", lat: 35.7900, lng: 129.3320 },
     ],
     itineraries: [
       {
@@ -266,6 +275,216 @@ window.REGIONS = [
           { mode: "計程車", detail: "計程車約 10 分鐘；或搭社區小巴下山到土城站，再搭 1 號線到札嘎其站（1 站）", minutes: 15, cost: "計程車約 6,000–8,000 韓元" },
           { mode: "步行", detail: "從札嘎其市場往北過馬路就是 BIFF 廣場與國際市場", minutes: 10, cost: "步行免費" },
           { mode: "步行", detail: "從光復路搭手扶梯上龍頭山公園", minutes: 10, cost: "步行免費" },
+        ],
+      },
+      {
+        id: "gyeongju-day",
+        title: "慶州古都一日：大陵苑・瞻星臺・東宮與月池",
+        days: 1, themes: ["近郊", "歷史", "夜景"],
+        summary: "從釜山搭 KTX 約 30 分鐘到慶州，市區古蹟集中、步行就能串起來；東宮與月池的夜景很有名。",
+        stops: ["daereungwon", "cheomseongdae", "donggung"],
+        legs: [
+          { mode: "步行", detail: "從大陵苑往東南走，穿過古墳公園到瞻星臺", minutes: 10, cost: "步行免費" },
+          { mode: "步行", detail: "沿著雞林、月城一帶往東走到東宮與月池", minutes: 15, cost: "步行免費" },
+        ],
+      },
+    ],
+  },
+  // ===================================================================
+  {
+    id: "fukuoka",
+    name: "福岡",
+    country: "jp",
+    currency: "日圓",
+    transportTip: "福岡機場離市區很近，地鐵到博多站只要約 5 分鐘。市區靠地鐵和步行就夠；到太宰府搭西鐵電車。Suica 等 IC 卡在福岡都能用。",
+    hubs: [
+      { id: "fukuoka-city", name: "福岡市區", station: "博多站", lat: 33.5902, lng: 130.4207 },
+      { id: "dazaifu", name: "太宰府", station: "西鐵太宰府站", lat: 33.5194, lng: 130.5310 },
+    ],
+    intercity: [
+      { from: "fukuoka-city", to: "dazaifu", mode: "電車", detail: "西鐵天神大牟田線 天神（西鐵福岡）站 → 西鐵二日市站，轉太宰府線到太宰府站", minutes: 44, cost: "約 480 日圓" },
+    ],
+    spots: [
+      { id: "hakata-station", name: "博多車站", hub: "fukuoka-city", station: "博多站", tags: ["交通樞紐", "購物"], stay: "30 分鐘", lat: 33.5902, lng: 130.4207 },
+      { id: "kushida", name: "櫛田神社", hub: "fukuoka-city", station: "祇園站、中洲川端站", tags: ["寺廟神社", "歷史"], stay: "30 分鐘", lat: 33.5930, lng: 130.4106 },
+      { id: "canal-city", name: "博多運河城", hub: "fukuoka-city", station: "中洲川端站、祇園站，步行約 10 分鐘", tags: ["購物"], stay: "1–2 小時", lat: 33.5897, lng: 130.4108 },
+      { id: "nakasu-yatai", name: "中洲屋台", hub: "fukuoka-city", station: "中洲川端站", tags: ["美食", "夜景"], stay: "1–1.5 小時", lat: 33.5925, lng: 130.4055 },
+      { id: "ohori-park", name: "大濠公園", hub: "fukuoka-city", station: "大濠公園站（地鐵空港線）", tags: ["自然"], stay: "1 小時", lat: 33.5862, lng: 130.3763 },
+      { id: "fukuoka-tower", name: "福岡塔", hub: "fukuoka-city", station: "西新站步行約 20 分鐘，或從博多、天神搭公車", tags: ["夜景"], stay: "1 小時", lat: 33.5933, lng: 130.3515 },
+      { id: "dazaifu-tenmangu", name: "太宰府天滿宮", hub: "dazaifu", station: "西鐵太宰府站，步行約 5 分鐘", tags: ["寺廟神社", "歷史"], stay: "1.5–2 小時", lat: 33.5215, lng: 130.5349 },
+    ],
+    itineraries: [
+      {
+        id: "fukuoka-hakata",
+        title: "博多・中洲：神社、商場與屋台",
+        days: 0.5, themes: ["第一次去", "美食", "夜景"],
+        summary: "下午參拜櫛田神社、逛博多運河城，晚上到中洲河邊的屋台吃拉麵和關東煮。",
+        stops: ["kushida", "canal-city", "nakasu-yatai"],
+        legs: [
+          { mode: "步行", detail: "從櫛田神社往南走就是博多運河城", minutes: 5, cost: "步行免費" },
+          { mode: "步行", detail: "沿那珂川往北走到中洲河邊的屋台區", minutes: 10, cost: "步行免費" },
+        ],
+      },
+      {
+        id: "fukuoka-dazaifu",
+        title: "太宰府天滿宮半日遊",
+        days: 0.5, themes: ["近郊", "寺廟", "歷史"],
+        summary: "從博多搭地鐵到天神，轉西鐵電車到太宰府；參道上可以吃梅枝餅。",
+        stops: ["hakata-station", "dazaifu-tenmangu"],
+        legs: [
+          { mode: "電車", detail: "地鐵空港線 博多站 → 天神站（約 5 分鐘），轉西鐵天神大牟田線到二日市，再轉太宰府線到太宰府站，步行約 5 分鐘", minutes: 60, cost: "約 690 日圓（地鐵約 210＋西鐵約 480）" },
+        ],
+      },
+    ],
+  },
+  // ===================================================================
+  {
+    id: "sapporo",
+    name: "札幌・小樽",
+    country: "jp",
+    currency: "日圓",
+    transportTip: "新千歲機場到札幌搭 JR 快速 Airport 最方便。札幌市區有地鐵和路面電車，大通、薄野一帶步行就能逛；到小樽搭 JR 約 30–45 分鐘。冬天路面結冰，請穿防滑鞋。",
+    hubs: [
+      { id: "sapporo", name: "札幌", station: "札幌站", lat: 43.0687, lng: 141.3508 },
+      { id: "otaru", name: "小樽", station: "小樽站", lat: 43.1977, lng: 140.9937 },
+    ],
+    intercity: [
+      { from: "sapporo", to: "otaru", mode: "電車", detail: "JR 函館本線（快速 Airport 或普通車）札幌站 → 小樽站；票價請以 JR 北海道官網為準", minutes: 40, cost: "約 750 日圓（未查證）" },
+    ],
+    spots: [
+      { id: "hokkaido-jingu", name: "北海道神宮", hub: "sapporo", station: "圓山公園站（地鐵東西線），步行約 15 分鐘", tags: ["寺廟神社", "自然"], stay: "1 小時", lat: 43.0545, lng: 141.3076 },
+      { id: "odori-park", name: "大通公園", hub: "sapporo", station: "大通站", tags: ["自然"], stay: "45 分鐘", lat: 43.0598, lng: 141.3483 },
+      { id: "sapporo-tv-tower", name: "札幌電視塔", hub: "sapporo", station: "大通站", tags: ["夜景"], stay: "45 分鐘", lat: 43.0611, lng: 141.3564 },
+      { id: "tanukikoji", name: "狸小路商店街", hub: "sapporo", station: "大通站、薄野站", tags: ["購物", "美食"], stay: "1–1.5 小時", lat: 43.0575, lng: 141.3530 },
+      { id: "nijo-market", name: "二條市場", hub: "sapporo", station: "巴士中心前站（地鐵東西線）", tags: ["美食"], stay: "1 小時", lat: 43.0581, lng: 141.3591 },
+      { id: "moiwa", name: "藻岩山展望台", hub: "sapporo", station: "路面電車「纜車入口」站，轉接駁巴士到山麓站", tags: ["夜景", "自然"], stay: "1.5 小時", lat: 43.0378, lng: 141.3220 },
+      { id: "otaru-canal", name: "小樽運河", hub: "otaru", station: "小樽站，步行約 10 分鐘", tags: ["夜景", "歷史"], stay: "1–2 小時", lat: 43.1993, lng: 141.0024 },
+    ],
+    itineraries: [
+      {
+        id: "sapporo-city",
+        title: "札幌市區：北海道神宮・大通公園・狸小路",
+        days: 1, themes: ["第一次去", "美食", "自然"],
+        summary: "早上到北海道神宮散步，再搭地鐵回市中心逛大通公園、上札幌電視塔，晚上在狸小路吃湯咖哩。",
+        stops: ["hokkaido-jingu", "odori-park", "sapporo-tv-tower", "tanukikoji"],
+        legs: [
+          { mode: "地鐵", detail: "步行回圓山公園站，地鐵東西線 圓山公園站 → 大通站（約 5 分鐘）", minutes: 25, cost: "約 210–250 日圓" },
+          { mode: "步行", detail: "沿大通公園往東走到電視塔", minutes: 5, cost: "步行免費" },
+          { mode: "步行", detail: "從電視塔往南走過兩個路口就是狸小路", minutes: 8, cost: "步行免費" },
+        ],
+      },
+    ],
+  },
+  // ===================================================================
+  {
+    id: "nagoya",
+    name: "名古屋",
+    country: "jp",
+    currency: "日圓",
+    transportTip: "中部國際機場到名古屋搭名鐵 μSKY 最快。市區景點用地鐵名城線、東山線就能串起來；名古屋城、大須、榮之間都在地鐵 10–15 分鐘內。",
+    hubs: [{ id: "nagoya", name: "名古屋", station: "名古屋站", lat: 35.1709, lng: 136.8815 }],
+    intercity: [],
+    spots: [
+      { id: "nagoya-castle", name: "名古屋城", hub: "nagoya", station: "名古屋城站（地鐵名城線，原市役所站）", tags: ["歷史"], stay: "1.5–2 小時", lat: 35.1856, lng: 136.8991 },
+      { id: "atsuta", name: "熱田神宮", hub: "nagoya", station: "神宮前站（名鐵）、熱田神宮傳馬町站", tags: ["寺廟神社", "歷史"], stay: "1 小時", lat: 35.1279, lng: 136.9087 },
+      { id: "osu", name: "大須商店街", hub: "nagoya", station: "大須觀音站、上前津站", tags: ["購物", "美食"], stay: "1.5–2 小時", lat: 35.1590, lng: 136.9046 },
+      { id: "oasis21", name: "名古屋電視塔・綠洲 21", hub: "nagoya", station: "榮站", tags: ["夜景", "購物"], stay: "1 小時", lat: 35.1717, lng: 136.9081 },
+      { id: "toyota-museum", name: "豐田產業技術紀念館", hub: "nagoya", station: "榮生站（名鐵），步行約 3 分鐘", tags: ["博物館", "親子"], stay: "1.5–2 小時", lat: 35.1823, lng: 136.8768 },
+      { id: "scmaglev", name: "磁浮・鐵道館", hub: "nagoya", station: "金城埠頭站（青波線）", tags: ["博物館", "親子"], stay: "2 小時", lat: 35.0457, lng: 136.8526 },
+    ],
+    itineraries: [
+      {
+        id: "nagoya-classic",
+        title: "名古屋城・大須・榮",
+        days: 1, themes: ["第一次去", "歷史", "購物"],
+        summary: "上午參觀名古屋城，中午到大須商店街邊走邊吃，傍晚到榮看綠洲 21 的水之宇宙船。",
+        stops: ["nagoya-castle", "osu", "oasis21"],
+        legs: [
+          { mode: "地鐵", detail: "地鐵名城線 名古屋城站 → 上前津站，步行約 5 分鐘", minutes: 15, cost: "約 210–240 日圓" },
+          { mode: "地鐵", detail: "地鐵名城線 上前津站 → 榮站（2 站）；也可以步行約 20 分鐘", minutes: 10, cost: "約 210 日圓" },
+        ],
+      },
+    ],
+  },
+  // ===================================================================
+  {
+    id: "okinawa",
+    name: "沖繩",
+    country: "jp",
+    currency: "日圓",
+    transportTip: "那霸市區靠單軌電車（Yui Rail）就能到國際通和首里城。北部的美麗海水族館離那霸約 2 小時，可搭高速巴士或自駕；多數旅客會租車。",
+    hubs: [
+      { id: "naha", name: "那霸", station: "縣廳前站（Yui Rail）", lat: 26.2142, lng: 127.6795 },
+      { id: "motobu", name: "本部（北部）", station: "美麗海水族館一帶", lat: 26.6944, lng: 127.8779 },
+    ],
+    intercity: [
+      { from: "naha", to: "motobu", mode: "公車", detail: "從那霸機場或那霸市區搭高速巴士到美麗海水族館一帶；自駕約 1.5–2 小時。班次與票價請以巴士公司公告為準", minutes: 140, cost: "票價請以巴士公司公告為準" },
+    ],
+    spots: [
+      { id: "kokusai-dori", name: "國際通", hub: "naha", station: "縣廳前站、牧志站（Yui Rail）", tags: ["購物", "美食"], stay: "1.5–2 小時", lat: 26.2150, lng: 127.6860 },
+      { id: "makishi-market", name: "第一牧志公設市場", hub: "naha", station: "牧志站（Yui Rail），步行約 10 分鐘", tags: ["美食"], stay: "1 小時", lat: 26.2145, lng: 127.6900 },
+      { id: "shuri-castle", name: "首里城公園", hub: "naha", station: "首里站（Yui Rail），步行約 15 分鐘", tags: ["歷史"], stay: "1.5 小時", lat: 26.2170, lng: 127.7195 },
+      { id: "naminoue", name: "波上宮", hub: "naha", station: "旭橋站、縣廳前站，步行約 15 分鐘", tags: ["寺廟神社", "海景"], stay: "45 分鐘", lat: 26.2208, lng: 127.6716 },
+      { id: "churaumi", name: "沖繩美麗海水族館", hub: "motobu", station: "那霸搭高速巴士約 2 小時以上", tags: ["親子", "海景"], stay: "2–3 小時", lat: 26.6944, lng: 127.8779 },
+    ],
+    itineraries: [
+      {
+        id: "okinawa-naha",
+        title: "那霸一日：首里城・國際通・牧志市場",
+        days: 1, themes: ["第一次去", "歷史", "美食"],
+        summary: "上午參觀首里城，2026 年 11 月 23 日起重建完成的正殿重新開放（需事前預約）；下午逛國際通，晚上到牧志市場吃海鮮。",
+        stops: ["shuri-castle", "kokusai-dori", "makishi-market"],
+        legs: [
+          { mode: "電車", detail: "步行回首里站，搭 Yui Rail 到牧志站（約 10 分鐘），出站就是國際通東端", minutes: 30, cost: "約 230–300 日圓" },
+          { mode: "步行", detail: "從國際通轉進市場本通商店街，走到第一牧志公設市場", minutes: 10, cost: "步行免費" },
+        ],
+      },
+    ],
+  },
+  // ===================================================================
+  {
+    id: "jeju",
+    name: "濟州島",
+    country: "kr",
+    currency: "韓元",
+    transportTip: "濟州島沒有地鐵，景點分散在島的北、南、東三區，多數旅客會租車或包車。搭公車也可以，但單程常要 1–1.5 小時。濟州機場在北部的濟州市。",
+    hubs: [
+      { id: "jeju-city", name: "濟州市（北部）", station: "濟州市區", lat: 33.4996, lng: 126.5312 },
+      { id: "seogwipo", name: "西歸浦（南部）", station: "西歸浦市區", lat: 33.2541, lng: 126.5600 },
+      { id: "seongsan", name: "城山（東部）", station: "城山港一帶", lat: 33.4620, lng: 126.9300 },
+    ],
+    intercity: [
+      { from: "jeju-city", to: "seogwipo", mode: "公車", detail: "搭快速巴士或機場巴士 600 號往西歸浦；計程車約 50 分鐘", minutes: 80, cost: "公車約數千韓元（未查證）" },
+      { from: "jeju-city", to: "seongsan", mode: "公車", detail: "搭往城山方向的快速巴士；計程車或自駕約 1 小時", minutes: 90, cost: "公車約數千韓元（未查證）" },
+      { from: "seogwipo", to: "seongsan", mode: "公車", detail: "沿東南海岸的公車；計程車或自駕約 50 分鐘", minutes: 90, cost: "公車約數千韓元（未查證）" },
+    ],
+    spots: [
+      { id: "dongmun-market", name: "東門市場", hub: "jeju-city", station: "濟州市區", tags: ["美食", "購物"], stay: "1 小時", lat: 33.5122, lng: 126.5262 },
+      { id: "yongduam", name: "龍頭岩", hub: "jeju-city", station: "濟州市區，離機場約 15 分鐘車程", tags: ["海景", "自然"], stay: "30 分鐘", lat: 33.5163, lng: 126.5120 },
+      { id: "cheonjiyeon", name: "天地淵瀑布", hub: "seogwipo", station: "西歸浦市區", tags: ["自然", "夜景"], stay: "45 分鐘", lat: 33.2447, lng: 126.5594 },
+      { id: "jusangjeolli", name: "中文大浦海岸柱狀節理帶", hub: "seogwipo", station: "中文觀光區", tags: ["海景", "自然"], stay: "45 分鐘", lat: 33.2378, lng: 126.4252 },
+      { id: "seongsan-ilchulbong", name: "城山日出峰", hub: "seongsan", station: "城山港一帶", tags: ["自然", "海景"], stay: "1.5 小時", lat: 33.4580, lng: 126.9425 },
+      { id: "seopjikoji", name: "涉地可支", hub: "seongsan", station: "城山日出峰南方約 10 分鐘車程", tags: ["海景", "拍照"], stay: "1 小時", lat: 33.4240, lng: 126.9300 },
+    ],
+    itineraries: [
+      {
+        id: "jeju-east",
+        title: "濟州東部：城山日出峰・涉地可支",
+        days: 0.5, themes: ["自然", "海景", "拍照"],
+        summary: "早上爬城山日出峰看海景（約 20–30 分鐘上山），再到涉地可支沿海岸散步。",
+        stops: ["seongsan-ilchulbong", "seopjikoji"],
+        legs: [
+          { mode: "計程車", detail: "計程車或自駕約 10 分鐘；也可以沿海岸步行約 40 分鐘", minutes: 10, cost: "計程車約 5,000–8,000 韓元（未查證）" },
+        ],
+      },
+      {
+        id: "jeju-south",
+        title: "西歸浦：柱狀節理帶・天地淵瀑布夜景",
+        days: 0.5, themes: ["自然", "海景", "夜景"],
+        summary: "下午到中文觀光區看海邊的柱狀節理，傍晚到天地淵瀑布，晚上瀑布步道有燈光。",
+        stops: ["jusangjeolli", "cheonjiyeon"],
+        legs: [
+          { mode: "計程車", detail: "計程車或自駕約 20 分鐘；公車約 40 分鐘", minutes: 20, cost: "計程車約 12,000–15,000 韓元（未查證）" },
         ],
       },
     ],
@@ -329,6 +548,12 @@ window.GUIDES = [
       { title: "ekitan：關西機場 → 京都 票價查詢", url: "https://ekitan.com/transit/fare/sf-5130/st-5198" },
       { title: "nippon.com：免稅改為退稅制", url: "https://www.nippon.com/ja/japan-data/h02925/" },
       { title: "bring-you：京都地鐵巴士一日券 2026", url: "https://www.bring-you.info/zh-tw/kyoto-bus-pass" },
+      { title: "travelist：福岡機場到博多站", url: "https://travelist.jp/airport_FUK/guide/posts/p336" },
+      { title: "ekitan：天神 → 太宰府 票價查詢", url: "https://ekitan.com/transit/fare/sf-7824/st-7785" },
+      { title: "JR 北海道：新千歲機場交通", url: "https://www.jrhokkaido.co.jp/airport/index.html" },
+      { title: "名古屋 Concierge：中部國際機場交通", url: "https://www.nagoya-info.jp/access/centrair/" },
+      { title: "travelist：那霸機場 Yui Rail", url: "https://travelist.jp/airport_OKA/guide/posts/p428" },
+      { title: "Time Out：首里城正殿重新開放", url: "https://www.timeout.jp/tokyo/ja/news/shuri-castle-reopen-102126" },
     ],
   },
   {
@@ -384,6 +609,8 @@ window.GUIDES = [
       { title: "趣旅行：金海機場到釜山市區", url: "https://www.funtime.com.tw/blog/funtime/busan-airport-to-city-transit" },
       { title: "haniseoul：韓國旅遊必備 App", url: "https://www.haniseoul.com/travels/korea/best-apps-korea-travel" },
       { title: "LG U+：韓國旅遊必備 App", url: "https://lguplus.com/korea-sim/eng/pc/support/blog/korea_travel_essential_apps_guide" },
+      { title: "KTX 時刻表：釜山 → 慶州", url: "https://train.asamaru.net/%EC%8B%9C%EA%B0%84%ED%91%9C/%EB%B6%80%EC%82%B0%EC%97%AD-%EA%B2%BD%EB%B6%80%EC%84%A0-%EA%B3%A0%EC%86%8D%EC%B2%A0%EB%8F%84/%EC%B6%9C%EB%B0%9C/%EC%8B%A0%EA%B2%BD%EC%A3%BC%EC%97%AD-%EA%B2%BD%EB%B6%80%EC%84%A0/%EB%8F%84%EC%B0%A9/" },
+      { title: "mileasia：濟州機場到西歸浦 2026", url: "https://mileasia.com/korea/jeju-airport-to-seogwipo/" },
     ],
   },
 ];
@@ -395,6 +622,63 @@ window.GUIDES = [
 // direct: true 表示直接到目的地（例如計程車），時間依距離估算。
 // ===================================================================
 window.AIRPORTS = {
+  fukuoka: [
+    {
+      id: "fuk", name: "福岡機場", lat: 33.5859, lng: 130.4507,
+      options: [
+        { mode: "電車", title: "地鐵空港線 → 博多站", detail: "福岡機場站（國內線航廈）→ 博多站，2 站；國際線旅客先搭免費接駁巴士到國內線航廈", minutes: 5, cost: "約 260 日圓", verified: true,
+          to: { name: "博多站", hub: "fukuoka-city", lat: 33.5902, lng: 130.4207 } },
+        { mode: "電車", title: "地鐵空港線 → 天神站", detail: "福岡機場站 → 天神站，直達；到太宰府可在天神轉西鐵", minutes: 11, cost: "約 260–300 日圓", verified: false,
+          to: { name: "天神站", hub: "fukuoka-city", lat: 33.5910, lng: 130.3990 } },
+        { mode: "計程車", title: "計程車（直達目的地）", detail: "行李多或多人同行適合；到博多站約 15 分鐘", minutes: 15, cost: "依距離跳錶；到博多站約 1,500–2,000 日圓", verified: false, direct: true,
+          to: { name: "博多站", hub: "fukuoka-city", lat: 33.5902, lng: 130.4207 } },
+      ],
+    },
+  ],
+  sapporo: [
+    {
+      id: "cts", name: "新千歲機場", lat: 42.7752, lng: 141.6923,
+      options: [
+        { mode: "電車", title: "JR 快速 Airport → 札幌站", detail: "JR 快速 Airport 直達札幌站，日間約 10 分鐘一班；部分班次直通小樽", minutes: 37, cost: "約 1,230 日圓", verified: true,
+          to: { name: "札幌站", hub: "sapporo", lat: 43.0687, lng: 141.3508 } },
+        { mode: "電車", title: "JR 快速 Airport → 小樽站（直通班次）", detail: "部分快速 Airport 直通小樽，最快約 73 分鐘；其他班次在札幌轉車", minutes: 75, cost: "約 1,900 日圓", verified: false,
+          to: { name: "小樽站", hub: "otaru", lat: 43.1977, lng: 140.9937 } },
+      ],
+    },
+  ],
+  nagoya: [
+    {
+      id: "ngo", name: "中部國際機場", lat: 34.8584, lng: 136.8054,
+      options: [
+        { mode: "電車", title: "名鐵 μSKY → 名鐵名古屋站", detail: "全車對號座，需加購 μ 車票（約 450 日圓，已含在票價內）", minutes: 30, cost: "約 1,430 日圓", verified: true,
+          to: { name: "名鐵名古屋站", hub: "nagoya", lat: 35.1700, lng: 136.8840 } },
+        { mode: "電車", title: "名鐵 準急 → 名鐵名古屋站（較便宜）", detail: "不用對號座費用，時間較長", minutes: 48, cost: "約 980 日圓", verified: true,
+          to: { name: "名鐵名古屋站", hub: "nagoya", lat: 35.1700, lng: 136.8840 } },
+      ],
+    },
+  ],
+  okinawa: [
+    {
+      id: "oka", name: "那霸機場", lat: 26.2063, lng: 127.6487,
+      options: [
+        { mode: "電車", title: "Yui Rail → 縣廳前站", detail: "單軌電車從那霸機場站出發，縣廳前站就在國際通西端", minutes: 12, cost: "約 270 日圓", verified: true,
+          to: { name: "縣廳前站", hub: "naha", lat: 26.2142, lng: 127.6795 } },
+        { mode: "計程車", title: "計程車（直達目的地）", detail: "行李多或多人同行適合；到國際通約 15–20 分鐘。去北部多數旅客會在機場附近租車", minutes: 18, cost: "依距離跳錶；到國際通約 1,500–2,000 日圓，到北部會貴很多", verified: false, direct: true,
+          to: { name: "國際通", hub: "naha", lat: 26.2150, lng: 127.6860 } },
+      ],
+    },
+  ],
+  jeju: [
+    {
+      id: "cju", name: "濟州機場", lat: 33.5113, lng: 126.4930,
+      options: [
+        { mode: "公車", title: "機場巴士 600 → 中文觀光區・西歸浦", detail: "入境大廳 5 號門附近上車，可刷 T-money；到中文觀光區約 1 小時", minutes: 60, cost: "約 4,500–6,000 韓元", verified: false,
+          to: { name: "中文觀光區", hub: "seogwipo", lat: 33.2490, lng: 126.4120 } },
+        { mode: "計程車", title: "計程車（直達目的地）", detail: "到濟州市區約 15 分鐘；到西歸浦約 50 分鐘。多數旅客會在機場租車", minutes: 15, cost: "依距離跳錶；到濟州市區約 6,000–10,000 韓元", verified: false, direct: true,
+          to: { name: "濟州市區", hub: "jeju-city", lat: 33.4996, lng: 126.5312 } },
+      ],
+    },
+  ],
   tokyo: [
     {
       id: "nrt", name: "成田機場", lat: 35.7720, lng: 140.3929,
