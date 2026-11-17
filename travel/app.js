@@ -90,7 +90,7 @@
   // ---------------------------------------------------------------
   // 分頁
   // ---------------------------------------------------------------
-  const tabs = ["plans", "route", "guide"];
+  const tabs = ["plans", "route", "guide", "translate"];
   function showTab(name) {
     for (const t of tabs) {
       const active = t === name;
