@@ -1,0 +1,59 @@
+/* 韓國景點路線：深藍＋淺藍配色
+   載入在 ../travel/style.css 之後，只覆蓋顏色變數與頁首漸層；版面與功能沿用共用樣式。
+   日本 App 與合併版不載入這個檔案，維持紅＋粉配色。 */
+:root {
+  --bg: #eff6ff;
+  --card: #ffffff;
+  --text: #0f172a;
+  --muted: #475569;
+  --border: #bfdbfe;
+  --accent: #1e3a8a;
+  --accent-text: #ffffff;
+  --accent-soft: #dbeafe;
+  --accent-soft-text: #1e3a8a;
+  --focus: #93c5fd;
+  --chip: #eff6ff;
+  --line: #93c5fd;
+
+  /* 輪流使用的 8 種顏色：全部改為深藍到淺藍的層次 */
+  --c1: #1e3a8a; --c2: #2563eb; --c3: #0369a1; --c4: #1d4ed8;
+  --c5: #0e7490; --c6: #0284c7; --c7: #312e81; --c8: #3b82f6;
+  --s1: #dbeafe; --t1: #1e3a8a;  --s2: #e0f2fe; --t2: #075985;
+  --s3: #e0e7ff; --t3: #3730a3;  --s4: #cffafe; --t4: #155e75;
+  --s5: #f0f9ff; --t5: #0c4a6e;  --s6: #bae6fd; --t6: #0c4a6e;
+  --s7: #c7d2fe; --t7: #312e81;  --s8: #bfdbfe; --t8: #1e40af;
+  --on-color: #ffffff;
+  --pattern-color: rgba(30, 58, 138, 0.06);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0b1220;
+    --card: #111c33;
+    --text: #e0f2fe;
+    --muted: #94a3b8;
+    --border: #1e3a5f;
+    --accent: #7dd3fc;
+    --accent-text: #0b1220;
+    --accent-soft: #172554;
+    --accent-soft-text: #bae6fd;
+    --focus: #1d4ed8;
+    --chip: #15213b;
+    --line: #1e40af;
+
+    --c1: #7dd3fc; --c2: #60a5fa; --c3: #38bdf8; --c4: #93c5fd;
+    --c5: #67e8f9; --c6: #bae6fd; --c7: #a5b4fc; --c8: #3b82f6;
+    --s1: #172554; --t1: #bae6fd;  --s2: #0c4a6e; --t2: #e0f2fe;
+    --s3: #1e1b4b; --t3: #c7d2fe;  --s4: #164e63; --t4: #cffafe;
+    --s5: #0f2942; --t5: #bae6fd;  --s6: #1e3a8a; --t6: #dbeafe;
+    --s7: #312e81; --t7: #e0e7ff;  --s8: #1e40af; --t8: #dbeafe;
+    --on-color: #0b1220;
+    --pattern-color: rgba(125, 211, 252, 0.06);
+  }
+}
+
+/* 頁首：深藍到淺藍的漸層 */
+.site-header {
+  background: linear-gradient(120deg, #172554 0%, #1e3a8a 35%, #1d4ed8 65%, #38bdf8 100%);
+  box-shadow: 0 6px 18px rgba(30, 58, 138, 0.3);
+}
