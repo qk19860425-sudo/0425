@@ -71,14 +71,21 @@
         </div>
         <div class="field">
           <label for="route-from">出發地（景點或機場）</label>
-          <select id="route-from" required></select>
+          <select id="route-from"></select>
         </div>
         <div class="swap-row">
           <button type="button" id="route-swap" class="button button-secondary button-small" aria-label="出發與目的地對調">⇅ 對調</button>
         </div>
         <div class="field">
           <label for="route-to">目的地（景點或機場）</label>
-          <select id="route-to" required></select>
+          <select id="route-to"></select>
+        </div>
+        <div class="field">
+          <label for="route-to-text">或自己輸入目的地</label>
+          <input id="route-to-text" type="search" list="route-to-suggest" autocomplete="off" enterkeyhint="search"
+                 placeholder="例如：飯店名稱、地址、車站">
+          <datalist id="route-to-suggest"></datalist>
+          <p class="field-hint">有輸入文字時，會以這裡為目的地。清單裡的景點會自動對應；清單外的地點會用地圖查路線。</p>
         </div>
         <div class="form-actions">
           <button type="submit" class="button">確定查詢</button>

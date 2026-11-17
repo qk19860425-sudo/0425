@@ -213,6 +213,21 @@ button:focus-visible, select:focus, a:focus-visible, summary:focus-visible {
 }
 .unverified { margin: 0 0 4px; font-size: 0.85rem; color: var(--tip-text); background: var(--tip-bg); padding: 4px 8px; border-radius: 6px; }
 
+/* ---- 手動輸入目的地 ---- */
+input[type="search"] {
+  width: 100%;
+  font: inherit;
+  font-size: 16px;
+  color: var(--text);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  min-height: 48px;
+}
+input[type="search"]:focus { outline: 3px solid var(--focus); outline-offset: 1px; }
+.field-hint { margin: 6px 0 0; color: var(--muted); font-size: 0.85rem; }
+
 /* ---- 翻譯 ---- */
 .tabs button { font-size: 0.95rem; padding: 0 4px; }
 .phrase-list { list-style: none; margin: 0; padding: 0; }
