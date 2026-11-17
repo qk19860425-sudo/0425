@@ -1,7 +1,7 @@
 // 日韓景點路線：Service Worker（離線快取）
 // 更新網站檔案時，請把 CACHE_VERSION 加 1，使用者下次開啟就會換成新版。
 // 注意：japan/ 與 korea/ 也共用這裡的程式與資料，改了 travel/ 的檔案時，japan/sw.js、korea/sw.js 的版本也要一起加 1。
-const CACHE_VERSION = "v15";
+const CACHE_VERSION = "v16";
 const CACHE_NAME = "travel-" + CACHE_VERSION;
 
 // 離線也要能開的檔案（路徑相對於 sw.js 所在的 travel/ 資料夾）
