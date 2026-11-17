@@ -472,9 +472,12 @@
   function airportPlan(region, airport, option, spot) {
     // 巴士等沿途有多個停靠站時，選離目的地最近的一站下車
     if (option.stops && option.stops.length) {
-      const stop = option.stops.reduce((best, x) => (distanceKm(x, spot) < distanceKm(best, spot) ? x : best));
+      // 目的地在別的城市時，改選離轉乘城際交通的城市中心最近的一站
+      const target = option.to.hub === spot.hub ? spot : (findHub(region, option.to.hub) || spot);
+      const stop = option.stops.reduce((best, x) => (distanceKm(x, target) < distanceKm(best, target) ? x : best));
       option = Object.assign({}, option, {
         minutes: stop.minutes || option.minutes,
+        cost: stop.cost || option.cost,
         to: Object.assign({}, option.to, { name: stop.name, lat: stop.lat, lng: stop.lng }),
       });
     }
@@ -561,12 +564,12 @@
   }
 
   // 會「先去別的城市再折返」的方案：機場交通的終點不在目的地所在的城市，而且
-  // ① 下車的地方離目的地跟機場差不多遠或更遠，或 ② 從機場坐到下車處比到目的地還遠（坐過頭再回來）。
+  // ① 下車的地方離目的地比機場還遠，或 ② 從機場坐到下車處比到目的地還遠（坐過頭再回來）。
   // 例：去大阪卻先搭 HARUKA 到京都、去札幌卻坐到小樽；但去京都時先到大阪再轉車是順路，不算折返
   function isDetour(airport, plan, spot) {
     const o = plan.option;
     if (o.direct || !o.to || o.to.hub === spot.hub) return false;
-    return distanceKm(o.to, spot) >= 0.9 * distanceKm(airport, spot) ||
+    return distanceKm(o.to, spot) > distanceKm(airport, spot) ||
       distanceKm(airport, o.to) > distanceKm(airport, spot);
   }
 

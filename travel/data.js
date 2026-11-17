@@ -432,10 +432,19 @@ window.REGIONS = [
     emoji: "🏯",
     country: "jp",
     currency: "日圓",
+    // 「機場 → 市區」快捷入口
+    quickRoutes: [
+      { airport: "ngo", to: "nagoya-station", label: "中部機場 → 名古屋站" },
+      { airport: "ngo", to: "oasis21", label: "中部機場 → 榮" },
+      { airport: "ngo", to: "osu", label: "中部機場 → 大須・金山" },
+    ],
+    // 市區大眾運輸的官方票價／班次查詢
+    localLink: { name: "名古屋市交通局官網", url: "https://www.kotsu.city.nagoya.jp/" },
     transportTip: "中部國際機場到名古屋搭名鐵 μSKY 最快。市區景點用地鐵名城線、東山線就能串起來；名古屋城、大須、榮之間都在地鐵 10–15 分鐘內。",
     hubs: [{ id: "nagoya", name: "名古屋", station: "名古屋站", lat: 35.1709, lng: 136.8815 }],
     intercity: [],
     spots: [
+      { id: "nagoya-station", name: "名古屋站（名古屋站一帶）", hub: "nagoya", station: "JR 名古屋站、名鐵名古屋站、地鐵名古屋站", tags: ["交通樞紐", "購物"], stay: "—", lat: 35.1709, lng: 136.8815 },
       { id: "nagoya-castle", name: "名古屋城", hub: "nagoya", station: "名古屋城站（地鐵名城線，原市役所站）", tags: ["歷史"], stay: "1.5–2 小時", lat: 35.1856, lng: 136.8991 },
       { id: "atsuta", name: "熱田神宮", hub: "nagoya", station: "神宮前站（名鐵）、熱田神宮傳馬町站", tags: ["寺廟神社", "歷史"], stay: "1 小時", lat: 35.1279, lng: 136.9087 },
       { id: "osu", name: "大須商店街", hub: "nagoya", station: "大須觀音站、上前津站", tags: ["購物", "美食"], stay: "1.5–2 小時", lat: 35.1590, lng: 136.9046 },
@@ -464,6 +473,14 @@ window.REGIONS = [
     emoji: "🌺",
     country: "jp",
     currency: "日圓",
+    // 「機場 → 市區」快捷入口
+    quickRoutes: [
+      { airport: "oka", to: "kokusai-dori", label: "那霸機場 → 國際通" },
+      { airport: "oka", to: "shuri-castle", label: "那霸機場 → 首里城" },
+      { airport: "oka", to: "churaumi", label: "那霸機場 → 美麗海水族館" },
+    ],
+    // 市區大眾運輸的官方票價／班次查詢
+    localLink: { name: "Yui Rail 官網", url: "https://www.yui-rail.co.jp/" },
     transportTip: "那霸市區靠單軌電車（Yui Rail）就能到國際通和首里城。北部的美麗海水族館離那霸約 2 小時，可搭高速巴士或自駕；多數旅客會租車。",
     hubs: [
       { id: "naha", name: "那霸", station: "縣廳前站（Yui Rail）", lat: 26.2142, lng: 127.6795 },
@@ -1080,10 +1097,22 @@ window.AIRPORTS = {
   nagoya: [
     {
       id: "ngo", name: "中部國際機場", lat: 34.8584, lng: 136.8054,
+      // detailBack：從市區回機場時的說明（方向相反）；transfers：這段本身要轉幾次車
+      // stops：沿途停靠站，查詢時會選離目的地最近的一站下車（minutes、cost 為到該站的值）
       options: [
-        { mode: "電車", title: "名鐵 μSKY → 名鐵名古屋站", detail: "全車對號座，需加購 μ 車票（約 450 日圓，已含在票價內）", minutes: 30, cost: "約 1,430 日圓", luggage: "good", luggageNote: "直達、全車對號座，車廂有行李放置區。", verified: true,
+        { mode: "電車", title: "名鐵 μSKY → 金山・名鐵名古屋站", detail: "名鐵 μSKY 中部國際機場站 → 金山站 → 名鐵名古屋站，全車對號座（票價已含 μ 車票約 450 日圓）", detailBack: "名鐵 μSKY 名鐵名古屋站 → 金山站 → 中部國際機場站，全車對號座（票價已含 μ 車票約 450 日圓）", minutes: 28, cost: "約 1,430 日圓", transfers: 0, luggage: "good", luggageNote: "直達、全車對號座，車廂有行李放置區。", verified: true,
+          official: { name: "名鐵官網（票價・班次）", url: "https://www.meitetsu.co.jp/" },
+          stops: [
+            { name: "金山站", lat: 35.1429, lng: 136.9007, minutes: 24, cost: "約 1,360 日圓" },
+            { name: "名鐵名古屋站", lat: 35.1700, lng: 136.8840, minutes: 28, cost: "約 1,430 日圓" },
+          ],
           to: { name: "名鐵名古屋站", hub: "nagoya", lat: 35.1700, lng: 136.8840 } },
-        { mode: "電車", title: "名鐵 準急 → 名鐵名古屋站（較便宜）", detail: "不用對號座費用，時間較長", minutes: 48, cost: "約 980 日圓", luggage: "ok", luggageNote: "通勤型車廂，沒有專用行李區。", verified: true,
+        { mode: "電車", title: "名鐵 準急 → 金山・名鐵名古屋站（較便宜）", detail: "名鐵 準急 中部國際機場站 → 金山站 → 名鐵名古屋站，不用對號座費用，時間較長", detailBack: "名鐵 準急 名鐵名古屋站 → 金山站 → 中部國際機場站，不用對號座費用", minutes: 48, cost: "約 980 日圓", transfers: 0, luggage: "ok", luggageNote: "通勤型車廂，沒有專用行李區。", verified: true,
+          official: { name: "名鐵官網（票價・班次）", url: "https://www.meitetsu.co.jp/" },
+          stops: [
+            { name: "金山站", lat: 35.1429, lng: 136.9007, minutes: 43, cost: "約 910 日圓" },
+            { name: "名鐵名古屋站", lat: 35.1700, lng: 136.8840, minutes: 48, cost: "約 980 日圓" },
+          ],
           to: { name: "名鐵名古屋站", hub: "nagoya", lat: 35.1700, lng: 136.8840 } },
       ],
     },
@@ -1092,9 +1121,17 @@ window.AIRPORTS = {
     {
       id: "oka", name: "那霸機場", lat: 26.2063, lng: 127.6487,
       options: [
-        { mode: "電車", title: "Yui Rail → 縣廳前站", detail: "單軌電車從那霸機場站出發，縣廳前站就在國際通西端", minutes: 12, cost: "約 270 日圓", luggage: "ok", luggageNote: "車程短，但車廂小；國際通一帶有坡道與人潮。", verified: true,
+        { mode: "電車", title: "Yui Rail（單軌電車）→ 縣廳前・牧志・首里", detail: "Yui Rail 那霸機場站 → 縣廳前站（國際通西端）→ 牧志站（國際通東端）→ 首里站，約 6–10 分鐘一班", detailBack: "Yui Rail 首里站 → 牧志站 → 縣廳前站 → 那霸機場站，約 6–10 分鐘一班", minutes: 12, cost: "約 270–370 日圓（依下車站）", transfers: 0, luggage: "ok", luggageNote: "車程短，但車廂小；國際通一帶有坡道與人潮。", verified: false,
+          official: { name: "Yui Rail 官網（票價・班次）", url: "https://www.yui-rail.co.jp/" },
+          stops: [
+            { name: "縣廳前站", lat: 26.2142, lng: 127.6795, minutes: 12 },
+            { name: "牧志站", lat: 26.2175, lng: 127.6926, minutes: 16 },
+            { name: "首里站", lat: 26.2193, lng: 127.7215, minutes: 27 },
+          ],
           to: { name: "縣廳前站", hub: "naha", lat: 26.2142, lng: 127.6795 } },
-        { mode: "計程車", title: "計程車（直達目的地）", detail: "行李多或多人同行適合；到國際通約 15–20 分鐘。去北部多數旅客會在機場附近租車", minutes: 18, cost: "依距離跳錶；到國際通約 1,500–2,000 日圓，到北部會貴很多", verified: false, direct: true,
+        { mode: "公車", title: "高速巴士 117 號 → 美麗海水族館一帶", detail: "高速巴士 117 號 那霸機場 → 紀念公園前（美麗海水族館一帶），走沖繩自動車道，約 2.5 小時以上；班次不多，請先查時刻表", detailBack: "高速巴士 117 號 紀念公園前（美麗海水族館一帶）→ 那霸機場，約 2.5 小時以上；回程請預留塞車時間", minutes: 150, cost: "約 2,500–2,900 日圓", transfers: 0, luggage: "ok", luggageNote: "直達免轉乘，但為一般路線巴士，車內行李空間有限；行李多建議租車。", verified: false,
+          to: { name: "紀念公園前（巴士站）", hub: "motobu", lat: 26.6930, lng: 127.8800 } },
+        { mode: "計程車", title: "計程車（直達目的地）", detail: "行李多或多人同行適合，直接坐到目的地；到國際通約 15–20 分鐘、約 1,500–2,000 日圓。去北部車資很高，多數旅客會在機場附近租車", detailBack: "行李多或多人同行適合，直接坐到那霸機場", minutes: 18, cost: "依距離跳錶", transfers: 0, verified: false, direct: true,
           to: { name: "國際通", hub: "naha", lat: 26.2150, lng: 127.6860 } },
       ],
     },
