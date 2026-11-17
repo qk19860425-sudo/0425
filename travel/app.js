@@ -56,6 +56,17 @@
   function modeLabel(mode) {
     return (MODE_ICON[mode] || "➡️") + " " + mode;
   }
+  // 交通方式的彩色標籤
+  const MODE_CLASS = { "步行": "walk", "大眾運輸": "transit", "地鐵": "subway", "電車": "rail", "公車": "bus", "計程車": "taxi", "纜車": "cable" };
+  function modeTag(mode) {
+    return el("strong", "mode-tag mode-" + (MODE_CLASS[mode] || "other"), modeLabel(mode));
+  }
+
+
+  // 地區名稱前面加上特色圖案
+  function regionLabel(r) {
+    return (r.emoji ? r.emoji + " " : "") + r.name;
+  }
 
   function findRegion(id) {
     return REGIONS.find((r) => r.id === id);
@@ -120,7 +131,7 @@
     const regionBox = $("plan-regions");
     regionBox.replaceChildren(
       chip("全部", planState.region === "", () => { planState.region = ""; renderPlanFilters(); markPlanPending(); }),
-      ...REGIONS.map((r) => chip(r.name, planState.region === r.id, () => {
+      ...REGIONS.map((r) => chip(regionLabel(r), planState.region === r.id, () => {
         planState.region = r.id; renderPlanFilters(); markPlanPending();
       }))
     );
@@ -136,7 +147,7 @@
   function renderItinerary(region, it) {
     const card = el("article", "card plan");
     const head = el("div", "plan-head");
-    head.append(el("h2", "plan-title", it.title), el("span", "badge", region.name));
+    head.append(el("h2", "plan-title", it.title), el("span", "badge", regionLabel(region)));
     card.append(head);
 
     const meta = el("div", "tags");
@@ -151,7 +162,7 @@
     it.stops.forEach((stopId, i) => {
       const spot = findSpot(region, stopId);
       const li = el("li", "stop");
-      li.append(el("span", "stop-dot", String(i + 1)));
+      li.append(el("span", "stop-dot dot-" + (i % 6), String(i + 1)));
       const body = el("div", "stop-body");
       body.append(el("h3", "stop-name", spot.name));
       body.append(el("p", "stop-meta", "🚉 " + spot.station + "　⏱ 建議停留 " + spot.stay));
@@ -164,7 +175,7 @@
         const legLi = el("li", "leg");
         const legBody = el("div", "leg-body");
         const top = el("p", "leg-top");
-        top.append(el("strong", "", modeLabel(leg.mode)), " " + formatMinutes(leg.minutes) + "・" + leg.cost);
+        top.append(modeTag(leg.mode), " " + formatMinutes(leg.minutes) + "・" + leg.cost);
         legBody.append(top, el("p", "leg-detail", leg.detail));
         legBody.append(mapLinks(region, spot, next));
         legLi.append(legBody);
@@ -210,7 +221,7 @@
   const toSelect = $("route-to");
 
   for (const r of REGIONS) {
-    const o = el("option", "", r.name);
+    const o = el("option", "", regionLabel(r));
     o.value = r.id;
     regionSelect.append(o);
   }
@@ -352,7 +363,7 @@
   function renderOption(opt, primary) {
     const box = el("div", "option" + (primary ? " option-primary" : ""));
     const top = el("p", "leg-top");
-    top.append(el("strong", "", modeLabel(opt.mode)), " " + formatMinutes(opt.minutes) + (opt.cost ? "・" + opt.cost : ""));
+    top.append(modeTag(opt.mode), " " + formatMinutes(opt.minutes) + (opt.cost ? "・" + opt.cost : ""));
     if (primary) top.append(" ", el("span", "badge badge-accent", "推薦"));
     box.append(top, el("p", "leg-detail", opt.note));
     return box;
@@ -431,7 +442,7 @@
     for (const s of plan.segs) {
       const li = el("li", "segment");
       const top = el("p", "leg-top");
-      top.append(el("strong", "", modeLabel(s.mode)), " " + s.from + " → " + s.to);
+      top.append(modeTag(s.mode), " " + s.from + " → " + s.to);
       const meta = el("p", "stop-meta", (s.minutes ? formatMinutes(s.minutes) : "時間未知") + (s.cost ? "・" + s.cost : "") + (s.estimated ? "（估算）" : ""));
       li.append(top, meta, el("p", "leg-detail", s.note));
       if (s.verified === false) li.append(el("p", "unverified", "⚠️ 票價或時間未查證，請以交通公司官網為準"));
@@ -538,14 +549,14 @@
         const ol = el("ol", "segments");
         const li1 = el("li", "segment");
         const top = el("p", "leg-top");
-        top.append(el("strong", "", modeLabel(o.mode)), " " + from.name + " → " + (o.direct ? text : o.to.name));
+        top.append(modeTag(o.mode), " " + from.name + " → " + (o.direct ? text : o.to.name));
         li1.append(top, el("p", "stop-meta", formatMinutes(o.minutes) + (o.cost ? "・" + o.cost : "") + (o.direct ? "（估算）" : "")), el("p", "leg-detail", o.detail));
         if (o.verified === false) li1.append(el("p", "unverified", "⚠️ 票價或時間未查證，請以交通公司官網為準"));
         ol.append(li1);
         if (!o.direct) {
           const li2 = el("li", "segment");
           const top2 = el("p", "leg-top");
-          top2.append(el("strong", "", modeLabel("大眾運輸")), " " + o.to.name + " → " + text);
+          top2.append(modeTag("大眾運輸"), " " + o.to.name + " → " + text);
           li2.append(top2, el("p", "leg-detail", "這一段請用地圖查詢。"), freeMapLinks(region, o.to, text));
           ol.append(li2);
         }
@@ -691,7 +702,7 @@
     const tipCard = el("div", "card");
     tipCard.append(el("h2", "plan-title", "各城市交通建議"));
     for (const r of tips) {
-      tipCard.append(el("h3", "stop-name", r.name), el("p", "leg-detail", r.transportTip));
+      tipCard.append(el("h3", "stop-name", regionLabel(r)), el("p", "leg-detail", r.transportTip));
     }
     parts.push(tipCard);
 
