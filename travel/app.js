@@ -2,7 +2,9 @@
 (function () {
   "use strict";
 
-  const REGIONS = window.REGIONS || [];
+  // 日本的城市排在前面、韓國在後；同一國家內維持資料檔的順序
+  const COUNTRY_ORDER = { jp: 0, kr: 1 };
+  const REGIONS = (window.REGIONS || []).slice().sort((a, b) => (COUNTRY_ORDER[a.country] ?? 9) - (COUNTRY_ORDER[b.country] ?? 9));
   const GUIDES = window.GUIDES || [];
   const $ = (id) => document.getElementById(id);
 
@@ -317,9 +319,10 @@
   // 一個方案 = 機場交通（抵達某車站）＋（必要時）跨城市＋到景點的最後一段
   function airportPlan(region, airport, option, spot) {
     if (option.direct) {
-      // 直達目的地（計程車）：走高速公路，依距離估算時間
+      // 直達目的地（計程車）：依距離估算時間。前 20 公里以市區時速約 30 公里計，
+      // 之後以高速公路時速約 65 公里計（避免長距離時高估）
       const km = distanceKm(airport, spot) * 1.3;
-      const minutes = 10 + km / 35 * 60;
+      const minutes = 10 + Math.min(km, 20) / 30 * 60 + Math.max(km - 20, 0) / 65 * 60;
       return { option, total: minutes, segs: [{
         mode: option.mode, from: airport.name, to: spot.name, minutes, cost: option.cost, note: option.detail, estimated: true,
       }] };
