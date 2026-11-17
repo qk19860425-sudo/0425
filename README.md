@@ -5,3 +5,4 @@
 日韓台模型玩具店搜尋網站：[models/](models/)
 日韓景點路線：[travel/](travel/)
 哆啦A夢搜尋入口：[doraemon/](doraemon/)
+大阪旅遊（原型）：[osaka/](osaka/)，啟動與資料修改方式見 [osaka/README.md](osaka/README.md)
