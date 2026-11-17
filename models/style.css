@@ -179,3 +179,16 @@ input:focus, select:focus, .chip:focus-visible, .button:focus-visible, .link-but
 
 .site-footer { color: var(--muted); font-size: 0.85rem; padding-bottom: 24px; }
 .site-footer p { margin: 4px 0; }
+
+/* ---- 模型玩具指南 ---- */
+.header-links { margin: 0 0 12px; }
+.header-links a { color: var(--accent); font-weight: 600; }
+.guide { margin-top: 24px; scroll-margin-top: 12px; }
+.guide-title { margin: 0 0 4px; font-size: 1.3rem; }
+.guide-desc { margin: 0 0 12px; color: var(--muted); }
+.guide-section summary { font-weight: 700; font-size: 1.08rem; cursor: pointer; min-height: 32px; }
+.guide-item-title { margin: 14px 0 4px; font-size: 1rem; }
+.guide-item-body { margin: 0; overflow-wrap: anywhere; }
+.guide-sources { margin: 8px 0 0; padding-left: 20px; font-size: 0.9rem; }
+.guide-sources li { margin-bottom: 4px; overflow-wrap: anywhere; }
+.guide-sources a { color: var(--accent); }
