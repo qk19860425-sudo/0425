@@ -161,35 +161,60 @@
     return "https://papago.naver.com/?sk=zh-TW&tk=" + target + "&st=" + encodeURIComponent(text);
   }
 
-  function updateLinks() {
-    const text = $("free-text").value.trim();
-    const t = TARGETS[$("free-target").value];
-    const empty = !text;
-    for (const [id, url] of [["open-google", googleUrl(text, t.google)], ["open-papago", papagoUrl(text, t.papago)]]) {
-      const a = $(id);
-      a.href = empty ? "#" : url;
-      a.setAttribute("aria-disabled", String(empty));
-      a.classList.toggle("is-disabled", empty);
-    }
-    $("free-hint").hidden = !empty;
+  const BUILDERS = {
+    "open-google": (text, t) => googleUrl(text, t.google),
+    "open-papago": (text, t) => papagoUrl(text, t.papago),
+  };
+
+  // 提示訊息：type 為 "error"（紅字）或 "info"（一般）
+  function showFreeMessage(text, type) {
+    const msg = $("free-hint");
+    msg.textContent = text;
+    msg.classList.toggle("free-error", type === "error");
+    msg.hidden = !text;
   }
+
+  // 只負責外觀（按鈕變淡）；真正的網址在按下的當下才產生。
+  // 手機中文輸入法打字時，有時不會觸發 input 事件，所以不能只靠事件更新連結。
+  function updateLinkLook() {
+    const empty = !$("free-text").value.trim();
+    for (const id of Object.keys(BUILDERS)) $(id).classList.toggle("is-disabled", empty);
+  }
+
   for (const [id, t] of Object.entries(TARGETS)) {
     const o = el("option", "", "翻成" + t.label);
     o.value = id;
     $("free-target").append(o);
   }
-  $("free-text").addEventListener("input", updateLinks);
-  $("free-target").addEventListener("change", updateLinks);
-  for (const id of ["open-google", "open-papago"]) {
+  for (const ev of ["input", "change", "compositionend", "keyup"]) {
+    $("free-text").addEventListener(ev, () => { updateLinkLook(); if ($("free-text").value.trim()) showFreeMessage("", ""); });
+  }
+
+  for (const id of Object.keys(BUILDERS)) {
     $(id).addEventListener("click", (e) => {
-      if ($(id).getAttribute("aria-disabled") === "true") {
+      const text = $("free-text").value.trim();
+      if (!text) {
         e.preventDefault();
+        showFreeMessage("請先在上面輸入想說的話，再按按鈕。", "error");
         $("free-text").focus();
+        return;
+      }
+      // 按下的當下才設定網址，瀏覽器接著就會開啟這個連結
+      $(id).href = BUILDERS[id](text, TARGETS[$("free-target").value]);
+      // 順便把文字複製到剪貼簿；翻譯 App 沒有自動帶入時可以直接貼上
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(
+          () => showFreeMessage("已開啟翻譯，文字也複製好了；如果沒有自動帶入，長按輸入框貼上即可。", "info"),
+          () => showFreeMessage("已開啟翻譯；如果文字沒有自動帶入，請回來複製後貼上。", "info")
+        );
+      } else {
+        showFreeMessage("已開啟翻譯；如果文字沒有自動帶入，請回來複製後貼上。", "info");
       }
     });
   }
 
   renderControls();
   renderPhrases();
-  updateLinks();
+  updateLinkLook();
+  showFreeMessage("先輸入文字，再按按鈕開啟翻譯。", "info");
 })();

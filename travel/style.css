@@ -236,6 +236,7 @@ textarea:focus { outline: 3px solid var(--focus); outline-offset: 1px; }
 .button.is-disabled { opacity: 0.5; }
 .free-hint[hidden] { display: none; }
 .free-hint { margin-top: 8px; }
+.free-hint.free-error { color: var(--error-text); background: var(--error-bg); padding: 8px 10px; border-radius: 8px; font-weight: 600; }
 .overlay {
   position: fixed;
   inset: 0;
