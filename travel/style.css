@@ -304,3 +304,119 @@ body.no-scroll { overflow: hidden; }
 .offline { margin: 0 0 10px; padding: 10px 12px; border-radius: 8px; background: var(--tip-bg); color: var(--tip-text); font-weight: 600; font-size: 0.9rem; }
 
 .site-footer { color: var(--muted); font-size: 0.85rem; padding-bottom: 24px; }
+
+/* =================================================================
+   繽紛配色與當地特色圖案
+   以紅粉為主色，搭配 8 種顏色輪流使用（分頁、選項、標籤、卡片、交通方式）
+   ================================================================= */
+:root {
+  --c1: #e11d48; --c2: #c2410c; --c3: #b45309; --c4: #15803d;
+  --c5: #0f766e; --c6: #1d4ed8; --c7: #6d28d9; --c8: #be185d;
+  --s1: #ffe4e6; --t1: #9f1239;  --s2: #ffedd5; --t2: #9a3412;
+  --s3: #fef3c7; --t3: #92400e;  --s4: #dcfce7; --t4: #166534;
+  --s5: #ccfbf1; --t5: #115e59;  --s6: #dbeafe; --t6: #1e40af;
+  --s7: #ede9fe; --t7: #5b21b6;  --s8: #fce7f3; --t8: #9d174d;
+  --on-color: #ffffff;
+  --pattern-color: rgba(225, 29, 72, 0.07);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --c1: #fb7185; --c2: #fb923c; --c3: #fbbf24; --c4: #4ade80;
+    --c5: #2dd4bf; --c6: #60a5fa; --c7: #a78bfa; --c8: #f472b6;
+    --s1: #4c0519; --t1: #fecdd3;  --s2: #431407; --t2: #fed7aa;
+    --s3: #451a03; --t3: #fde68a;  --s4: #052e16; --t4: #bbf7d0;
+    --s5: #042f2e; --t5: #99f6e4;  --s6: #172554; --t6: #bfdbfe;
+    --s7: #2e1065; --t7: #ddd6fe;  --s8: #500724; --t8: #fbcfe8;
+    --on-color: #1f0a10;
+    --pattern-color: rgba(251, 113, 133, 0.08);
+  }
+}
+
+/* 背景：淡淡的花瓣與波浪紋路（原創圖案） */
+body {
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(circle at 12% 8%, var(--pattern-color) 0 26px, transparent 27px),
+    radial-gradient(circle at 88% 30%, var(--pattern-color) 0 18px, transparent 19px),
+    radial-gradient(circle at 30% 70%, var(--pattern-color) 0 14px, transparent 15px),
+    radial-gradient(circle at 75% 85%, var(--pattern-color) 0 22px, transparent 23px);
+  background-size: 360px 360px;
+  background-attachment: fixed;
+}
+
+/* 頁首：彩色漸層橫幅＋當地特色圖案 */
+.site-header {
+  margin: 12px 12px 0;
+  padding: 20px 18px 16px;
+  border-radius: 20px;
+  background: linear-gradient(120deg, #e11d48 0%, #db2777 30%, #9333ea 60%, #2563eb 85%, #0d9488 100%);
+  color: #ffffff;
+  box-shadow: 0 6px 18px rgba(225, 29, 72, 0.25);
+}
+@media (min-width: 792px) { .site-header { margin: 12px auto 0; padding-left: 24px; padding-right: 24px; } }
+.site-header h1 { color: #ffffff; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25); }
+.site-header .subtitle { color: rgba(255, 255, 255, 0.95); margin-bottom: 4px; }
+.site-header .subtitle a { color: #ffffff; text-decoration: underline; }
+.motifs { margin: 8px 0 0; font-size: 1.6rem; letter-spacing: 6px; line-height: 1.2; }
+.pwa-bar { margin-top: 12px; }
+
+/* 分頁：每個分頁有自己的顏色 */
+.tabs #tab-plans { color: var(--c1); }
+.tabs #tab-route { color: var(--c6); }
+.tabs #tab-guide { color: var(--c4); }
+.tabs #tab-translate { color: var(--c7); }
+.tabs #tab-plans[aria-selected="true"] { background: var(--c1); border-color: var(--c1); color: var(--on-color); }
+.tabs #tab-route[aria-selected="true"] { background: var(--c6); border-color: var(--c6); color: var(--on-color); }
+.tabs #tab-guide[aria-selected="true"] { background: var(--c4); border-color: var(--c4); color: var(--on-color); }
+.tabs #tab-translate[aria-selected="true"] { background: var(--c7); border-color: var(--c7); color: var(--on-color); }
+
+/* 選項按鈕：選中時依序換顏色 */
+.chips .chip:nth-child(8n+1)[aria-pressed="true"] { background: var(--c1); border-color: var(--c1); color: var(--on-color); }
+.chips .chip:nth-child(8n+2)[aria-pressed="true"] { background: var(--c6); border-color: var(--c6); color: var(--on-color); }
+.chips .chip:nth-child(8n+3)[aria-pressed="true"] { background: var(--c4); border-color: var(--c4); color: var(--on-color); }
+.chips .chip:nth-child(8n+4)[aria-pressed="true"] { background: var(--c7); border-color: var(--c7); color: var(--on-color); }
+.chips .chip:nth-child(8n+5)[aria-pressed="true"] { background: var(--c2); border-color: var(--c2); color: var(--on-color); }
+.chips .chip:nth-child(8n+6)[aria-pressed="true"] { background: var(--c5); border-color: var(--c5); color: var(--on-color); }
+.chips .chip:nth-child(8n+7)[aria-pressed="true"] { background: var(--c8); border-color: var(--c8); color: var(--on-color); }
+.chips .chip:nth-child(8n+8)[aria-pressed="true"] { background: var(--c3); border-color: var(--c3); color: var(--on-color); }
+
+/* 標籤：依序換淡色底 */
+.tags .tag:nth-child(8n+1) { background: var(--s1); color: var(--t1); }
+.tags .tag:nth-child(8n+2) { background: var(--s6); color: var(--t6); }
+.tags .tag:nth-child(8n+3) { background: var(--s4); color: var(--t4); }
+.tags .tag:nth-child(8n+4) { background: var(--s7); color: var(--t7); }
+.tags .tag:nth-child(8n+5) { background: var(--s2); color: var(--t2); }
+.tags .tag:nth-child(8n+6) { background: var(--s5); color: var(--t5); }
+.tags .tag.tag-days { background: var(--c1); color: var(--on-color); }
+
+/* 卡片：上緣彩色線條，依序換顏色 */
+#plan-list > .card, #route-result > .card, #guide-content > .card, #phrase-list > .card { border-top: 5px solid var(--c1); }
+#plan-list > .card:nth-child(6n+2), #route-result > .card:nth-child(6n+2), #guide-content > .card:nth-child(6n+2), #phrase-list > .card:nth-child(6n+2) { border-top-color: var(--c6); }
+#plan-list > .card:nth-child(6n+3), #route-result > .card:nth-child(6n+3), #guide-content > .card:nth-child(6n+3), #phrase-list > .card:nth-child(6n+3) { border-top-color: var(--c4); }
+#plan-list > .card:nth-child(6n+4), #route-result > .card:nth-child(6n+4), #guide-content > .card:nth-child(6n+4), #phrase-list > .card:nth-child(6n+4) { border-top-color: var(--c7); }
+#plan-list > .card:nth-child(6n+5), #route-result > .card:nth-child(6n+5), #guide-content > .card:nth-child(6n+5), #phrase-list > .card:nth-child(6n+5) { border-top-color: var(--c2); }
+#plan-list > .card:nth-child(6n+6), #route-result > .card:nth-child(6n+6), #guide-content > .card:nth-child(6n+6), #phrase-list > .card:nth-child(6n+6) { border-top-color: var(--c5); }
+
+/* 行程的站點圓點：每站一個顏色 */
+.stop-dot.dot-0 { background: var(--c1); color: var(--on-color); }
+.stop-dot.dot-1 { background: var(--c6); color: var(--on-color); }
+.stop-dot.dot-2 { background: var(--c4); color: var(--on-color); }
+.stop-dot.dot-3 { background: var(--c7); color: var(--on-color); }
+.stop-dot.dot-4 { background: var(--c2); color: var(--on-color); }
+.stop-dot.dot-5 { background: var(--c5); color: var(--on-color); }
+.segment:nth-child(6n+2)::before { background: var(--c6); color: var(--on-color); }
+.segment:nth-child(6n+3)::before { background: var(--c4); color: var(--on-color); }
+.segment:nth-child(6n+4)::before { background: var(--c7); color: var(--on-color); }
+
+/* 交通方式標籤：每種交通一個顏色 */
+.mode-tag { display: inline-block; padding: 1px 9px; border-radius: 999px; font-size: 0.9em; }
+.mode-rail { background: var(--s6); color: var(--t6); }
+.mode-subway { background: var(--s7); color: var(--t7); }
+.mode-transit { background: var(--s8); color: var(--t8); }
+.mode-bus { background: var(--s4); color: var(--t4); }
+.mode-taxi { background: var(--s3); color: var(--t3); }
+.mode-walk { background: var(--s5); color: var(--t5); }
+.mode-cable, .mode-other { background: var(--s2); color: var(--t2); }
+
+/* 地區的特色圖案 */
+.region-emoji { margin-right: 4px; }

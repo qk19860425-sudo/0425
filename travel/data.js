@@ -3,6 +3,7 @@
 // 景點座標是概略位置（可能差數十到數百公尺），只用來估算距離與開啟地圖導航。
 //
 // 資料結構
+//   regions[].emoji     ：地區的特色圖案（顯示在選項與卡片上）
 //   regions[].hubs      ：區域內的城市中心（跨城市移動以 hub 對 hub 的交通為準）
 //   regions[].intercity ：hub 之間的交通建議
 //   regions[].spots     ：景點，hub 表示屬於哪個城市
@@ -14,6 +15,7 @@ window.REGIONS = [
   {
     id: "tokyo",
     name: "東京",
+    emoji: "🗼",
     country: "jp",
     currency: "日圓",
     transportTip: "東京以電車和地鐵為主，班次密集。買一張 Suica 或 PASMO（或手機綁定）就能搭大部分電車、地鐵和公車。計程車起跳約 500 日圓，短程多人可考慮。",
@@ -85,6 +87,7 @@ window.REGIONS = [
   {
     id: "kansai",
     name: "大阪・京都・奈良",
+    emoji: "⛩️",
     country: "jp",
     currency: "日圓",
     transportTip: "城市之間搭 JR 或私鐵（阪急、京阪、近鐵）都很方便。京都市區公車常客滿，建議盡量搭地鐵、電車再步行；三到四人短程可搭計程車。ICOCA 和 Suica 在關西都能用。",
@@ -169,6 +172,7 @@ window.REGIONS = [
   {
     id: "seoul",
     name: "首爾",
+    emoji: "👑",
     country: "kr",
     currency: "韓元",
     transportTip: "首爾地鐵路線多、標示有中文，用 T-money 卡或氣候同行卡最方便。地鐵和公車 30 分鐘內轉乘有優惠，下公車記得也要刷卡。計程車比日本便宜，叫車用 Kakao T 或 K.Ride。",
@@ -228,6 +232,7 @@ window.REGIONS = [
   {
     id: "busan",
     name: "釜山・慶州",
+    emoji: "🏖️",
     country: "kr",
     currency: "韓元",
     transportTip: "釜山景點分散在海雲台（東）和南浦洞（西南）兩區，兩區間搭地鐵 2 號線或 1 號線約 40–60 分鐘。山區景點（甘川文化村、海東龍宮寺）建議搭計程車或公車。到慶州從釜山站搭 KTX 約 30 分鐘。T-money 在釜山、慶州都能用。",
@@ -294,6 +299,7 @@ window.REGIONS = [
   {
     id: "fukuoka",
     name: "福岡",
+    emoji: "🍜",
     country: "jp",
     currency: "日圓",
     transportTip: "福岡機場離市區很近，地鐵到博多站只要約 5 分鐘。市區靠地鐵和步行就夠；到太宰府搭西鐵電車。Suica 等 IC 卡在福岡都能用。",
@@ -341,6 +347,7 @@ window.REGIONS = [
   {
     id: "sapporo",
     name: "札幌・小樽",
+    emoji: "❄️",
     country: "jp",
     currency: "日圓",
     transportTip: "新千歲機場到札幌搭 JR 快速 Airport 最方便。札幌市區有地鐵和路面電車，大通、薄野一帶步行就能逛；到小樽搭 JR 約 30–45 分鐘。冬天路面結冰，請穿防滑鞋。",
@@ -379,6 +386,7 @@ window.REGIONS = [
   {
     id: "nagoya",
     name: "名古屋",
+    emoji: "🏯",
     country: "jp",
     currency: "日圓",
     transportTip: "中部國際機場到名古屋搭名鐵 μSKY 最快。市區景點用地鐵名城線、東山線就能串起來；名古屋城、大須、榮之間都在地鐵 10–15 分鐘內。",
@@ -410,6 +418,7 @@ window.REGIONS = [
   {
     id: "okinawa",
     name: "沖繩",
+    emoji: "🌺",
     country: "jp",
     currency: "日圓",
     transportTip: "那霸市區靠單軌電車（Yui Rail）就能到國際通和首里城。北部的美麗海水族館離那霸約 2 小時，可搭高速巴士或自駕；多數旅客會租車。",
@@ -445,6 +454,7 @@ window.REGIONS = [
   {
     id: "jeju",
     name: "濟州島",
+    emoji: "🍊",
     country: "kr",
     currency: "韓元",
     transportTip: "濟州島沒有地鐵，景點分散在島的北、南、東三區，多數旅客會租車或包車。搭公車也可以，但單程常要 1–1.5 小時。濟州機場在北部的濟州市。",
@@ -493,6 +503,7 @@ window.REGIONS = [
   {
     id: "sendai",
     name: "仙台・松島（東北）",
+    emoji: "🎋",
     country: "jp",
     currency: "日圓",
     transportTip: "仙台機場搭仙台機場線約 17–25 分鐘到仙台站。市區景點可搭觀光循環巴士「Loople 仙台」或地鐵；日本三景之一的松島從仙台搭 JR 仙石線約 40 分鐘。",
@@ -539,6 +550,7 @@ window.REGIONS = [
   {
     id: "kanazawa",
     name: "金澤（北陸）",
+    emoji: "🍵",
     country: "jp",
     currency: "日圓",
     transportTip: "從東京搭北陸新幹線約 2.5–3 小時到金澤；從小松機場搭機場巴士約 40 分鐘。市區景點集中，用步行加觀光循環巴士就能逛完。",
@@ -570,6 +582,7 @@ window.REGIONS = [
   {
     id: "hiroshima",
     name: "廣島・宮島（中國地方）",
+    emoji: "🦪",
     country: "jp",
     currency: "日圓",
     transportTip: "廣島市區有路面電車，到原爆圓頂館約 15 分鐘。去宮島搭 JR 到宮島口，再搭渡輪約 10 分鐘（渡輪 200 日圓，另收宮島訪問稅 100 日圓）。",
@@ -604,6 +617,7 @@ window.REGIONS = [
   {
     id: "takamatsu",
     name: "高松・琴平（四國）",
+    emoji: "🥢",
     country: "jp",
     currency: "日圓",
     transportTip: "高松機場搭機場巴士約 45 分鐘到高松站。市區有琴電（高松琴平電氣鐵道）；到金刀比羅宮搭 JR 或琴電約 1 小時。也是前往直島等瀨戶內海島嶼的渡輪起點。",
@@ -637,6 +651,7 @@ window.REGIONS = [
   {
     id: "nagasaki",
     name: "長崎（九州）",
+    emoji: "⛪",
     country: "jp",
     currency: "日圓",
     transportTip: "長崎機場搭機場巴士約 45 分鐘到長崎站前。市區靠路面電車就能到大部分景點，一日乘車券很划算；稻佐山夜景要搭纜車。",
@@ -668,6 +683,7 @@ window.REGIONS = [
   {
     id: "gangneung",
     name: "江陵（江原道）",
+    emoji: "☕",
     country: "kr",
     currency: "韓元",
     transportTip: "從首爾站搭 KTX 約 2 小時到江陵站（約 27,600 韓元）。江陵市區景點分散，公車班次少，建議搭計程車或租車。",
@@ -698,6 +714,7 @@ window.REGIONS = [
   {
     id: "jeonju",
     name: "全州（全羅道）",
+    emoji: "🍚",
     country: "kr",
     currency: "韓元",
     transportTip: "從首爾龍山站搭 KTX 約 1 小時 40 分鐘–2 小時 20 分鐘到全州站（約 32,900 韓元）。全州站離韓屋村較遠，搭公車或計程車約 20 分鐘；韓屋村一帶步行就能逛完。",
@@ -729,6 +746,7 @@ window.REGIONS = [
   {
     id: "daegu",
     name: "大邱（慶尚北道）",
+    emoji: "🍎",
     country: "kr",
     currency: "韓元",
     transportTip: "大邱機場離市區很近，計程車到市中心約 15–20 分鐘。KTX 主站是東大邱站（與地鐵 1 號線共構），從釜山約 1 小時、首爾約 2 小時。市區靠地鐵 1、2、3 號線就夠。",
