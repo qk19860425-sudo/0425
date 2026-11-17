@@ -438,3 +438,4 @@ body {
 .official-links { margin-top: 8px; }
 .official-links .button { flex: 1 1 100%; }
 .detour-note { color: var(--accent-soft-text); font-weight: 600; }
+.quick-region { margin: 12px 0 0; font-weight: 700; font-size: 0.95rem; color: var(--accent-soft-text); }

@@ -654,7 +654,10 @@
     if (withLuggage()) {
       // 大型行李：好走的排前面，同等級再比轉乘次數、時間
       const score = (p) => LUGGAGE_LEVEL[luggageInfo(p.option).level].score;
-      plans.sort((x, y) => (score(x) + x.transfers) - (score(y) + y.transfers) || fullTime(x) - fullTime(y));
+      // 大型行李：好走的等級＋轉乘次數越少越前面；比最快的方案慢 20 分鐘以上再降一級
+      const fastest = Math.min(...plans.map(fullTime));
+      const rank = (p) => score(p) + p.transfers + (fullTime(p) - fastest >= 20 ? 1 : 0);
+      plans.sort((x, y) => rank(x) - rank(y) || fullTime(x) - fullTime(y));
     } else {
       plans.sort((x, y) => fullTime(x) - fullTime(y));
     }
@@ -955,6 +958,7 @@
     lab.append(box, el("span", "", "🧳 我帶著大型行李（直達、免轉乘的方式排前面）"));
     card.append(lab);
     for (const r of list) {
+      if (list.length > 1) card.append(el("p", "quick-region", regionLabel(r)));
       const box = el("div", "chips quick-chips");
       for (const q of r.quickRoutes) {
         const spot = findSpot(r, q.to);
