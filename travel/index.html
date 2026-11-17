@@ -37,6 +37,7 @@
     <button type="button" role="tab" id="tab-plans" aria-controls="panel-plans" aria-selected="true">推薦行程</button>
     <button type="button" role="tab" id="tab-route" aria-controls="panel-route" aria-selected="false">路線查詢</button>
     <button type="button" role="tab" id="tab-guide" aria-controls="panel-guide" aria-selected="false">旅遊指南</button>
+    <button type="button" role="tab" id="tab-translate" aria-controls="panel-translate" aria-selected="false">翻譯</button>
   </nav>
 
   <main>
@@ -94,7 +95,56 @@
       </div>
       <div id="guide-content"></div>
     </section>
+
+    <!-- 翻譯 -->
+    <section id="panel-translate" role="tabpanel" aria-labelledby="tab-translate" hidden>
+      <div class="card">
+        <h2 class="plan-title">常用語句</h2>
+        <p class="stop-meta">離線也能用。點「念出來」用手機語音播放，或「放大給對方看」。</p>
+        <fieldset class="field">
+          <legend>語言</legend>
+          <div id="phrase-langs" class="chips"></div>
+        </fieldset>
+        <fieldset class="field">
+          <legend>情境</legend>
+          <div id="phrase-categories" class="chips"></div>
+        </fieldset>
+        <p id="voice-note" class="unverified" hidden></p>
+      </div>
+      <ul id="phrase-list" class="phrase-list"></ul>
+
+      <div class="card">
+        <h2 class="plan-title">其他句子：用翻譯 App 開啟</h2>
+        <p class="stop-meta">輸入想說的中文，按按鈕會開啟 Google 翻譯或 Papago，文字已經填好（需要網路）。</p>
+        <div class="field">
+          <label for="free-text">想說的話</label>
+          <textarea id="free-text" rows="3" placeholder="例如：請問這附近有便利商店嗎？"></textarea>
+        </div>
+        <div class="field">
+          <label for="free-target">翻成</label>
+          <select id="free-target"></select>
+        </div>
+        <div class="form-actions">
+          <a id="open-google" class="button" href="#" target="_blank" rel="noopener noreferrer">Google 翻譯</a>
+          <a id="open-papago" class="button button-secondary" href="#" target="_blank" rel="noopener noreferrer">Papago</a>
+        </div>
+        <p id="free-hint" class="stop-meta free-hint">先輸入文字，按鈕才會開啟。</p>
+      </div>
+    </section>
   </main>
+
+  <!-- 放大給對方看 -->
+  <div id="phrase-overlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="overlay-text" hidden>
+    <div class="overlay-box">
+      <p id="overlay-text" class="overlay-text"></p>
+      <p id="overlay-roma" class="overlay-roma"></p>
+      <p id="overlay-zh" class="overlay-zh"></p>
+      <div class="form-actions">
+        <button id="overlay-speak" type="button" class="button">🔊 念出來</button>
+        <button id="overlay-close" type="button" class="button button-secondary">關閉</button>
+      </div>
+    </div>
+  </div>
 
   <footer class="site-footer">
     <p>資料整理日期：<span id="updated"></span>。票價與時間為約略值，會隨班次與票價調整而變動；出發前請用地圖 App 查即時班次，並以各交通公司官網為準。</p>
@@ -102,6 +152,8 @@
 
   <script src="data.js"></script>
   <script src="app.js"></script>
+  <script src="phrases.js"></script>
+  <script src="translate.js"></script>
   <script src="pwa.js"></script>
 </body>
 </html>
