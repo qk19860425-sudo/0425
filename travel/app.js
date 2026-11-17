@@ -470,6 +470,14 @@
   // ---- 機場路線 ----
   // 一個方案 = 機場交通（抵達某車站）＋（必要時）跨城市＋到景點的最後一段
   function airportPlan(region, airport, option, spot) {
+    // 巴士等沿途有多個停靠站時，選離目的地最近的一站下車
+    if (option.stops && option.stops.length) {
+      const stop = option.stops.reduce((best, x) => (distanceKm(x, spot) < distanceKm(best, spot) ? x : best));
+      option = Object.assign({}, option, {
+        minutes: stop.minutes || option.minutes,
+        to: Object.assign({}, option.to, { name: stop.name, lat: stop.lat, lng: stop.lng }),
+      });
+    }
     const tr = optionTransfers(option);
     if (option.direct) {
       // 直達目的地（計程車）：依距離估算時間。前 20 公里以市區時速約 30 公里計，
@@ -477,7 +485,9 @@
       const km = distanceKm(airport, spot) * 1.3;
       const minutes = 10 + Math.min(km, 20) / 30 * 60 + Math.max(km - 20, 0) / 65 * 60;
       return finishPlan(region, option, [{
-        mode: option.mode, kind: "taxi", from: airport.name, to: spot.name, minutes, wait: 0, cost: option.cost, costRange: parseCost(option.cost),
+        mode: option.mode, kind: "taxi", from: airport.name, to: spot.name, minutes, wait: 0,
+        // 計程車依實際距離估算車資（資料裡的金額只對應某一個目的地）
+        cost: null, costRange: costEstimate(region, "計程車", km),
         note: option.detail, noteBack: option.detailBack, estimated: true, official: option.official, transfers: 0,
       }]);
     }
@@ -550,13 +560,14 @@
     return Object.assign({}, plan, { segs });
   }
 
-  // 會「先去別的城市再折返」的方案：機場交通的終點不在目的地所在的城市，
-  // 而且下車的地方離目的地跟機場差不多遠或更遠（等於坐過頭再回來）。
-  // 例：去大阪卻先搭 HARUKA 到京都；但去京都時先到大阪再轉車是順路，不算折返
+  // 會「先去別的城市再折返」的方案：機場交通的終點不在目的地所在的城市，而且
+  // ① 下車的地方離目的地跟機場差不多遠或更遠，或 ② 從機場坐到下車處比到目的地還遠（坐過頭再回來）。
+  // 例：去大阪卻先搭 HARUKA 到京都、去札幌卻坐到小樽；但去京都時先到大阪再轉車是順路，不算折返
   function isDetour(airport, plan, spot) {
     const o = plan.option;
     if (o.direct || !o.to || o.to.hub === spot.hub) return false;
-    return distanceKm(o.to, spot) >= 0.9 * distanceKm(airport, spot);
+    return distanceKm(o.to, spot) >= 0.9 * distanceKm(airport, spot) ||
+      distanceKm(airport, o.to) > distanceKm(airport, spot);
   }
 
   function fareText(fare) {
@@ -566,7 +577,7 @@
       : formatMoney(fare.min) + "–" + formatMoney(fare.max);
     if (fare.unknown) return "部分票價未知：已知部分約 " + range + " " + fare.currency + "，其餘請以官網為準";
     return "約 " + range + " " + fare.currency + (fare.open ? " 起" : "") +
-      (fare.estimated ? "（市區段為估算）" : "") + (fare.open ? "，部分票價請以官網為準" : "");
+      (fare.estimated ? "（含估算）" : "") + (fare.open ? "，部分票價請以官網為準" : "");
   }
 
   // 結果卡上方的總計

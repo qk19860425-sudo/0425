@@ -326,6 +326,14 @@ window.REGIONS = [
     emoji: "🍜",
     country: "jp",
     currency: "日圓",
+    // 「機場 → 市區」快捷入口
+    quickRoutes: [
+      { airport: "fuk", to: "hakata-station", label: "福岡機場 → 博多站" },
+      { airport: "fuk", to: "tenjin", label: "福岡機場 → 天神" },
+      { airport: "fuk", to: "nakasu-yatai", label: "福岡機場 → 中洲" },
+    ],
+    // 市區大眾運輸的官方票價／班次查詢
+    localLink: { name: "福岡市地下鐵官網", url: "https://subway.city.fukuoka.lg.jp/" },
     transportTip: "福岡機場離市區很近，地鐵到博多站只要約 5 分鐘。市區靠地鐵和步行就夠；到太宰府搭西鐵電車。Suica 等 IC 卡在福岡都能用。",
     hubs: [
       { id: "fukuoka-city", name: "福岡市區", station: "博多站", lat: 33.5902, lng: 130.4207 },
@@ -336,6 +344,7 @@ window.REGIONS = [
     ],
     spots: [
       { id: "hakata-station", name: "博多車站", hub: "fukuoka-city", station: "博多站", tags: ["交通樞紐", "購物"], stay: "30 分鐘", lat: 33.5902, lng: 130.4207 },
+      { id: "tenjin", name: "天神（天神站一帶）", hub: "fukuoka-city", station: "天神站（地鐵空港線）、西鐵福岡（天神）站", tags: ["交通樞紐", "購物"], stay: "—", lat: 33.5910, lng: 130.3990 },
       { id: "kushida", name: "櫛田神社", hub: "fukuoka-city", station: "祇園站、中洲川端站", tags: ["寺廟神社", "歷史"], stay: "30 分鐘", lat: 33.5930, lng: 130.4106 },
       { id: "canal-city", name: "博多運河城", hub: "fukuoka-city", station: "中洲川端站、祇園站，步行約 10 分鐘", tags: ["購物"], stay: "1–2 小時", lat: 33.5897, lng: 130.4108 },
       { id: "nakasu-yatai", name: "中洲屋台", hub: "fukuoka-city", station: "中洲川端站", tags: ["美食", "夜景"], stay: "1–1.5 小時", lat: 33.5925, lng: 130.4055 },
@@ -374,6 +383,14 @@ window.REGIONS = [
     emoji: "❄️",
     country: "jp",
     currency: "日圓",
+    // 「機場 → 市區」快捷入口
+    quickRoutes: [
+      { airport: "cts", to: "sapporo-station", label: "新千歲機場 → 札幌站" },
+      { airport: "cts", to: "odori-park", label: "新千歲機場 → 大通" },
+      { airport: "cts", to: "susukino", label: "新千歲機場 → 薄野" },
+    ],
+    // 市區大眾運輸的官方票價／班次查詢
+    localLink: { name: "札幌市交通局官網", url: "https://www.city.sapporo.jp/st/" },
     transportTip: "新千歲機場到札幌搭 JR 快速 Airport 最方便。札幌市區有地鐵和路面電車，大通、薄野一帶步行就能逛；到小樽搭 JR 約 30–45 分鐘。冬天路面結冰，請穿防滑鞋。",
     hubs: [
       { id: "sapporo", name: "札幌", station: "札幌站", lat: 43.0687, lng: 141.3508 },
@@ -383,6 +400,8 @@ window.REGIONS = [
       { from: "sapporo", to: "otaru", mode: "電車", detail: "JR 函館本線（快速 Airport 或普通車）札幌站 → 小樽站；票價請以 JR 北海道官網為準", minutes: 40, cost: "約 750 日圓（未查證）" },
     ],
     spots: [
+      { id: "sapporo-station", name: "札幌站（札幌站一帶）", hub: "sapporo", station: "JR 札幌站、地鐵札幌站", tags: ["交通樞紐", "購物"], stay: "—", lat: 43.0687, lng: 141.3508 },
+      { id: "susukino", name: "薄野（すすきの）", hub: "sapporo", station: "薄野站（地鐵南北線）", tags: ["美食", "夜景"], stay: "1–2 小時", lat: 43.0554, lng: 141.3530 },
       { id: "hokkaido-jingu", name: "北海道神宮", hub: "sapporo", station: "圓山公園站（地鐵東西線），步行約 15 分鐘", tags: ["寺廟神社", "自然"], stay: "1 小時", lat: 43.0545, lng: 141.3076 },
       { id: "odori-park", name: "大通公園", hub: "sapporo", station: "大通站", tags: ["自然"], stay: "45 分鐘", lat: 43.0598, lng: 141.3483 },
       { id: "sapporo-tv-tower", name: "札幌電視塔", hub: "sapporo", station: "大通站", tags: ["夜景"], stay: "45 分鐘", lat: 43.0611, lng: 141.3564 },
@@ -1023,12 +1042,15 @@ window.AIRPORTS = {
   fukuoka: [
     {
       id: "fuk", name: "福岡機場", lat: 33.5859, lng: 130.4507,
+      // detailBack：從市區回機場時的說明（方向相反）；transfers：這段本身要轉幾次車
       options: [
-        { mode: "電車", title: "地鐵空港線 → 博多站", detail: "福岡機場站（國內線航廈）→ 博多站，2 站；國際線旅客先搭免費接駁巴士到國內線航廈", minutes: 5, cost: "約 260 日圓", luggage: "ok", luggageNote: "車程只有約 5 分鐘，但為通勤型車廂；國際線旅客要先搭接駁巴士。", verified: true,
+        { mode: "電車", title: "地鐵空港線 → 博多站", detail: "地鐵空港線 福岡機場站（國內線航廈）→ 博多站，2 站；國際線旅客先搭免費接駁巴士到國內線航廈", detailBack: "地鐵空港線 博多站 → 福岡機場站（國內線航廈），2 站；搭國際線請再轉免費接駁巴士到國際線航廈", minutes: 5, cost: "約 260 日圓", transfers: 0, luggage: "ok", luggageNote: "車程只有約 5 分鐘，但為通勤型車廂；國際線旅客要先搭接駁巴士。", verified: true,
+          official: { name: "福岡市地下鐵官網（票價・班次）", url: "https://subway.city.fukuoka.lg.jp/" },
           to: { name: "博多站", hub: "fukuoka-city", lat: 33.5902, lng: 130.4207 } },
-        { mode: "電車", title: "地鐵空港線 → 天神站", detail: "福岡機場站 → 天神站，直達；到太宰府可在天神轉西鐵", minutes: 11, cost: "約 260–300 日圓", luggage: "ok", luggageNote: "通勤型車廂，尖峰時段擁擠。", verified: false,
+        { mode: "電車", title: "地鐵空港線 → 天神站", detail: "地鐵空港線 福岡機場站 → 天神站，直達（途經博多、中洲川端）；到太宰府可在天神轉西鐵", detailBack: "地鐵空港線 天神站 → 福岡機場站，直達（途經中洲川端、博多）", minutes: 11, cost: "約 260 日圓", transfers: 0, luggage: "ok", luggageNote: "通勤型車廂，尖峰時段擁擠。", verified: false,
+          official: { name: "福岡市地下鐵官網（票價・班次）", url: "https://subway.city.fukuoka.lg.jp/" },
           to: { name: "天神站", hub: "fukuoka-city", lat: 33.5910, lng: 130.3990 } },
-        { mode: "計程車", title: "計程車（直達目的地）", detail: "行李多或多人同行適合；到博多站約 15 分鐘", minutes: 15, cost: "依距離跳錶；到博多站約 1,500–2,000 日圓", verified: false, direct: true,
+        { mode: "計程車", title: "計程車（直達目的地）", detail: "行李多或多人同行適合，直接坐到目的地；到博多站約 15 分鐘、約 1,500–2,000 日圓，依距離跳錶", detailBack: "行李多或多人同行適合，直接坐到福岡機場；國際線請告訴司機到國際線航廈", minutes: 15, cost: "依距離跳錶", transfers: 0, verified: false, direct: true,
           to: { name: "博多站", hub: "fukuoka-city", lat: 33.5902, lng: 130.4207 } },
       ],
     },
@@ -1037,9 +1059,20 @@ window.AIRPORTS = {
     {
       id: "cts", name: "新千歲機場", lat: 42.7752, lng: 141.6923,
       options: [
-        { mode: "電車", title: "JR 快速 Airport → 札幌站", detail: "JR 快速 Airport 直達札幌站，日間約 10 分鐘一班；部分班次直通小樽", minutes: 37, cost: "約 1,230 日圓", luggage: "ok", luggageNote: "直達，可加購 u-seat 指定席；一般車廂尖峰時段擁擠。", verified: true,
+        { mode: "電車", title: "JR 快速 Airport → 札幌站", detail: "JR 快速 Airport 新千歲機場站 → 札幌站，日間約 10 分鐘一班，約 36–43 分鐘", detailBack: "JR 快速 Airport 札幌站 → 新千歲機場站，日間約 10 分鐘一班", minutes: 37, cost: "約 1,230 日圓", transfers: 0, luggage: "ok", luggageNote: "直達，可加購 u-seat 指定席；一般車廂尖峰時段擁擠。", verified: true,
+          official: { name: "JR 北海道官網（票價・班次）", url: "https://www.jrhokkaido.co.jp/" },
           to: { name: "札幌站", hub: "sapporo", lat: 43.0687, lng: 141.3508 } },
-        { mode: "電車", title: "JR 快速 Airport → 小樽站（直通班次）", detail: "部分快速 Airport 直通小樽，最快約 73 分鐘；其他班次在札幌轉車", minutes: 75, cost: "約 1,900 日圓", luggage: "ok", luggageNote: "只有部分班次直通，其他要在札幌轉車。", verified: false,
+        { mode: "公車", title: "機場聯絡巴士 → 札幌站前・大通・薄野", detail: "機場聯絡巴士（北海道中央巴士、北都交通）新千歲機場 → 札幌站前、大通、薄野；行李放車底，依路況約 65–80 分鐘，冬天下雪時更久", detailBack: "機場聯絡巴士 薄野、大通、札幌站前 → 新千歲機場；冬天下雪時請多預留時間", minutes: 75, cost: "約 1,500 日圓", transfers: 0, luggage: "good", luggageNote: "行李放在車底行李艙，直達大通、薄野，免轉乘；北都交通的巴士不能刷 Suica 等交通 IC 卡。", verified: false,
+          official: { name: "北海道中央巴士官網（票價・班次）", url: "https://www.chuo-bus.co.jp/" },
+          // 沿途停靠站：查詢時會選離目的地最近的一站下車（minutes 為到該站的時間）
+          stops: [
+            { name: "札幌站前（巴士站）", lat: 43.0675, lng: 141.3510, minutes: 65 },
+            { name: "大通（巴士站）", lat: 43.0605, lng: 141.3540, minutes: 70 },
+            { name: "薄野（巴士站）", lat: 43.0560, lng: 141.3545, minutes: 75 },
+          ],
+          to: { name: "薄野（巴士站）", hub: "sapporo", lat: 43.0560, lng: 141.3545 } },
+        { mode: "電車", title: "JR 快速 Airport → 小樽站（直通班次）", detail: "JR 快速 Airport 新千歲機場站 → 小樽站（部分班次直通，途經札幌），最快約 73 分鐘；其他班次在札幌轉車", detailBack: "JR 小樽站 → 新千歲機場站（部分快速 Airport 直通，途經札幌）；其他班次在札幌轉車", minutes: 75, cost: "約 1,900 日圓", transfers: 0, luggage: "ok", luggageNote: "只有部分班次直通，其他要在札幌轉車。", verified: false,
+          official: { name: "JR 北海道官網（票價・班次）", url: "https://www.jrhokkaido.co.jp/" },
           to: { name: "小樽站", hub: "otaru", lat: 43.1977, lng: 140.9937 } },
       ],
     },
