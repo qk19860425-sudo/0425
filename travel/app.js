@@ -239,6 +239,13 @@
     const region = findRegion(regionSelect.value);
     fillSpotSelect(fromSelect, region, "請選擇出發地");
     fillSpotSelect(toSelect, region, "請選擇目的地");
+    // 手動輸入目的地：提供本城市景點名稱當輸入建議
+    $("route-to-text").value = "";
+    $("route-to-suggest").replaceChildren(...region.spots.map((s) => {
+      const o = document.createElement("option");
+      o.value = s.name;
+      return o;
+    }));
     $("route-result").replaceChildren();
     $("route-error").hidden = true;
   }
@@ -410,11 +417,102 @@
     out.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
+  // ---- 手動輸入的目的地 ----
+  function normalizeName(s) {
+    return String(s || "").toLowerCase().replace(/[\s・·（）()「」]/g, "");
+  }
+
+  // 輸入的文字若對應到清單裡的景點，就回傳該景點
+  function matchSpot(region, text) {
+    const t = normalizeName(text);
+    if (!t) return null;
+    return region.spots.find((s) => normalizeName(s.name) === t) ||
+      region.spots.find((s) => normalizeName(s.name).includes(t) || t.includes(normalizeName(s.name))) ||
+      null;
+  }
+
+  function googleTransitToText(a, text) {
+    return "https://www.google.com/maps/dir/?api=1&origin=" + a.lat + "," + a.lng +
+      "&destination=" + encodeURIComponent(text) + "&travelmode=transit";
+  }
+
+  function freeMapLinks(region, from, text) {
+    const box = el("div", "map-links");
+    box.append(link("Google 地圖查即時路線", googleTransitToText(from, text), "button button-small"));
+    if (region.country === "kr") {
+      box.append(link("KakaoMap 搜尋目的地", "https://map.kakao.com/link/search/" + encodeURIComponent(text), "button button-secondary button-small"));
+    }
+    return box;
+  }
+
+  // 目的地不在清單裡：沒辦法估算，改列出可用的資訊與地圖連結
+  function updateFreeRoute(region, fromVal, text) {
+    const out = $("route-result");
+    const fromAirport = fromVal.startsWith(AIRPORT_PREFIX);
+    const from = fromAirport
+      ? airportsOf(region).find((a) => a.id === fromVal.slice(AIRPORT_PREFIX.length))
+      : findSpot(region, fromVal);
+
+    const header = el("div", "card route-summary");
+    header.append(el("h2", "plan-title", (fromAirport ? "✈️ " : "") + from.name + " → " + text));
+    header.append(el("p", "stop-meta", "「" + text + "」不在景點清單裡，沒辦法估算時間和票價。請用下面的地圖連結查即時路線；輸入完整的名稱或地址會比較準。"));
+    header.append(freeMapLinks(region, from, text));
+    const parts = [header];
+
+    if (fromAirport) {
+      // 從機場出發：列出各機場交通方案，最後一段再用地圖查
+      const options = from.options.slice().sort((x, y) => x.minutes - y.minutes);
+      parts.push(el("p", "result-count", "先選機場交通方式，再從下車的車站查到目的地："));
+      options.forEach((o, i) => {
+        const card = el("div", "card route-step");
+        const title = el("h3", "step-title", "方案 " + (i + 1) + "：" + o.title);
+        card.append(title);
+        const ol = el("ol", "segments");
+        const li1 = el("li", "segment");
+        const top = el("p", "leg-top");
+        top.append(el("strong", "", modeLabel(o.mode)), " " + from.name + " → " + (o.direct ? text : o.to.name));
+        li1.append(top, el("p", "stop-meta", formatMinutes(o.minutes) + (o.cost ? "・" + o.cost : "") + (o.direct ? "（估算）" : "")), el("p", "leg-detail", o.detail));
+        if (o.verified === false) li1.append(el("p", "unverified", "⚠️ 票價或時間未查證，請以交通公司官網為準"));
+        ol.append(li1);
+        if (!o.direct) {
+          const li2 = el("li", "segment");
+          const top2 = el("p", "leg-top");
+          top2.append(el("strong", "", modeLabel("大眾運輸")), " " + o.to.name + " → " + text);
+          li2.append(top2, el("p", "leg-detail", "這一段請用地圖查詢。"), freeMapLinks(region, o.to, text));
+          ol.append(li2);
+        }
+        card.append(ol);
+        parts.push(card);
+      });
+    }
+
+    parts.push(el("p", "card tip", "💡 " + region.transportTip));
+    out.replaceChildren(...parts);
+    out.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
   function updateRoute() {
     const region = findRegion(regionSelect.value);
     const err = $("route-error");
     const out = $("route-result");
     err.hidden = true;
+
+    // 有手動輸入目的地時，以輸入為準
+    const typed = $("route-to-text").value.trim();
+    if (typed) {
+      if (!fromSelect.value) {
+        err.textContent = "請選擇出發地。";
+        err.hidden = false;
+        return;
+      }
+      const matched = matchSpot(region, typed);
+      if (!matched) {
+        updateFreeRoute(region, fromSelect.value, typed);
+        return;
+      }
+      // 對應到清單裡的景點：照一般方式計算
+      toSelect.value = matched.id;
+    }
 
     if (fromSelect.value === toSelect.value && fromSelect.value) {
       err.textContent = "出發地和目的地是同一個地方。";
