@@ -277,19 +277,65 @@
     return null;
   }
 
+  // ---- 大型行李 ----
+  // 勾選「我帶著大型行李」時，直達、免轉乘的方式排在前面，並加上提醒
+  const luggageBox = $("route-luggage");
+  function readLuggagePref() {
+    try { return localStorage.getItem("travel-luggage") === "1"; } catch (e) { return false; }
+  }
+  luggageBox.checked = readLuggagePref();
+  luggageBox.addEventListener("change", () => {
+    try { localStorage.setItem("travel-luggage", luggageBox.checked ? "1" : "0"); } catch (e) { /* 無法儲存時忽略 */ }
+  });
+  const withLuggage = () => luggageBox.checked;
+
+  const LUGGAGE_LEVEL = {
+    good: { score: 0, label: "🧳 大行李友善", cls: "luggage-good" },
+    ok: { score: 1, label: "🧳 大行李可以", cls: "luggage-ok" },
+    hard: { score: 2, label: "🧳 大行李較辛苦", cls: "luggage-hard" },
+  };
+  const COMFY_TRAINS = ["Skyliner", "N'EX", "HARUKA", "Rapi:t", "μSKY", "直達列車", "特急"];
+
+  // 判斷機場交通方案帶大型行李好不好走；資料裡有 luggage 欄位時以資料為準
+  function luggageInfo(o) {
+    if (o.luggage && LUGGAGE_LEVEL[o.luggage]) return { level: o.luggage, note: o.luggageNote || "" };
+    const text = (o.title || "") + " " + (o.detail || "");
+    if (o.mode === "計程車" || o.direct) return { level: "good", note: "門口到門口，最省力；可在機場排班處搭車，多人同行時分攤也划算。" };
+    if (o.mode === "公車") return { level: "good", note: "行李放在車底行李艙，免轉乘；到站後通常離飯店還有一段路。" };
+    if (/轉|＋/.test(text)) return { level: "hard", note: "需要轉乘，拖著行李上下樓梯、出站再進站比較辛苦；請找電梯，並避開上下班尖峰。" };
+    if (COMFY_TRAINS.some((k) => text.includes(k))) return { level: "good", note: "直達、對號座，車廂有放大型行李的位置。" };
+    return { level: "ok", note: "直達但車廂可能擁擠；尖峰時段行李不好放。" };
+  }
+
+  function luggageBadge(o) {
+    const info = luggageInfo(o);
+    const lv = LUGGAGE_LEVEL[info.level];
+    const box = el("p", "luggage-note " + lv.cls);
+    box.append(el("strong", "", lv.label), "　" + info.note);
+    return box;
+  }
+
   // 同城市內：依距離估算交通方式
   function localOptions(a, b) {
     const km = distanceKm(a, b) * 1.3; // 直線距離乘上繞路係數
     const opts = [];
-    if (km <= 1.5) {
-      opts.push({ mode: "步行", minutes: km / 4.5 * 60, note: "距離很近，建議步行。" });
+    const luggage = withLuggage();
+    if (km <= (luggage ? 1.0 : 1.5)) {
+      opts.push({ mode: "步行", minutes: km / 4.5 * 60, note: luggage ? "距離很近，拖著行李走過去即可。" : "距離很近，建議步行。" });
       return { km, opts };
     }
-    opts.push({ mode: "大眾運輸", minutes: 8 + km / 22 * 60, note: "搭地鐵、電車或公車，含步行到車站與等車時間；實際路線請用下方地圖連結查詢。" });
-    if (km <= 12) {
-      opts.push({ mode: "計程車", minutes: 5 + km / 20 * 60, note: "三到四人同行、行李多或趕時間時適合。" });
+    const transit = { mode: "大眾運輸", minutes: 8 + km / 22 * 60, note: "搭地鐵、電車或公車，含步行到車站與等車時間；實際路線請用下方地圖連結查詢。" +
+      (luggage ? "帶大型行李請找電梯、避開上下班尖峰（約 7:30–9:30、17:30–19:30）。" : "") };
+    const taxi = { mode: "計程車", minutes: 5 + km / 20 * 60, note: luggage
+      ? "帶大型行李建議搭計程車，省去轉乘和樓梯；多人同行時分攤也划算。"
+      : "三到四人同行、行李多或趕時間時適合。" };
+    if (luggage && km <= 20) {
+      opts.push(taxi, transit);
+    } else {
+      opts.push(transit);
+      if (km <= 12) opts.push(taxi);
     }
-    if (km <= 3) {
+    if (!luggage && km <= 3) {
       opts.push({ mode: "步行", minutes: km / 4.5 * 60, note: "天氣好也可以散步過去。" });
     }
     return { km, opts };
@@ -377,8 +423,9 @@
   function renderPlan(region, plan, index, start, end) {
     const card = el("div", "card route-step");
     const title = el("h3", "step-title", "方案 " + (index + 1) + "：" + plan.option.title);
-    if (index === 0) title.append(" ", el("span", "badge badge-accent", "最快"));
+    if (index === 0) title.append(" ", el("span", "badge badge-accent", withLuggage() ? "推薦" : "最快"));
     card.append(title, el("p", "plan-total", "合計 " + formatMinutes(plan.total) + "（不含等車，部分為估算）"));
+    if (withLuggage()) card.append(luggageBadge(plan.option));
 
     const ol = el("ol", "segments");
     for (const s of plan.segs) {
@@ -411,13 +458,21 @@
 
     let plans = airport.options.map((o) => airportPlan(region, airport, o, spot));
     if (!fromAirport) plans = plans.map(reversePlan);
-    plans.sort((x, y) => x.total - y.total);
+    if (withLuggage()) {
+      // 大型行李：好走的排前面，同等級再比時間
+      const score = (p) => LUGGAGE_LEVEL[luggageInfo(p.option).level].score;
+      plans.sort((x, y) => score(x) - score(y) || x.total - y.total);
+    } else {
+      plans.sort((x, y) => x.total - y.total);
+    }
 
     const start = fromAirport ? airport : spot;
     const end = fromAirport ? spot : airport;
     const header = el("div", "card route-summary");
     header.append(el("h2", "plan-title", "✈️ " + start.name + " → " + end.name));
-    header.append(el("p", "stop-meta", "共 " + plans.length + " 個方案，依總時間由快到慢排列。行李多可優先選直達、對號座或機場巴士。"));
+    header.append(el("p", "stop-meta", withLuggage()
+      ? "共 " + plans.length + " 個方案。已依「大型行李」排序：直達、免轉乘、有行李空間的方式排在前面。"
+      : "共 " + plans.length + " 個方案，依總時間由快到慢排列。帶大型行李時，可勾選上方「我帶著大型行李」重新查詢。"));
     header.append(mapLinks(region, start, end));
 
     const parts = [header, ...plans.map((p, i) => renderPlan(region, p, i, start, end))];
@@ -472,12 +527,14 @@
 
     if (fromAirport) {
       // 從機場出發：列出各機場交通方案，最後一段再用地圖查
-      const options = from.options.slice().sort((x, y) => x.minutes - y.minutes);
+      const lscore = (o) => LUGGAGE_LEVEL[luggageInfo(o).level].score;
+      const options = from.options.slice().sort((x, y) => (withLuggage() ? lscore(x) - lscore(y) : 0) || x.minutes - y.minutes);
       parts.push(el("p", "result-count", "先選機場交通方式，再從下車的車站查到目的地："));
       options.forEach((o, i) => {
         const card = el("div", "card route-step");
         const title = el("h3", "step-title", "方案 " + (i + 1) + "：" + o.title);
         card.append(title);
+        if (withLuggage()) card.append(luggageBadge(o));
         const ol = el("ol", "segments");
         const li1 = el("li", "segment");
         const top = el("p", "leg-top");

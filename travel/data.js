@@ -803,6 +803,17 @@ window.GUIDES = [
           { title: "緊急電話", body: "警察 110，消防與救護車 119。日本觀光局訪日旅客熱線 050-3816-2787（24 小時，可用英文與中文）。" },
         ],
       },
+      {
+        id: "luggage",
+        title: "自助旅行交通與大型行李",
+        items: [
+          { title: "路線查詢可以勾選「大型行李」", body: "在「路線查詢」勾選「我帶著大型行李」，機場交通會把直達、免轉乘、有行李空間的方式（機場巴士、計程車、對號座特急）排在前面，並標示每個方案好不好拖行李；市區移動也會優先建議計程車。" },
+          { title: "新幹線的特大行李要先預約", body: "東海道、山陽、九州等新幹線，三邊合計超過 160 公分、250 公分以內的行李要預約「特大行李放置處附座位」，訂票時一起指定即可，不加錢；沒預約就帶上車要付 1,000 日圓手續費。160 公分以下不用預約，超過 250 公分不能帶上車。規定可能調整，訂票前請看 JR 官網。" },
+          { title: "行李當日配送，空手去玩", body: "可以把行李從機場、車站或飯店送到下一間住宿，當天或隔天送達，在觀光區很普遍（例如宅急便、Bounce、Airporter 等服務）。換城市的那天把行李先寄走，就不用拖著行李搭電車。服務地區、收件截止時間與費用依業者而定。" },
+          { title: "寄物櫃與行李寄放", body: "大車站有投幣式寄物櫃，但大型行李箱的大櫃子很快就滿，假日下午常常找不到。也可以用車站的行李寄放櫃台，或手機 App 預約附近店家的寄放空間。退房後、入住前，多數飯店也能免費寄放。" },
+          { title: "搭車小技巧", body: "避開上下班尖峰（約 7:30–9:30、17:30–19:30），車站請找電梯標示；東京、大阪的大站轉乘可能要走很遠。地鐵車廂最前或最後一節通常比較空。三到四人同行時，機場到飯店搭計程車或預約接送車，分攤後常常不比電車貴多少。" },
+        ],
+      },
     ],
     sources: [
       { title: "東京 Metro：Tokyo Subway Ticket（英文）", url: "https://www.tokyometro.jp/lang_en/ticket/value/travel/index.html" },
@@ -823,6 +834,9 @@ window.GUIDES = [
       { title: "廣島市：交通 FAQ（機場巴士）", url: "https://www.city.hiroshima.lg.jp/faq/tourism-culture/1001621/1028190/1006400.html" },
       { title: "travelist：小松機場到金澤", url: "https://travelist.jp/airport_KMQ/guide/posts/p1497" },
       { title: "travelist：長崎機場巴士", url: "https://travelist.jp/airport_NGS/guide/posts/p1048" },
+      { title: "JR 西日本：新幹線特大行李規定", url: "https://www.jr-odekake.net/railroad/service/baggage/" },
+      { title: "JR 九州：特大行李規定", url: "https://www.jrkyushu.co.jp/railway/ticket/rule/tokudai_baggage/" },
+      { title: "共同通信 PR：關西的手提行李當日配送", url: "https://kyodonewsprwire.jp/release/202504087056" },
     ],
   },
   {
@@ -868,6 +882,17 @@ window.GUIDES = [
           { title: "緊急電話", body: "警察 112，消防與救護車 119。韓國觀光諮詢熱線 1330（24 小時，可用中文）。" },
         ],
       },
+      {
+        id: "luggage",
+        title: "自助旅行交通與大型行李",
+        items: [
+          { title: "路線查詢可以勾選「大型行李」", body: "在「路線查詢」勾選「我帶著大型行李」，機場交通會把直達、免轉乘、有行李空間的方式（機場巴士、計程車、AREX 直達列車）排在前面，並標示每個方案好不好拖行李；市區移動也會優先建議計程車。" },
+          { title: "首爾 T-luggage：地鐵站寄放與機場運送", body: "首爾交通公社的 T-luggage 在明洞、弘大入口、首爾站、金浦機場、江南、蠶室等地鐵站有服務櫃台，可以寄放行李，也能把行李在市區與仁川、金浦機場之間運送。曾公告的限制是行李長寬高合計 180 公分以內、每件 25 公斤以內。價格與時間請以官網為準。" },
+          { title: "機場巴士最適合大型行李", body: "仁川機場的豪華機場巴士（6000 系列）把行李放在車底，可直達飯店附近，不用轉車。AREX 直達列車有行李架，但到首爾站後轉地鐵要走一段；金海機場的輕軌轉地鐵要出站再進站，大型行李較辛苦，可考慮計程車。" },
+          { title: "地鐵與公車的注意事項", body: "首爾、釜山地鐵尖峰時段非常擁擠，盡量避開上下班時間（約 7:30–9:30、17:30–19:30）；轉乘站通道很長，請找電梯。市區公車空間小，不適合帶大型行李箱上車。" },
+          { title: "計程車與叫車", body: "大型行李或多人同行時，計程車最省力，費用也比日本便宜。行李多時可以在 Kakao T 選大型車款，或預約機場接送。" },
+        ],
+      },
     ],
     sources: [
       { title: "trvlogue：AREX 直達列車 2026", url: "https://www.trvlogue.com/zh-Hant/seoul-arex-express-train" },
@@ -883,6 +908,7 @@ window.GUIDES = [
       { title: "KTX 時刻表：首爾 → 江陵", url: "https://train.asamaru.net/%EC%8B%9C%EA%B0%84%ED%91%9C/%EA%B0%95%EB%A6%89%EC%97%AD-%EA%B0%95%EB%A6%89%EC%84%A0/%EC%B6%9C%EB%B0%9C/%EC%84%9C%EC%9A%B8%EC%97%AD-%EA%B2%BD%EB%B6%80%EC%84%A0-%EA%B3%A0%EC%86%8D%EC%B2%A0%EB%8F%84/%EB%8F%84%EC%B0%A9/" },
       { title: "KTX 時刻表：龍山 → 全州", url: "https://info.koreacharts.com/traintime/10008/10216/contents.html?date=2026-11-02" },
       { title: "Creatrip：大邱機場到市區", url: "https://creatrip.com/blog/12889" },
+      { title: "Creatrip：首爾 T-luggage 行李寄放與運送", url: "https://creatrip.com/zh-TW/blog/14919" },
     ],
   },
 ];
@@ -898,7 +924,7 @@ window.AIRPORTS = {
     {
       id: "sdj", name: "仙台機場", lat: 38.1397, lng: 140.9170,
       options: [
-        { mode: "電車", title: "仙台機場線 → 仙台站", detail: "仙台機場站直達仙台站，快速約 17 分鐘、普通約 25 分鐘，每小時 2–3 班", minutes: 20, cost: "約 660 日圓", verified: true,
+        { mode: "電車", title: "仙台機場線 → 仙台站", detail: "仙台機場站直達仙台站，快速約 17 分鐘、普通約 25 分鐘，每小時 2–3 班", minutes: 20, cost: "約 660 日圓", luggage: "ok", luggageNote: "直達、車程短，通勤型車廂。", verified: true,
           to: { name: "仙台站", hub: "sendai", lat: 38.2601, lng: 140.8822 } },
       ],
     },
@@ -907,7 +933,7 @@ window.AIRPORTS = {
     {
       id: "kmq", name: "小松機場", lat: 36.3946, lng: 136.4069,
       options: [
-        { mode: "公車", title: "機場巴士 → 金澤站西口", detail: "配合航班到站時間發車，約每小時 1 班；到香林坊約 55 分鐘", minutes: 40, cost: "約 1,130–1,300 日圓", verified: false,
+        { mode: "公車", title: "機場巴士 → 金澤站西口", detail: "配合航班到站時間發車，約每小時 1 班；到香林坊約 55 分鐘", minutes: 40, cost: "約 1,130–1,300 日圓", luggage: "good", luggageNote: "行李放在車底行李艙，直達金澤站。", verified: false,
           to: { name: "金澤站", hub: "kanazawa", lat: 36.5781, lng: 136.6478 } },
       ],
     },
@@ -916,9 +942,9 @@ window.AIRPORTS = {
     {
       id: "hij", name: "廣島機場", lat: 34.4361, lng: 132.9194,
       options: [
-        { mode: "公車", title: "機場巴士 → 廣島站", detail: "機場巴士直達廣島站新幹線口", minutes: 50, cost: "約 1,500 日圓", verified: true,
+        { mode: "公車", title: "機場巴士 → 廣島站", detail: "機場巴士直達廣島站新幹線口", minutes: 50, cost: "約 1,500 日圓", luggage: "good", luggageNote: "行李放在車底行李艙，直達廣島站。", verified: true,
           to: { name: "廣島站", hub: "hiroshima", lat: 34.3978, lng: 132.4753 } },
-        { mode: "公車", title: "公車＋JR（較便宜）", detail: "路線巴士到 JR 白市站（約 15 分鐘），轉 JR 山陽本線到廣島站（約 45 分鐘）", minutes: 65, cost: "約 1,200–1,300 日圓", verified: false,
+        { mode: "公車", title: "公車＋JR（較便宜）", detail: "路線巴士到 JR 白市站（約 15 分鐘），轉 JR 山陽本線到廣島站（約 45 分鐘）", minutes: 65, cost: "約 1,200–1,300 日圓", luggage: "hard", luggageNote: "要在白市站轉 JR，大型行李較辛苦。", verified: false,
           to: { name: "廣島站", hub: "hiroshima", lat: 34.3978, lng: 132.4753 } },
       ],
     },
@@ -927,7 +953,7 @@ window.AIRPORTS = {
     {
       id: "tak", name: "高松機場", lat: 34.2142, lng: 134.0156,
       options: [
-        { mode: "公車", title: "機場巴士 → 高松站", detail: "機場巴士直達高松站一帶", minutes: 45, cost: "約 1,000 日圓", verified: false,
+        { mode: "公車", title: "機場巴士 → 高松站", detail: "機場巴士直達高松站一帶", minutes: 45, cost: "約 1,000 日圓", luggage: "good", luggageNote: "行李放在車底行李艙，直達高松站。", verified: false,
           to: { name: "高松站", hub: "takamatsu", lat: 34.3505, lng: 134.0465 } },
       ],
     },
@@ -936,7 +962,7 @@ window.AIRPORTS = {
     {
       id: "ngs", name: "長崎機場", lat: 32.9169, lng: 129.9136,
       options: [
-        { mode: "公車", title: "機場巴士 → 長崎站前", detail: "不用預約，可刷 Suica 等交通 IC 卡；依路線約 43–60 分鐘", minutes: 45, cost: "約 1,400 日圓", verified: true,
+        { mode: "公車", title: "機場巴士 → 長崎站前", detail: "不用預約，可刷 Suica 等交通 IC 卡；依路線約 43–60 分鐘", minutes: 45, cost: "約 1,400 日圓", luggage: "good", luggageNote: "行李放在車底行李艙，直達長崎站前。", verified: true,
           to: { name: "長崎站", hub: "nagasaki", lat: 32.7524, lng: 129.8696 } },
       ],
     },
@@ -947,7 +973,7 @@ window.AIRPORTS = {
       options: [
         { mode: "計程車", title: "計程車（直達目的地）", detail: "大邱機場離市區很近；到峨洋橋站約 4,100–4,500 韓元，到半月堂、東城路通常 10,000 韓元以下", minutes: 15, cost: "依距離跳錶；到市中心約 10,000 韓元以下", verified: true, direct: true,
           to: { name: "半月堂", hub: "daegu", lat: 35.8656, lng: 128.5935 } },
-        { mode: "公車", title: "公車＋地鐵 1 號線 → 半月堂", detail: "機場 2、3 號門前搭 101 號公車到峨洋橋站，轉地鐵 1 號線到半月堂站", minutes: 40, cost: "約 1,500–2,000 韓元", verified: false,
+        { mode: "公車", title: "公車＋地鐵 1 號線 → 半月堂", detail: "機場 2、3 號門前搭 101 號公車到峨洋橋站，轉地鐵 1 號線到半月堂站", minutes: 40, cost: "約 1,500–2,000 韓元", luggage: "hard", luggageNote: "公車再轉地鐵，大型行李較辛苦；大邱機場離市區近，搭計程車較省力。", verified: false,
           to: { name: "半月堂站", hub: "daegu", lat: 35.8656, lng: 128.5935 } },
       ],
     },
@@ -956,9 +982,9 @@ window.AIRPORTS = {
     {
       id: "fuk", name: "福岡機場", lat: 33.5859, lng: 130.4507,
       options: [
-        { mode: "電車", title: "地鐵空港線 → 博多站", detail: "福岡機場站（國內線航廈）→ 博多站，2 站；國際線旅客先搭免費接駁巴士到國內線航廈", minutes: 5, cost: "約 260 日圓", verified: true,
+        { mode: "電車", title: "地鐵空港線 → 博多站", detail: "福岡機場站（國內線航廈）→ 博多站，2 站；國際線旅客先搭免費接駁巴士到國內線航廈", minutes: 5, cost: "約 260 日圓", luggage: "ok", luggageNote: "車程只有約 5 分鐘，但為通勤型車廂；國際線旅客要先搭接駁巴士。", verified: true,
           to: { name: "博多站", hub: "fukuoka-city", lat: 33.5902, lng: 130.4207 } },
-        { mode: "電車", title: "地鐵空港線 → 天神站", detail: "福岡機場站 → 天神站，直達；到太宰府可在天神轉西鐵", minutes: 11, cost: "約 260–300 日圓", verified: false,
+        { mode: "電車", title: "地鐵空港線 → 天神站", detail: "福岡機場站 → 天神站，直達；到太宰府可在天神轉西鐵", minutes: 11, cost: "約 260–300 日圓", luggage: "ok", luggageNote: "通勤型車廂，尖峰時段擁擠。", verified: false,
           to: { name: "天神站", hub: "fukuoka-city", lat: 33.5910, lng: 130.3990 } },
         { mode: "計程車", title: "計程車（直達目的地）", detail: "行李多或多人同行適合；到博多站約 15 分鐘", minutes: 15, cost: "依距離跳錶；到博多站約 1,500–2,000 日圓", verified: false, direct: true,
           to: { name: "博多站", hub: "fukuoka-city", lat: 33.5902, lng: 130.4207 } },
@@ -969,9 +995,9 @@ window.AIRPORTS = {
     {
       id: "cts", name: "新千歲機場", lat: 42.7752, lng: 141.6923,
       options: [
-        { mode: "電車", title: "JR 快速 Airport → 札幌站", detail: "JR 快速 Airport 直達札幌站，日間約 10 分鐘一班；部分班次直通小樽", minutes: 37, cost: "約 1,230 日圓", verified: true,
+        { mode: "電車", title: "JR 快速 Airport → 札幌站", detail: "JR 快速 Airport 直達札幌站，日間約 10 分鐘一班；部分班次直通小樽", minutes: 37, cost: "約 1,230 日圓", luggage: "ok", luggageNote: "直達，可加購 u-seat 指定席；一般車廂尖峰時段擁擠。", verified: true,
           to: { name: "札幌站", hub: "sapporo", lat: 43.0687, lng: 141.3508 } },
-        { mode: "電車", title: "JR 快速 Airport → 小樽站（直通班次）", detail: "部分快速 Airport 直通小樽，最快約 73 分鐘；其他班次在札幌轉車", minutes: 75, cost: "約 1,900 日圓", verified: false,
+        { mode: "電車", title: "JR 快速 Airport → 小樽站（直通班次）", detail: "部分快速 Airport 直通小樽，最快約 73 分鐘；其他班次在札幌轉車", minutes: 75, cost: "約 1,900 日圓", luggage: "ok", luggageNote: "只有部分班次直通，其他要在札幌轉車。", verified: false,
           to: { name: "小樽站", hub: "otaru", lat: 43.1977, lng: 140.9937 } },
       ],
     },
@@ -980,9 +1006,9 @@ window.AIRPORTS = {
     {
       id: "ngo", name: "中部國際機場", lat: 34.8584, lng: 136.8054,
       options: [
-        { mode: "電車", title: "名鐵 μSKY → 名鐵名古屋站", detail: "全車對號座，需加購 μ 車票（約 450 日圓，已含在票價內）", minutes: 30, cost: "約 1,430 日圓", verified: true,
+        { mode: "電車", title: "名鐵 μSKY → 名鐵名古屋站", detail: "全車對號座，需加購 μ 車票（約 450 日圓，已含在票價內）", minutes: 30, cost: "約 1,430 日圓", luggage: "good", luggageNote: "直達、全車對號座，車廂有行李放置區。", verified: true,
           to: { name: "名鐵名古屋站", hub: "nagoya", lat: 35.1700, lng: 136.8840 } },
-        { mode: "電車", title: "名鐵 準急 → 名鐵名古屋站（較便宜）", detail: "不用對號座費用，時間較長", minutes: 48, cost: "約 980 日圓", verified: true,
+        { mode: "電車", title: "名鐵 準急 → 名鐵名古屋站（較便宜）", detail: "不用對號座費用，時間較長", minutes: 48, cost: "約 980 日圓", luggage: "ok", luggageNote: "通勤型車廂，沒有專用行李區。", verified: true,
           to: { name: "名鐵名古屋站", hub: "nagoya", lat: 35.1700, lng: 136.8840 } },
       ],
     },
@@ -991,7 +1017,7 @@ window.AIRPORTS = {
     {
       id: "oka", name: "那霸機場", lat: 26.2063, lng: 127.6487,
       options: [
-        { mode: "電車", title: "Yui Rail → 縣廳前站", detail: "單軌電車從那霸機場站出發，縣廳前站就在國際通西端", minutes: 12, cost: "約 270 日圓", verified: true,
+        { mode: "電車", title: "Yui Rail → 縣廳前站", detail: "單軌電車從那霸機場站出發，縣廳前站就在國際通西端", minutes: 12, cost: "約 270 日圓", luggage: "ok", luggageNote: "車程短，但車廂小；國際通一帶有坡道與人潮。", verified: true,
           to: { name: "縣廳前站", hub: "naha", lat: 26.2142, lng: 127.6795 } },
         { mode: "計程車", title: "計程車（直達目的地）", detail: "行李多或多人同行適合；到國際通約 15–20 分鐘。去北部多數旅客會在機場附近租車", minutes: 18, cost: "依距離跳錶；到國際通約 1,500–2,000 日圓，到北部會貴很多", verified: false, direct: true,
           to: { name: "國際通", hub: "naha", lat: 26.2150, lng: 127.6860 } },
@@ -1002,7 +1028,7 @@ window.AIRPORTS = {
     {
       id: "cju", name: "濟州機場", lat: 33.5113, lng: 126.4930,
       options: [
-        { mode: "公車", title: "機場巴士 600 → 中文觀光區・西歸浦", detail: "入境大廳 5 號門附近上車，可刷 T-money；到中文觀光區約 1 小時", minutes: 60, cost: "約 4,500–6,000 韓元", verified: false,
+        { mode: "公車", title: "機場巴士 600 → 中文觀光區・西歸浦", detail: "入境大廳 5 號門附近上車，可刷 T-money；到中文觀光區約 1 小時", minutes: 60, cost: "約 4,500–6,000 韓元", luggage: "good", luggageNote: "行李放在車底行李艙，直達中文觀光區、西歸浦的飯店區。", verified: false,
           to: { name: "中文觀光區", hub: "seogwipo", lat: 33.2490, lng: 126.4120 } },
         { mode: "計程車", title: "計程車（直達目的地）", detail: "到濟州市區約 15 分鐘；到西歸浦約 50 分鐘。多數旅客會在機場租車", minutes: 15, cost: "依距離跳錶；到濟州市區約 6,000–10,000 韓元", verified: false, direct: true,
           to: { name: "濟州市區", hub: "jeju-city", lat: 33.4996, lng: 126.5312 } },
@@ -1013,24 +1039,24 @@ window.AIRPORTS = {
     {
       id: "nrt", name: "成田機場", lat: 35.7720, lng: 140.3929,
       options: [
-        { mode: "電車", title: "京成 Skyliner", detail: "京成 Skyliner 直達日暮里、京成上野，全車對號座，最快", minutes: 45, cost: "約 2,570 日圓", verified: true,
+        { mode: "電車", title: "京成 Skyliner", detail: "京成 Skyliner 直達日暮里、京成上野，全車對號座，最快", minutes: 45, cost: "約 2,570 日圓", luggage: "good", luggageNote: "直達、全車對號座，車廂有大型行李放置區。", verified: true,
           to: { name: "京成上野站", hub: "tokyo-center", lat: 35.7114, lng: 139.7740 } },
-        { mode: "電車", title: "JR 成田特快（N'EX）→ 東京站", detail: "JR 成田特快 直達東京站，全車對號座", minutes: 60, cost: "約 3,250 日圓", verified: true,
+        { mode: "電車", title: "JR 成田特快（N'EX）→ 東京站", detail: "JR 成田特快 直達東京站，全車對號座", minutes: 60, cost: "約 3,250 日圓", luggage: "good", luggageNote: "直達、全車對號座，車廂有大型行李放置區。", verified: true,
           to: { name: "東京站", hub: "tokyo-center", lat: 35.6812, lng: 139.7671 } },
-        { mode: "電車", title: "JR 成田特快（N'EX）→ 新宿站", detail: "JR 成田特快 部分班次直達澀谷、新宿", minutes: 80, cost: "約 3,000 多日圓", verified: false,
+        { mode: "電車", title: "JR 成田特快（N'EX）→ 新宿站", detail: "JR 成田特快 部分班次直達澀谷、新宿", minutes: 80, cost: "約 3,000 多日圓", luggage: "good", luggageNote: "直達、全車對號座，車廂有大型行李放置區。", verified: false,
           to: { name: "新宿站", hub: "tokyo-center", lat: 35.6896, lng: 139.7006 } },
-        { mode: "電車", title: "京成 Access 特急（最便宜）", detail: "京成 Access 特急到京成上野；部分班次直通都營淺草線到押上、淺草", minutes: 80, cost: "約 1,240 日圓", verified: true,
+        { mode: "電車", title: "京成 Access 特急（最便宜）", detail: "京成 Access 特急到京成上野；部分班次直通都營淺草線到押上、淺草", minutes: 80, cost: "約 1,240 日圓", luggage: "ok", luggageNote: "直達但為通勤型車廂，沒有專用行李區；尖峰時段擁擠。", verified: true,
           to: { name: "京成上野站", hub: "tokyo-center", lat: 35.7114, lng: 139.7740 } },
       ],
     },
     {
       id: "hnd", name: "羽田機場", lat: 35.5494, lng: 139.7798,
       options: [
-        { mode: "電車", title: "京急線 → 品川站", detail: "京急線 機場快特或急行到品川站，可轉 JR 山手線", minutes: 20, cost: "約 330 日圓", verified: true,
+        { mode: "電車", title: "京急線 → 品川站", detail: "京急線 機場快特或急行到品川站，可轉 JR 山手線", minutes: 20, cost: "約 330 日圓", luggage: "ok", luggageNote: "直達但為通勤型車廂；品川站轉乘通道長，請找電梯。", verified: true,
           to: { name: "品川站", hub: "tokyo-center", lat: 35.6285, lng: 139.7387 } },
-        { mode: "電車", title: "東京單軌電車 → 浜松町站", detail: "東京單軌電車到浜松町站，可轉 JR 山手線或都營地鐵（大門站）", minutes: 18, cost: "約 520 日圓", verified: true,
+        { mode: "電車", title: "東京單軌電車 → 浜松町站", detail: "東京單軌電車到浜松町站，可轉 JR 山手線或都營地鐵（大門站）", minutes: 18, cost: "約 520 日圓", luggage: "ok", luggageNote: "直達、車程短，但車廂不大；浜松町站轉乘要走一段。", verified: true,
           to: { name: "浜松町站", hub: "tokyo-center", lat: 35.6555, lng: 139.7570 } },
-        { mode: "電車", title: "京急線 → 橫濱站", detail: "京急線往橫濱方向（部分班次需在京急蒲田轉車）", minutes: 30, cost: "約 400–500 日圓", verified: false,
+        { mode: "電車", title: "京急線 → 橫濱站", detail: "京急線往橫濱方向（部分班次需在京急蒲田轉車）", minutes: 30, cost: "約 400–500 日圓", luggage: "ok", luggageNote: "通勤型車廂，部分班次需在京急蒲田轉車。", verified: false,
           to: { name: "橫濱站", hub: "yokohama", lat: 35.4660, lng: 139.6223 } },
       ],
     },
@@ -1039,13 +1065,13 @@ window.AIRPORTS = {
     {
       id: "kix", name: "關西機場", lat: 34.4320, lng: 135.2304,
       options: [
-        { mode: "電車", title: "南海特急 Rapi:t → 難波", detail: "南海特急 Rapi:t 到難波站，全車對號座", minutes: 40, cost: "約 1,500 日圓", verified: false,
+        { mode: "電車", title: "南海特急 Rapi:t → 難波", detail: "南海特急 Rapi:t 到難波站，全車對號座", minutes: 40, cost: "約 1,500 日圓", luggage: "good", luggageNote: "直達、全車對號座，車廂有行李放置區。", verified: false,
           to: { name: "難波站", hub: "osaka", lat: 34.6627, lng: 135.5016 } },
-        { mode: "電車", title: "南海 機場急行 → 難波", detail: "南海 機場急行到難波站，不用另付特急費", minutes: 45, cost: "約 1,000 日圓", verified: false,
+        { mode: "電車", title: "南海 機場急行 → 難波", detail: "南海 機場急行到難波站，不用另付特急費", minutes: 45, cost: "約 1,000 日圓", luggage: "ok", luggageNote: "直達但為通勤型車廂，沒有專用行李區；尖峰時段擁擠。", verified: false,
           to: { name: "難波站", hub: "osaka", lat: 34.6627, lng: 135.5016 } },
-        { mode: "電車", title: "JR 關空快速 → 大阪站", detail: "JR 關空快速直達大阪站（部分班次在天王寺停靠）", minutes: 70, cost: "約 1,200 日圓", verified: false,
+        { mode: "電車", title: "JR 關空快速 → 大阪站", detail: "JR 關空快速直達大阪站（部分班次在天王寺停靠）", minutes: 70, cost: "約 1,200 日圓", luggage: "ok", luggageNote: "直達但為通勤型車廂（車廂內有部分行李空間）；部分班次需轉車。", verified: false,
           to: { name: "大阪站", hub: "osaka", lat: 34.7025, lng: 135.4959 } },
-        { mode: "電車", title: "JR 特急 HARUKA → 京都站", detail: "JR 特急 HARUKA 直達京都站，途經天王寺、新大阪", minutes: 80, cost: "約 3,060 日圓", verified: true,
+        { mode: "電車", title: "JR 特急 HARUKA → 京都站", detail: "JR 特急 HARUKA 直達京都站，途經天王寺、新大阪", minutes: 80, cost: "約 3,060 日圓", luggage: "good", luggageNote: "直達、對號座，車廂有大型行李放置區。", verified: true,
           to: { name: "京都站", hub: "kyoto", lat: 34.9858, lng: 135.7588 } },
       ],
     },
@@ -1054,20 +1080,20 @@ window.AIRPORTS = {
     {
       id: "icn", name: "仁川機場", lat: 37.4602, lng: 126.4407,
       options: [
-        { mode: "電車", title: "AREX 直達列車 → 首爾站", detail: "機場鐵路直達列車，中途不停；第一航廈約 43 分鐘、第二航廈約 51 分鐘", minutes: 48, cost: "約 11,000–13,000 韓元", verified: false,
+        { mode: "電車", title: "AREX 直達列車 → 首爾站", detail: "機場鐵路直達列車，中途不停；第一航廈約 43 分鐘、第二航廈約 51 分鐘", minutes: 48, cost: "約 11,000–13,000 韓元", luggage: "good", luggageNote: "直達、全車對號座，車廂有行李架；到首爾站後若轉地鐵要走一段。", verified: false,
           to: { name: "首爾站", hub: "seoul", lat: 37.5547, lng: 126.9707 } },
-        { mode: "電車", title: "AREX 普通列車 → 弘大入口", detail: "機場鐵路普通列車，停靠弘大入口、孔德、首爾站，可轉地鐵", minutes: 55, cost: "約 4,000–5,000 韓元", verified: false,
+        { mode: "電車", title: "AREX 普通列車 → 弘大入口", detail: "機場鐵路普通列車，停靠弘大入口、孔德、首爾站，可轉地鐵", minutes: 55, cost: "約 4,000–5,000 韓元", luggage: "ok", luggageNote: "通勤型車廂，可放在座位旁；尖峰時段擁擠。", verified: false,
           to: { name: "弘大入口站", hub: "seoul", lat: 37.5577, lng: 126.9245 } },
-        { mode: "公車", title: "機場巴士 → 明洞", detail: "機場豪華巴士（6000 系列）到明洞一帶，免轉車、適合行李多", minutes: 80, cost: "約 17,000–18,000 韓元", verified: true,
+        { mode: "公車", title: "機場巴士 → 明洞", detail: "機場豪華巴士（6000 系列）到明洞一帶，免轉車、適合行李多", minutes: 80, cost: "約 17,000–18,000 韓元", luggage: "good", luggageNote: "行李放在車底行李艙，直達飯店附近，免轉乘。", verified: true,
           to: { name: "明洞", hub: "seoul", lat: 37.5609, lng: 126.9862 } },
       ],
     },
     {
       id: "gmp", name: "金浦機場", lat: 37.5583, lng: 126.7906,
       options: [
-        { mode: "電車", title: "AREX 普通列車 → 弘大入口", detail: "機場鐵路普通列車往首爾站方向", minutes: 15, cost: "約 1,500–2,000 韓元", verified: false,
+        { mode: "電車", title: "AREX 普通列車 → 弘大入口", detail: "機場鐵路普通列車往首爾站方向", minutes: 15, cost: "約 1,500–2,000 韓元", luggage: "ok", luggageNote: "通勤型車廂，可放在座位旁；尖峰時段擁擠。", verified: false,
           to: { name: "弘大入口站", hub: "seoul", lat: 37.5577, lng: 126.9245 } },
-        { mode: "電車", title: "AREX 普通列車 → 首爾站", detail: "機場鐵路普通列車終點首爾站", minutes: 22, cost: "約 1,500–2,000 韓元", verified: false,
+        { mode: "電車", title: "AREX 普通列車 → 首爾站", detail: "機場鐵路普通列車終點首爾站", minutes: 22, cost: "約 1,500–2,000 韓元", luggage: "ok", luggageNote: "通勤型車廂，可放在座位旁；尖峰時段擁擠。", verified: false,
           to: { name: "首爾站", hub: "seoul", lat: 37.5547, lng: 126.9707 } },
       ],
     },
@@ -1075,9 +1101,9 @@ window.AIRPORTS = {
       // 清州機場在忠清北道，離首爾約 120 公里，沒有機場鐵路直達首爾
       id: "cjj", name: "清州機場", lat: 36.7166, lng: 127.4991,
       options: [
-        { mode: "公車", title: "高速巴士 → 首爾高速巴士轉運站", detail: "清州機場 1 號門前 1 號站牌上車，直達首爾高速巴士轉運站（江南，可轉地鐵 3、7、9 號線）。一天約 8 班；網路訂票需要韓國身分認證，外國旅客可能要找代訂或到現場買票", minutes: 100, cost: "票價請以訂票平台為準", verified: false,
+        { mode: "公車", title: "高速巴士 → 首爾高速巴士轉運站", detail: "清州機場 1 號門前 1 號站牌上車，直達首爾高速巴士轉運站（江南，可轉地鐵 3、7、9 號線）。一天約 8 班；網路訂票需要韓國身分認證，外國旅客可能要找代訂或到現場買票", minutes: 100, cost: "票價請以訂票平台為準", luggage: "good", luggageNote: "行李放在車底行李艙；到轉運站後還要轉地鐵或計程車。", verified: false,
           to: { name: "首爾高速巴士轉運站", hub: "seoul", lat: 37.5049, lng: 127.0049 } },
-        { mode: "電車", title: "火車到五松站，轉 KTX → 首爾站", detail: "從航廈步行到清州機場站，搭無窮花號或 ITX-마음 到五松站（約 18 分鐘，一天約 12 班），再轉 KTX 到首爾站。含轉乘等車約 1.5 小時", minutes: 90, cost: "火車到五松約 2,600–4,800 韓元，另加 KTX 票價", verified: false,
+        { mode: "電車", title: "火車到五松站，轉 KTX → 首爾站", detail: "從航廈步行到清州機場站，搭無窮花號或 ITX-마음 到五松站（約 18 分鐘，一天約 12 班），再轉 KTX 到首爾站。含轉乘等車約 1.5 小時", minutes: 90, cost: "火車到五松約 2,600–4,800 韓元，另加 KTX 票價", luggage: "hard", luggageNote: "要在五松站轉 KTX，還要從航廈走到清州機場站；大型行李較辛苦。", verified: false,
           to: { name: "首爾站", hub: "seoul", lat: 37.5547, lng: 126.9707 } },
       ],
     },
@@ -1086,11 +1112,11 @@ window.AIRPORTS = {
     {
       id: "pus", name: "金海機場", lat: 35.1795, lng: 128.9382,
       options: [
-        { mode: "電車", title: "輕軌＋地鐵 2 號線 → 西面", detail: "金海輕軌到沙上站，出站轉地鐵 2 號線（轉乘步行約 10 分鐘，刷交通卡有轉乘優惠）", minutes: 30, cost: "約 2,100 韓元", verified: true,
+        { mode: "電車", title: "輕軌＋地鐵 2 號線 → 西面", detail: "金海輕軌到沙上站，出站轉地鐵 2 號線（轉乘步行約 10 分鐘，刷交通卡有轉乘優惠）", minutes: 30, cost: "約 2,100 韓元", luggage: "hard", luggageNote: "沙上站要出站再進站轉乘，步行約 10 分鐘；大型行李較辛苦。", verified: true,
           to: { name: "西面站", hub: "busan", lat: 35.1578, lng: 129.0600 } },
-        { mode: "電車", title: "輕軌＋地鐵 → 南浦", detail: "金海輕軌到沙上站，轉 2 號線到西面，再轉 1 號線到南浦站", minutes: 50, cost: "約 2,300 韓元", verified: true,
+        { mode: "電車", title: "輕軌＋地鐵 → 南浦", detail: "金海輕軌到沙上站，轉 2 號線到西面，再轉 1 號線到南浦站", minutes: 50, cost: "約 2,300 韓元", luggage: "hard", luggageNote: "沙上站要出站再進站轉乘，步行約 10 分鐘；大型行李較辛苦。", verified: true,
           to: { name: "南浦站", hub: "busan", lat: 35.0981, lng: 129.0346 } },
-        { mode: "電車", title: "輕軌＋地鐵 2 號線 → 海雲台", detail: "金海輕軌到沙上站，轉地鐵 2 號線坐到海雲台站", minutes: 60, cost: "約 2,300 韓元", verified: true,
+        { mode: "電車", title: "輕軌＋地鐵 2 號線 → 海雲台", detail: "金海輕軌到沙上站，轉地鐵 2 號線坐到海雲台站", minutes: 60, cost: "約 2,300 韓元", luggage: "hard", luggageNote: "沙上站要出站再進站轉乘，步行約 10 分鐘；大型行李較辛苦。", verified: true,
           to: { name: "海雲台站", hub: "busan", lat: 35.1634, lng: 129.1588 } },
         { mode: "計程車", title: "計程車（直達目的地）", detail: "行李多或多人同行適合，直接坐到目的地；到西面、南浦洞約 20,000 韓元起，依距離跳錶", minutes: 35, cost: "約 20,000 韓元起", verified: true,
           direct: true,
