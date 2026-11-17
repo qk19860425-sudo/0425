@@ -90,6 +90,14 @@ window.REGIONS = [
     emoji: "⛩️",
     country: "jp",
     currency: "日圓",
+    // 「機場 → 市區」快捷入口
+    quickRoutes: [
+      { airport: "kix", to: "namba", label: "關西機場 → 難波" },
+      { airport: "kix", to: "umeda", label: "關西機場 → 梅田" },
+      { airport: "kix", to: "dotonbori", label: "關西機場 → 道頓堀" },
+    ],
+    // 市區大眾運輸的官方票價／班次查詢
+    localLink: { name: "大阪 Metro 官網", url: "https://subway.osakametro.co.jp/" },
     transportTip: "城市之間搭 JR 或私鐵（阪急、京阪、近鐵）都很方便。京都市區公車常客滿，建議盡量搭地鐵、電車再步行；三到四人短程可搭計程車。ICOCA 和 Suica 在關西都能用。",
     hubs: [
       { id: "osaka", name: "大阪", station: "大阪站（梅田）", lat: 34.7025, lng: 135.4959 },
@@ -97,12 +105,14 @@ window.REGIONS = [
       { id: "nara", name: "奈良", station: "近鐵奈良站", lat: 34.6844, lng: 135.8274 },
     ],
     intercity: [
-      { from: "osaka", to: "kyoto", mode: "電車", detail: "JR 新快速 大阪站 → 京都站；要去祇園、河原町可改搭阪急京都線到京都河原町站", minutes: 30, cost: "約 580 日圓" },
-      { from: "osaka", to: "nara", mode: "電車", detail: "近鐵奈良線 大阪難波站 → 近鐵奈良站（快速急行）", minutes: 40, cost: "約 700 日圓" },
-      { from: "kyoto", to: "nara", mode: "電車", detail: "近鐵京都線 京都站 → 近鐵奈良站（急行，部分班次需在大和西大寺轉車）", minutes: 45, cost: "約 760 日圓" },
+      { from: "osaka", to: "kyoto", mode: "電車", detail: "JR 新快速 大阪站 → 京都站；要去祇園、河原町可改搭阪急京都線到京都河原町站", detailBack: "JR 新快速 京都站 → 大阪站；從祇園、河原町出發可改搭阪急京都線 京都河原町站 → 大阪梅田站", minutes: 30, cost: "約 580 日圓" },
+      { from: "osaka", to: "nara", mode: "電車", detail: "近鐵奈良線 大阪難波站 → 近鐵奈良站（快速急行）", detailBack: "近鐵奈良線 近鐵奈良站 → 大阪難波站（快速急行）", fromStop: { name: "大阪難波站", lat: 34.6680, lng: 135.5009 }, minutes: 40, cost: "約 700 日圓" },
+      { from: "kyoto", to: "nara", mode: "電車", detail: "近鐵京都線 京都站 → 近鐵奈良站（急行，部分班次需在大和西大寺轉車）", detailBack: "近鐵京都線 近鐵奈良站 → 京都站（急行，部分班次需在大和西大寺轉車）", minutes: 45, cost: "約 760 日圓" },
     ],
     spots: [
       { id: "osaka-castle", name: "大阪城公園", hub: "osaka", station: "谷町四丁目站、大阪城公園站", tags: ["歷史", "自然"], stay: "1.5–2 小時", lat: 34.6873, lng: 135.5262 },
+      { id: "namba", name: "難波（難波站一帶）", hub: "osaka", station: "南海難波站、地鐵難波站", tags: ["交通樞紐", "購物"], stay: "—", lat: 34.6650, lng: 135.5010 },
+      { id: "umeda", name: "梅田（大阪站・梅田站一帶）", hub: "osaka", station: "JR 大阪站、地鐵梅田站", tags: ["交通樞紐", "購物"], stay: "—", lat: 34.7025, lng: 135.4959 },
       { id: "dotonbori", name: "道頓堀", hub: "osaka", station: "難波站、日本橋站", tags: ["美食", "夜景", "購物"], stay: "1.5–3 小時", lat: 34.6687, lng: 135.5013 },
       { id: "tsutenkaku", name: "通天閣・新世界", hub: "osaka", station: "惠美須町站、新今宮站", tags: ["美食", "夜景"], stay: "1 小時", lat: 34.6525, lng: 135.5063 },
       { id: "umeda-sky", name: "梅田藍天大廈空中庭園", hub: "osaka", station: "大阪站、梅田站", tags: ["夜景"], stay: "1 小時", lat: 34.7053, lng: 135.4906 },
@@ -1082,14 +1092,22 @@ window.AIRPORTS = {
   kansai: [
     {
       id: "kix", name: "關西機場", lat: 34.4320, lng: 135.2304,
+      // detailBack：從市區回機場時的說明（方向相反）；transfers：這段本身要轉幾次車
       options: [
-        { mode: "電車", title: "南海特急 Rapi:t → 難波", detail: "南海特急 Rapi:t 到難波站，全車對號座", minutes: 40, cost: "約 1,500 日圓", luggage: "good", luggageNote: "直達、全車對號座，車廂有行李放置區。", verified: false,
+        { mode: "電車", title: "南海特急 Rapi:t → 難波", detail: "南海特急 Rapi:t 關西機場站 → 難波站，全車對號座，最快約 34–40 分鐘", detailBack: "南海特急 Rapi:t 難波站 → 關西機場站，全車對號座，最快約 34–40 分鐘", minutes: 40, cost: "約 1,450–1,670 日圓", transfers: 0, luggage: "good", luggageNote: "直達、全車對號座，車廂有行李放置區。", verified: false,
+          official: { name: "南海電鐵官網（票價・班次）", url: "https://www.nankai.co.jp/" },
           to: { name: "難波站", hub: "osaka", lat: 34.6627, lng: 135.5016 } },
-        { mode: "電車", title: "南海 機場急行 → 難波", detail: "南海 機場急行到難波站，不用另付特急費", minutes: 45, cost: "約 1,000 日圓", luggage: "ok", luggageNote: "直達但為通勤型車廂，沒有專用行李區；尖峰時段擁擠。", verified: false,
+        { mode: "電車", title: "南海 機場急行 → 難波", detail: "南海 機場急行 關西機場站 → 難波站，不用另付特急費", detailBack: "南海 機場急行 難波站 → 關西機場站，不用另付特急費", minutes: 45, cost: "約 970 日圓", transfers: 0, luggage: "ok", luggageNote: "直達但為通勤型車廂，沒有專用行李區；尖峰時段擁擠。", verified: false,
+          official: { name: "南海電鐵官網（票價・班次）", url: "https://www.nankai.co.jp/" },
           to: { name: "難波站", hub: "osaka", lat: 34.6627, lng: 135.5016 } },
-        { mode: "電車", title: "JR 關空快速 → 大阪站", detail: "JR 關空快速直達大阪站（部分班次在天王寺停靠）", minutes: 70, cost: "約 1,200 日圓", luggage: "ok", luggageNote: "直達但為通勤型車廂（車廂內有部分行李空間）；部分班次需轉車。", verified: false,
+        { mode: "電車", title: "JR 關空快速 → 天王寺站", detail: "JR 關空快速 關西機場站 → 天王寺站，可轉地鐵御堂筋線、谷町線", detailBack: "JR 關空快速 天王寺站 → 關西機場站", minutes: 50, cost: "約 1,100 日圓", transfers: 0, luggage: "ok", luggageNote: "直達但為通勤型車廂（車廂內有部分行李空間）；尖峰時段擁擠。", verified: false,
+          official: { name: "JR 西日本官網（票價・班次）", url: "https://www.westjr.co.jp/" },
+          to: { name: "天王寺站", hub: "osaka", lat: 34.6466, lng: 135.5133 } },
+        { mode: "電車", title: "JR 關空快速 → 大阪站", detail: "JR 關空快速 關西機場站 → 大阪站（經天王寺、大阪環狀線；部分班次需在日根野或天王寺轉車）", detailBack: "JR 關空快速 大阪站 → 關西機場站（經大阪環狀線、天王寺；部分班次需在天王寺或日根野轉車）", minutes: 68, cost: "約 1,210 日圓", transfers: 0, luggage: "ok", luggageNote: "直達但為通勤型車廂（車廂內有部分行李空間）；部分班次需轉車。", verified: false,
+          official: { name: "JR 西日本官網（票價・班次）", url: "https://www.westjr.co.jp/" },
           to: { name: "大阪站", hub: "osaka", lat: 34.7025, lng: 135.4959 } },
-        { mode: "電車", title: "JR 特急 HARUKA → 京都站", detail: "JR 特急 HARUKA 直達京都站，途經天王寺、新大阪", minutes: 80, cost: "約 3,060 日圓", luggage: "good", luggageNote: "直達、對號座，車廂有大型行李放置區。", verified: true,
+        { mode: "電車", title: "JR 特急 HARUKA → 京都站", detail: "JR 特急 HARUKA 關西機場站 → 京都站，途經天王寺、新大阪", detailBack: "JR 特急 HARUKA 京都站 → 關西機場站，途經新大阪、天王寺", minutes: 80, cost: "約 3,060 日圓", transfers: 0, luggage: "good", luggageNote: "直達、對號座，車廂有大型行李放置區。", verified: true,
+          official: { name: "JR 西日本官網（票價・班次）", url: "https://www.westjr.co.jp/" },
           to: { name: "京都站", hub: "kyoto", lat: 34.9858, lng: 135.7588 } },
       ],
     },
