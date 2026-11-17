@@ -1,0 +1,32 @@
+{
+  "name": "韓國景點路線",
+  "short_name": "韓國路線",
+  "description": "韓國各地（首爾、江原道、慶尚道、全羅道、濟州島）的推薦行程、景點與機場交通查詢、旅遊指南與韓文常用語句。",
+  "lang": "zh-Hant",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4ebe1",
+  "theme_color": "#e11d48",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

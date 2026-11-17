@@ -59,6 +59,7 @@ body {
 .site-header { padding-top: 24px; }
 h1 { margin: 0; font-size: 1.6rem; }
 .subtitle { margin: 4px 0 12px; color: var(--muted); }
+.subtitle a { color: var(--accent); font-weight: 600; white-space: nowrap; }
 
 /* ---- 分頁 ---- */
 .tabs {
