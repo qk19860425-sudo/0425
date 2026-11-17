@@ -1,17 +1,18 @@
 /* 日韓景點路線：樣式（手機優先） */
 :root {
-  --bg: #f1f5f9;
+  /* 主色：紅色＋粉紅色 */
+  --bg: #fff1f2;
   --card: #ffffff;
-  --text: #0f172a;
-  --muted: #475569;
-  --border: #cbd5e1;
-  --accent: #0d9488;
+  --text: #1f2937;
+  --muted: #6b4f57;
+  --border: #fecdd3;
+  --accent: #e11d48;
   --accent-text: #ffffff;
-  --accent-soft: #ccfbf1;
-  --accent-soft-text: #115e59;
-  --focus: #5eead4;
-  --chip: #f1f5f9;
-  --line: #99f6e4;
+  --accent-soft: #ffe4e6;
+  --accent-soft-text: #9f1239;
+  --focus: #fda4af;
+  --chip: #fff1f2;
+  --line: #fda4af;
   --tip-bg: #fefce8;
   --tip-text: #713f12;
   --error-bg: #fef2f2;
@@ -20,18 +21,18 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #020617;
-    --card: #0f172a;
-    --text: #e2e8f0;
-    --muted: #94a3b8;
-    --border: #334155;
-    --accent: #14b8a6;
-    --accent-text: #042f2e;
-    --accent-soft: #134e4a;
-    --accent-soft-text: #ccfbf1;
-    --focus: #0f766e;
-    --chip: #1e293b;
-    --line: #115e59;
+    --bg: #1a0b10;
+    --card: #2a1219;
+    --text: #fde8ec;
+    --muted: #d4a5b0;
+    --border: #5b2333;
+    --accent: #fb7185;
+    --accent-text: #1f0a10;
+    --accent-soft: #4c0519;
+    --accent-soft-text: #fecdd3;
+    --focus: #be123c;
+    --chip: #3a1621;
+    --line: #9f1239;
     --tip-bg: #422006;
     --tip-text: #fef08a;
     --error-bg: #450a0a;
