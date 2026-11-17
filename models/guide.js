@@ -31,6 +31,16 @@ window.MODEL_GUIDE = {
       ],
     },
     {
+      title: "遙控模型（RC）",
+      items: [
+        { title: "RC 入門：先分清楚三種", body: "遙控車（RC 車）：電動的 1/10 尺寸最常見，田宮等品牌的組裝套件通常不含遙控器、電池和充電器，要另外買。空拍機（無人機）：多半是買來就能飛的成品。迷你四驅：雖然也有馬達，但沒有遙控器，是在賽道上自己跑的，不算 RC。" },
+        { title: "鋰電池搭飛機的規定", body: "RC 用的鋰電池（鋰聚電池）和行動電源一樣，只能放手提行李，不能托運。100Wh 以下可以帶；100–160Wh 要先經航空公司同意，每人最多 2 個；超過 160Wh 不能帶上飛機。部分航空公司（如華航、長榮）規定機上全程不能使用或充電。電池電極請用膠帶貼住、分開裝袋。換算：Wh＝mAh × 電壓（V）÷ 1000。實際規定以搭乘的航空公司為準。" },
+        { title: "遙控器、空拍機帶回台灣", body: "遙控器和空拍機屬於電信管制射頻器材。自己隨身帶回、自用 5 部以下免繳審查費；用郵寄或快遞寄回自用的，每件要付 750 元審查費，並可能需要填寫自用切結書。輸出功率很低（1mW 以下）的簡易遙控器不在管制範圍。實際規定以 NCC 公告為準。" },
+        { title: "在國外飛空拍機", body: "日本、韓國都有無人機的飛行規定：日本 100 公克以上的無人機要先登錄才能飛，各國也都有禁止飛行的區域（機場附近、人多的地方等）。出國前請查當地的民航規定，不確定就不要飛。" },
+        { title: "想先玩玩看", body: "首爾有室內 RC 車體驗館，可以租車在主題賽道上開，不用自己帶車；東京的田宮模型工廠也會舉辦比賽活動。可以在店家清單篩選「遙控模型（RC）」找到相關店家。" },
+      ],
+    },
+    {
       title: "每年的模型展覽活動",
       items: [
         { title: "靜岡 Hobby Show（靜岡ホビーショー）", body: "每年 5 月在靜岡市的 Twin Messe 靜岡舉辦，田宮、萬代等日本模型廠商都會展出新產品，也有模型社團聯合作品展。2026 年的一般公開日是 5 月 16、17 日，免費入場但需事前登錄。2027 年的日期請看官網。" },
@@ -45,5 +55,9 @@ window.MODEL_GUIDE = {
     { title: "Game*Spark：Wonder Festival 2026 夏", url: "https://www.gamespark.jp/article/2026/05/21/166711.html" },
     { title: "nippon.com：日本免稅改為退稅制", url: "https://www.nippon.com/ja/japan-data/h02925/" },
     { title: "Inside：鋼彈基地大阪 2027 年 2 月開幕", url: "https://www.inside-games.jp/article/2026/09/02/187129.html" },
+    { title: "今周刊：2026 行動電源上飛機規定", url: "https://www.businesstoday.com.tw/article/category/183031/post/202603300011/2026行動電源上飛機規定！華航、長榮、星宇、虎航…行動電源哪種可以帶、飛機上能用？每人帶幾顆？" },
+    { title: "趣旅行：各航空行動電源規定", url: "https://www.funtime.com.tw/blog/funtime/airline-power-bank-rule" },
+    { title: "工商時報：NCC 審查費新制", url: "https://www.ctee.com.tw/news/20250220700182-430104" },
+    { title: "DHL：NCC 自用切結書範例", url: "https://dhl.com/discover/content/dam/taiwan/shipping-with-dhl/start-shipping-with-dhl/b2c-cross-border-ecommerce/ncc自用切結書-填寫範例201802.pdf" },
   ],
 };

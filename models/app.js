@@ -3,7 +3,7 @@
   "use strict";
 
   const shops = Array.isArray(window.SHOPS) ? window.SHOPS : [];
-  const TYPE_ORDER = ["鋼彈模型", "比例模型", "鐵道模型", "模型車・迷你四驅", "公仔・人偶", "二手・中古", "工具・塗料"];
+  const TYPE_ORDER = ["鋼彈模型", "比例模型", "鐵道模型", "模型車・迷你四驅", "遙控模型（RC）", "公仔・人偶", "二手・中古", "工具・塗料"];
 
   const filterForm = document.getElementById("filters");
   const pending = document.getElementById("pending");
@@ -32,7 +32,7 @@
   }
 
   // 城市由北到南排列；不在清單裡的排最後
-  const CITY_ORDER = ["札幌", "仙台", "東京", "名古屋", "金澤", "京都", "大阪", "廣島", "福岡", "首爾", "台北", "台中", "高雄"];
+  const CITY_ORDER = ["札幌", "仙台", "東京", "名古屋", "金澤", "京都", "大阪", "廣島", "福岡", "首爾", "台北", "新北", "台中", "高雄"];
   const cityOrder = (c) => { const i = CITY_ORDER.indexOf(c); return i < 0 ? 999 : i; };
 
   // 城市選單依國家分組；選了國家就只列該國城市
