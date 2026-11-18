@@ -46,9 +46,9 @@
           <p class="hint">用逗號分開；連續的號碼可以寫「8-9」。</p>
         </div>
         <label class="check">
-          <input id="no-self" type="checkbox">
-          <span>不會抽到自己的禮物
-            <small>每個人依自己的號碼順序輪流抽（第 1 位、第 2 位…），保證沒有人抽到自己帶來的禮物。</small>
+          <input id="no-self" type="checkbox" checked>
+          <span>每個人都不會抽到自己的禮物（交換禮物建議開啟）
+            <small>每個人的禮物貼上自己的號碼。抽之前先點自己的號碼，誰先抽都可以；保證沒有人抽到自己帶來的禮物，最後一個人也不會卡住。不勾選的話，就是單純從號碼裡隨機抽。</small>
           </span>
         </label>
         <p id="setup-preview" class="preview" aria-live="polite"></p>
@@ -65,6 +65,10 @@
           <button id="sound" type="button" class="sound-toggle" aria-pressed="true">🔊 音效：開</button>
         </div>
         <p id="status" class="status"></p>
+        <div id="who" class="who" hidden>
+          <p class="who-title">誰要抽？請點自己的號碼</p>
+          <div id="who-chips" class="who-chips" role="group" aria-label="選擇自己的號碼"></div>
+        </div>
         <p id="turn" class="turn" hidden></p>
 
         <div class="machine" aria-hidden="true">

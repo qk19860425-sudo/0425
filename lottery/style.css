@@ -65,16 +65,19 @@ main { padding: 0 16px; }
 @media (min-width: 584px) { .hero { margin: 12px auto 16px; } }
 .brand {
   display: inline-block;
-  margin: 0 0 8px !important;
-  padding: 3px 14px;
-  border: 3px solid var(--ink);
+  margin: 0 0 12px !important;
+  padding: 6px 24px;
+  border: 4px solid var(--ink);
   border-radius: 999px;
   background: #facc15;
   color: #3b0a18;
   font-weight: 900;
-  font-size: 1rem;
+  font-size: clamp(1.4rem, 7.6vw, 2.2rem);
+  white-space: nowrap;
+  max-width: 100%;
+  line-height: 1.2;
   letter-spacing: 0.04em;
-  box-shadow: 0 3px 0 var(--ink);
+  box-shadow: 0 5px 0 var(--ink);
 }
 .hero h1 { margin: 0 0 4px; font-size: 1.7rem; line-height: 1.3; text-shadow: 0 2px 0 rgba(0, 0, 0, 0.25); }
 .hero p { margin: 0; }
@@ -163,6 +166,29 @@ input:focus-visible, .button:focus-visible { outline: 4px solid var(--sky); outl
   font-size: 1.1rem;
 }
 .turn[hidden] { display: none; }
+
+/* 誰要抽：點自己的號碼 */
+.who { margin: 10px 0 4px; }
+.who[hidden] { display: none; }
+.who-title { margin: 0 0 8px; font-weight: 800; }
+.who-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.who-chip {
+  min-width: 52px;
+  min-height: 48px;
+  padding: 0 10px;
+  font: inherit;
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: var(--text);
+  background: var(--soft);
+  border: 3px solid var(--ink);
+  border-radius: 14px;
+  box-shadow: 0 3px 0 var(--ink);
+  cursor: pointer;
+}
+.who-chip[aria-pressed="true"] { background: var(--yellow); color: #3b0a18; transform: translateY(-2px); }
+.who-chip:disabled { opacity: 0.5; cursor: not-allowed; }
+.who-chip:focus-visible { outline: 4px solid var(--sky); outline-offset: 2px; }
 
 .machine { margin: 6px auto 0; width: 150px; }
 .machine-svg { display: block; width: 100%; height: auto; overflow: visible; }
@@ -290,7 +316,7 @@ input:focus-visible, .button:focus-visible { outline: 4px solid var(--sky); outl
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .site-footer { padding: 0 16px 28px; color: var(--muted); font-size: 0.85rem; text-align: center; }
 .site-footer p { margin: 4px 0; }
-.footer-brand { font-weight: 900; letter-spacing: 0.04em; color: var(--accent-dark); }
+.footer-brand { font-weight: 900; font-size: 1.4rem; letter-spacing: 0.04em; color: var(--accent-dark); }
 @media (prefers-color-scheme: dark) { .footer-brand { color: var(--ink); } }
 
 @media (prefers-reduced-motion: reduce) {

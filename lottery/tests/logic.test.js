@@ -54,25 +54,47 @@ test("抽籤結果大致平均（每個號碼都有機會第一個被抽到）",
   for (const n of [1, 2, 3, 4, 5, 6]) assert.ok(counts.get(n) > 800 && counts.get(n) < 1200, n + "：" + counts.get(n));
 });
 
-test("不能抽到自己的號碼：任何人數都不會抽到自己，且號碼不重複", () => {
-  for (let size = 2; size <= 40; size++) {
-    for (let seed = 1; seed <= 30; seed++) {
+test("各自點號碼抽：只剩自己的禮物時回傳 null（畫面不會讓這種情況發生）", () => {
+  assert.equal(L.drawForDrawer([1], 1, [], Math.random), null);
+});
+
+test("各自點號碼抽（順序不限）：任何人數、任何順序都不會抽到自己，也不會卡住", () => {
+  for (let size = 2; size <= 30; size++) {
+    for (let seed = 1; seed <= 40; seed++) {
+      const rng = seeded(seed * 1000 + size);
       const numbers = Array.from({ length: size }, (_, i) => i + 1);
-      const p = L.derangement(numbers, seeded(seed * 100 + size));
-      assert.equal(p.length, size);
-      assert.ok(p.every((x, i) => x !== numbers[i]), "有人抽到自己：" + p.join(","));
-      assert.deepEqual(p.slice().sort((a, b) => a - b), numbers);
+      let pool = numbers.slice();
+      let waiting = L.shuffle(numbers, rng); // 隨機的抽籤順序
+      const got = new Map();
+      while (waiting.length) {
+        const drawer = waiting[0];
+        waiting = waiting.slice(1);
+        const r = L.drawForDrawer(pool, drawer, waiting, rng);
+        assert.ok(r, "卡住了：" + size + " 人，種子 " + seed);
+        assert.notEqual(r.number, drawer);
+        got.set(drawer, r.number);
+        pool = r.rest;
+      }
+      assert.equal(pool.length, 0);
+      assert.deepEqual([...got.values()].sort((a, b) => a - b), numbers);
     }
   }
 });
 
-test("不能抽到自己的號碼：亂數一直很差時也不會失敗", () => {
-  const numbers = [1, 2, 3, 4, 5];
-  const p = L.derangement(numbers, () => 0.999999);
-  assert.ok(p.every((x, i) => x !== numbers[i]));
-  assert.deepEqual(p.slice().sort((a, b) => a - b), numbers);
+test("各自點號碼抽：倒數第二人一定會抽走最後一人的禮物", () => {
+  // 剩 2 號、3 號兩份禮物，1 號先抽、3 號最後抽：1 號只能抽 3 號，3 號才不會抽到自己
+  const r = L.drawForDrawer([2, 3], 1, [3], () => 0);
+  assert.equal(r.number, 3);
+  assert.deepEqual(r.rest, [2]);
 });
 
-test("只有 1 個號碼時不能使用「不能抽到自己」", () => {
-  assert.equal(L.derangement([1], Math.random), null);
+test("各自點號碼抽：抽籤結果大致平均", () => {
+  const rng = seeded(99);
+  const counts = new Map();
+  for (let i = 0; i < 5000; i++) {
+    const n = L.drawForDrawer([1, 2, 3, 4, 5, 6], 1, [2, 3, 4, 5, 6], rng).number;
+    counts.set(n, (counts.get(n) || 0) + 1);
+  }
+  assert.equal(counts.has(1), false);
+  for (const n of [2, 3, 4, 5, 6]) assert.ok(counts.get(n) > 850 && counts.get(n) < 1150, n + "：" + counts.get(n));
 });
