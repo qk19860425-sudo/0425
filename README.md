@@ -7,3 +7,4 @@
 哆啦A夢搜尋入口：[doraemon/](doraemon/)
 大阪旅遊（原型）：[osaka/](osaka/)，啟動與資料修改方式見 [osaka/README.md](osaka/README.md)
 日本景點路線：[japan/](japan/)；韓國景點路線：[korea/](korea/)（與日韓景點路線共用 travel/ 的程式與資料）
+交換禮物抽籤機：[lottery/](lottery/)，使用方式見 [lottery/README.md](lottery/README.md)
