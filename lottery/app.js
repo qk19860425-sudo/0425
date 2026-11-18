@@ -17,6 +17,75 @@
     return Math.random();
   }
 
+  // ---- 音效：用 Web Audio 即時合成（不用下載音檔，離線也能播） ----
+  const SOUND_KEY = "gift-lottery-sound";
+  const sound = (function () {
+    let ctx = null;
+    let enabled = true;
+    try { enabled = localStorage.getItem(SOUND_KEY) !== "off"; } catch (e) { /* 讀不到就預設開啟 */ }
+
+    // 必須在使用者點按時建立／喚醒，iPhone 才會出聲
+    function ready() {
+      if (!enabled) return null;
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      if (!ctx) {
+        try { ctx = new AC(); } catch (e) { return null; }
+      }
+      if (ctx.state === "suspended") ctx.resume();
+      return ctx;
+    }
+
+    function tone(c, freq, at, dur, type, vol) {
+      const osc = c.createOscillator();
+      const gain = c.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, at);
+      gain.gain.setValueAtTime(0.0001, at);
+      gain.gain.exponentialRampToValueAtTime(vol, at + 0.012);
+      gain.gain.exponentialRampToValueAtTime(0.0001, at + dur);
+      osc.connect(gain);
+      gain.connect(c.destination);
+      osc.start(at);
+      osc.stop(at + dur + 0.03);
+    }
+
+    // 依序播放音符：[頻率, 開始秒數, 長度]
+    function melody(notes, type, vol) {
+      const c = ready();
+      if (!c) return;
+      const t0 = c.currentTime + 0.02;
+      for (const [f, at, dur] of notes) tone(c, f, t0 + at, dur, type, vol);
+    }
+
+    const C5 = 523.25, D5 = 587.33, E5 = 659.25, G5 = 783.99, A5 = 880, C6 = 1046.5, E6 = 1318.51, G6 = 1567.98;
+    return {
+      get enabled() { return enabled; },
+      set(on) {
+        enabled = on;
+        try { localStorage.setItem(SOUND_KEY, on ? "on" : "off"); } catch (e) { /* 無法儲存時忽略 */ }
+      },
+      // 按下「抽一個！」：扭蛋機轉動的喀啦聲
+      start() { melody([[220, 0, 0.08], [330, 0.07, 0.08]], "square", 0.06); },
+      // 號碼跳動：每跳一次「滴」一聲，越來越高
+      tick(step) { melody([[700 + Math.min(step, 20) * 35, 0, 0.045]], "square", 0.035); },
+      // 抽中：開心的上行和弦＋閃亮音
+      reveal() {
+        melody([[C5, 0, 0.18], [E5, 0.09, 0.18], [G5, 0.18, 0.2], [C6, 0.27, 0.45]], "triangle", 0.2);
+        melody([[E6, 0.3, 0.12], [G6, 0.38, 0.25]], "sine", 0.08);
+      },
+      // 全部抽完：小段慶祝音樂
+      finale() {
+        melody([
+          [G5, 0.55, 0.14], [G5, 0.7, 0.14], [A5, 0.85, 0.14], [G5, 1.0, 0.14],
+          [C6, 1.15, 0.2], [D5 * 2, 1.35, 0.2], [E6, 1.55, 0.55],
+        ], "triangle", 0.16);
+      },
+      // 一般按鈕的輕點聲
+      pop() { melody([[880, 0, 0.06], [1320, 0.04, 0.07]], "sine", 0.08); },
+    };
+  })();
+
   // ---- 狀態：存在這台手機，重新整理也不會不見 ----
   // settings：輸入的設定；numbers：全部號碼；pool：還沒抽的號碼（一般模式）；
   // plan：不能抽到自己時，事先排好的結果；history：[{ order, drawer, number }]
@@ -211,10 +280,13 @@
       renderStatus();
       renderHistory();
       celebrate();
+      sound.reveal();
+      if (!remaining()) sound.finale();
       if (navigator.vibrate) navigator.vibrate(80);
     };
 
     if (reduceMotion) { finish(); return; }
+    sound.start();
 
     rolling = true;
     renderStatus();
@@ -226,9 +298,11 @@
     const pool = state.numbers;
     let delay = 50;
     let elapsed = 0;
+    let step = 0;
     (function tick() {
       const n = pool[Math.floor(rng() * pool.length)];
       resultEl.textContent = String(n);
+      sound.tick(step++);
       resultEl.classList.toggle("long", String(n).length >= 3);
       elapsed += delay;
       delay *= 1.12;
@@ -236,6 +310,19 @@
       else finish();
     })();
   });
+
+  // ---- 音效開關 ----
+  const soundBtn = $("sound");
+  function renderSound() {
+    soundBtn.textContent = sound.enabled ? "🔊 音效：開" : "🔇 音效：關";
+    soundBtn.setAttribute("aria-pressed", String(sound.enabled));
+  }
+  soundBtn.addEventListener("click", () => {
+    sound.set(!sound.enabled);
+    renderSound();
+    sound.pop();
+  });
+  renderSound();
 
   // ---- 放大號碼 ----
   const zoomLayer = $("zoom-layer");
@@ -253,7 +340,7 @@
     zoomLayer.hidden = true;
     zoomBtn.focus();
   }
-  zoomBtn.addEventListener("click", openZoom);
+  zoomBtn.addEventListener("click", () => { sound.pop(); openZoom(); });
   $("zoom-close").addEventListener("click", closeZoom);
   zoomLayer.addEventListener("click", (e) => { if (e.target === zoomLayer || e.target.id === "zoom-number") closeZoom(); });
   document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !zoomLayer.hidden) closeZoom(); });
