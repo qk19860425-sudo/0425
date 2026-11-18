@@ -63,6 +63,19 @@ main { padding: 0 16px; }
   text-align: center;
 }
 @media (min-width: 584px) { .hero { margin: 12px auto 16px; } }
+.brand {
+  display: inline-block;
+  margin: 0 0 8px !important;
+  padding: 3px 14px;
+  border: 3px solid var(--ink);
+  border-radius: 999px;
+  background: #facc15;
+  color: #3b0a18;
+  font-weight: 900;
+  font-size: 1rem;
+  letter-spacing: 0.04em;
+  box-shadow: 0 3px 0 var(--ink);
+}
 .hero h1 { margin: 0 0 4px; font-size: 1.7rem; line-height: 1.3; text-shadow: 0 2px 0 rgba(0, 0, 0, 0.25); }
 .hero p { margin: 0; }
 .motifs { margin-top: 8px !important; font-size: 1.5rem; letter-spacing: 6px; }
@@ -169,6 +182,23 @@ input:focus-visible, .button:focus-visible { outline: 4px solid var(--sky); outl
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
+/* 音效開關 */
+.game-top { display: flex; justify-content: flex-end; margin: -4px -4px 6px; }
+.sound-toggle {
+  min-height: 40px;
+  padding: 0 14px;
+  font: inherit;
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: var(--text);
+  background: var(--soft);
+  border: 3px solid var(--ink);
+  border-radius: 999px;
+  cursor: pointer;
+}
+.sound-toggle[aria-pressed="false"] { opacity: 0.7; }
+.sound-toggle:focus-visible { outline: 4px solid var(--sky); outline-offset: 2px; }
+
 /* 大號碼：抽到的號碼要一眼看得清楚 */
 .result-wrap {
   margin: 10px auto 0;
@@ -259,6 +289,9 @@ input:focus-visible, .button:focus-visible { outline: 4px solid var(--sky); outl
 
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .site-footer { padding: 0 16px 28px; color: var(--muted); font-size: 0.85rem; text-align: center; }
+.site-footer p { margin: 4px 0; }
+.footer-brand { font-weight: 900; letter-spacing: 0.04em; color: var(--accent-dark); }
+@media (prefers-color-scheme: dark) { .footer-brand { color: var(--ink); } }
 
 @media (prefers-reduced-motion: reduce) {
   .machine.rolling .balls circle, .machine.rolling .knob, .machine.rolling .knob-bar, .result.pop { animation: none; }
