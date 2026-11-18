@@ -68,23 +68,6 @@
     return a;
   }
 
-  // 「不能抽到自己的號碼」：產生每個位置都和原本不同的排列。
-  // 先隨機洗牌，有人抽到自己就重洗（平均洗 3 次內完成）；
-  // 保險起見，洗太多次還不行就改用 Sattolo 演算法（一定沒有人抽到自己）。
-  function derangement(numbers, rng) {
-    if (numbers.length < 2) return null;
-    for (let tries = 0; tries < 1000; tries++) {
-      const p = shuffle(numbers, rng);
-      if (p.every((x, i) => x !== numbers[i])) return p;
-    }
-    const idx = numbers.map((_, i) => i);
-    for (let i = idx.length - 1; i > 0; i--) {
-      const j = randomIndex(i, rng); // 0 ~ i-1，不含 i 本身
-      [idx[i], idx[j]] = [idx[j], idx[i]];
-    }
-    return idx.map((k) => numbers[k]);
-  }
-
   // 從號碼池抽一個，回傳抽到的號碼與剩下的號碼池
   function drawFrom(pool, rng) {
     if (!pool.length) return null;
@@ -92,5 +75,21 @@
     return { number: pool[i], rest: pool.slice(0, i).concat(pool.slice(i + 1)) };
   }
 
-  return { MAX_COUNT, parseExcludes, buildNumbers, shuffle, derangement, drawFrom };
+  // 交換禮物：drawer 號的人來抽，不能抽到自己的號碼，順序不限。
+  // pool：還沒被抽走的禮物號碼；waiting：還沒抽、而且不是 drawer 本人的人。
+  // 只有一種情況會讓後面的人卡住：最後只剩一個人，而剩下的禮物剛好是他自己的。
+  // 所以倒數第二個人抽時，如果最後那個人的禮物還在，就一定要抽走它。
+  // （人數 2 個以上時，每個人至少有一個不是自己的禮物可選，一定排得完。）
+  function drawForDrawer(pool, drawer, waiting, rng) {
+    let choices = pool.filter((n) => n !== drawer);
+    if (!choices.length) return null;
+    if (waiting.length === 1 && pool.length === 2) {
+      const last = waiting[0];
+      if (choices.includes(last)) choices = [last];
+    }
+    const number = choices[randomIndex(choices.length, rng)];
+    return { number, rest: pool.filter((n) => n !== number) };
+  }
+
+  return { MAX_COUNT, parseExcludes, buildNumbers, shuffle, drawFrom, drawForDrawer };
 });

@@ -88,7 +88,7 @@
 
   // ---- 狀態：存在這台手機，重新整理也不會不見 ----
   // settings：輸入的設定；numbers：全部號碼；pool：還沒抽的號碼（一般模式）；
-  // plan：不能抽到自己時，事先排好的結果；history：[{ order, drawer, number }]
+  // waiting：不能抽到自己時，還沒抽的人（號碼）；history：[{ order, drawer, number }]
   let state = null;
   let rolling = false;
 
@@ -98,18 +98,33 @@
   function load() {
     try {
       const s = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
-      if (s && Array.isArray(s.numbers) && Array.isArray(s.history)) return s;
+      if (s && Array.isArray(s.numbers) && Array.isArray(s.history)) {
+        // 舊版（依順序事先排好 plan）的紀錄：換算成目前的「還沒抽的人／還沒被抽走的禮物」
+        if (s.plan) {
+          const drawers = s.history.map((h) => h.drawer);
+          const taken = s.history.map((h) => h.number);
+          s.waiting = s.numbers.filter((n) => !drawers.includes(n));
+          s.pool = s.numbers.filter((n) => !taken.includes(n));
+          delete s.plan;
+        }
+        return s;
+      }
     } catch (e) { /* 資料壞掉就當作沒有 */ }
     return null;
   }
 
   function newGame(settings, numbers) {
-    const game = { settings, numbers, history: [], pool: numbers.slice(), plan: null };
-    if (settings.noSelf) game.plan = L.derangement(numbers, rng);
-    return game;
+    return { settings, numbers, history: [], pool: numbers.slice(), waiting: settings.noSelf ? numbers.slice() : null };
   }
 
   const remaining = () => state.numbers.length - state.history.length;
+  // 不能抽到自己時：現在要抽的人（點自己的號碼選擇；預設是還沒抽的人裡號碼最小的）
+  let selected = null;
+  function currentDrawer() {
+    if (!state.waiting || !state.waiting.length) return null;
+    if (!state.waiting.includes(selected)) selected = state.waiting[0];
+    return selected;
+  }
   // 動畫進行中，結果已經存好但還沒公布：畫面上先當作還沒抽
   const shownCount = () => state.history.length - (rolling ? 1 : 0);
 
@@ -194,16 +209,48 @@
       ? "共 " + state.numbers.length + " 個號碼，還剩 " + left + " 個"
       : "全部 " + state.numbers.length + " 個號碼都抽完了！🎉";
     const turn = $("turn");
-    if (state.plan && left) {
-      const next = shownCount();
-      turn.textContent = "👉 輪到 " + state.numbers[next] + " 號的人抽";
+    if (state.waiting && left) {
+      const who = rolling ? state.history[state.history.length - 1].drawer : currentDrawer();
+      turn.textContent = "👉 現在由 " + who + " 號抽";
       turn.hidden = false;
     } else {
       turn.hidden = true;
     }
+    renderWho();
     drawBtn.disabled = rolling || !left;
     drawBtn.textContent = rolling ? "🎲 抽籤中…" : left ? "🎲 抽一個！" : "🎉 全部抽完了";
     zoomBtn.disabled = rolling || !state.history.length;
+  }
+
+  // 「誰要抽？」：列出還沒抽的人，點自己的號碼
+  function renderWho() {
+    const box = $("who");
+    const list = $("who-chips");
+    if (!state.waiting || !state.waiting.length) {
+      box.hidden = true;
+      list.replaceChildren();
+      return;
+    }
+    if (rolling) {
+      list.querySelectorAll("button").forEach((x) => { x.disabled = true; });
+      return;
+    }
+    box.hidden = false;
+    const who = currentDrawer();
+    list.replaceChildren(...state.waiting.map((n) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "who-chip";
+      b.textContent = n;
+      b.setAttribute("aria-pressed", String(n === who));
+      b.setAttribute("aria-label", n + " 號");
+      b.addEventListener("click", () => {
+        selected = n;
+        sound.pop();
+        renderStatus();
+      });
+      return b;
+    }));
   }
 
   function renderHistory() {
@@ -256,9 +303,14 @@
 
   function pickNext() {
     const order = state.history.length + 1;
-    if (state.plan) {
-      const i = state.history.length;
-      return { order, drawer: state.numbers[i], number: state.plan[i] };
+    if (state.waiting) {
+      const drawer = currentDrawer();
+      const others = state.waiting.filter((n) => n !== drawer);
+      const r = L.drawForDrawer(state.pool, drawer, others, rng);
+      state.pool = r.rest;
+      state.waiting = others;
+      selected = null;
+      return { order, drawer, number: r.number };
     }
     const r = L.drawFrom(state.pool, rng);
     state.pool = r.rest;
@@ -379,7 +431,7 @@
 
   // ---- 啟動 ----
   state = load();
-  if (state) showGame();
+  if (state) { save(); showGame(); }
   else showSetup();
 
   // 離線也能用：註冊 Service Worker

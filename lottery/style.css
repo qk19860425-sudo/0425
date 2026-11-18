@@ -164,6 +164,29 @@ input:focus-visible, .button:focus-visible { outline: 4px solid var(--sky); outl
 }
 .turn[hidden] { display: none; }
 
+/* 誰要抽：點自己的號碼 */
+.who { margin: 10px 0 4px; }
+.who[hidden] { display: none; }
+.who-title { margin: 0 0 8px; font-weight: 800; }
+.who-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.who-chip {
+  min-width: 52px;
+  min-height: 48px;
+  padding: 0 10px;
+  font: inherit;
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: var(--text);
+  background: var(--soft);
+  border: 3px solid var(--ink);
+  border-radius: 14px;
+  box-shadow: 0 3px 0 var(--ink);
+  cursor: pointer;
+}
+.who-chip[aria-pressed="true"] { background: var(--yellow); color: #3b0a18; transform: translateY(-2px); }
+.who-chip:disabled { opacity: 0.5; cursor: not-allowed; }
+.who-chip:focus-visible { outline: 4px solid var(--sky); outline-offset: 2px; }
+
 .machine { margin: 6px auto 0; width: 150px; }
 .machine-svg { display: block; width: 100%; height: auto; overflow: visible; }
 .dome { fill: rgba(255, 255, 255, 0.75); stroke: var(--ink); stroke-width: 4; }

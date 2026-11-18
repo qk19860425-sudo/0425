@@ -1,6 +1,6 @@
 // 交換禮物抽籤機：Service Worker（離線快取）
 // 更新網站檔案時，請把 CACHE_VERSION 加 1，使用者下次開啟就會換成新版。
-const CACHE_VERSION = "v2";
+const CACHE_VERSION = "v3";
 const CACHE_NAME = "lottery-" + CACHE_VERSION;
 
 const APP_SHELL = [
