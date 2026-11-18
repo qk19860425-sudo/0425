@@ -14,6 +14,8 @@ No build, development, lint, or test commands are currently configured. Do not a
 
 The Osaka travel prototype (`osaka/`) has no build step. Serve the repository root with `python3 -m http.server 8000` and open `http://localhost:8000/osaka/`. Run its tests from `osaka/` with `node --test` (Node.js 18 or later). See `osaka/README.md` for where to edit the demo data.
 
+The gift-exchange lottery (`lottery/`) also has no build step: open `http://localhost:8000/lottery/` from the same server, and run its tests from `lottery/` with `node --test`. Bump `CACHE_VERSION` in `lottery/sw.js` whenever its files change.
+
 When introducing a framework, commit its dependency manifest and lockfile, and document the exact installation, local development, build, and test commands here. Keep generated outputs and installed dependencies out of version control.
 
 ## Coding Style & Naming Conventions

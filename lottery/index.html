@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>交換禮物抽籤機</title>
+  <meta name="description" content="交換禮物用的抽籤機：自己設定號碼範圍，每次抽一個，號碼不重複，也可以設定不會抽到自己的號碼。">
+  <meta name="theme-color" content="#e11d48">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-title" content="抽籤機">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="hero">
+    <h1><span aria-hidden="true">🎁</span> 交換禮物抽籤機</h1>
+    <p>設定號碼，大家輪流按「抽一個！」，抽過的號碼不會再出現。</p>
+    <p class="motifs" aria-hidden="true">🎄 🎀 ⭐ 🧸 🍬 🎉</p>
+  </header>
+
+  <main>
+    <!-- 設定號碼 -->
+    <section id="setup" class="card" aria-labelledby="setup-title">
+      <h2 id="setup-title">① 設定號碼</h2>
+      <form id="setup-form" novalidate>
+        <div class="row">
+          <div class="field">
+            <label for="start">起始號碼</label>
+            <input id="start" type="number" inputmode="numeric" min="0" step="1" value="1" required>
+          </div>
+          <span class="to" aria-hidden="true">～</span>
+          <div class="field">
+            <label for="end">結束號碼</label>
+            <input id="end" type="number" inputmode="numeric" min="0" step="1" value="10" required>
+          </div>
+        </div>
+        <div class="field">
+          <label for="excludes">不要抽的號碼（選填）</label>
+          <input id="excludes" type="text" inputmode="numeric" autocomplete="off" placeholder="例如：4, 13 或 8-9">
+          <p class="hint">用逗號分開；連續的號碼可以寫「8-9」。</p>
+        </div>
+        <label class="check">
+          <input id="no-self" type="checkbox">
+          <span>不會抽到自己的禮物
+            <small>每個人依自己的號碼順序輪流抽（第 1 位、第 2 位…），保證沒有人抽到自己帶來的禮物。</small>
+          </span>
+        </label>
+        <p id="setup-preview" class="preview" aria-live="polite"></p>
+        <p id="setup-error" class="error" role="alert" hidden></p>
+        <button type="submit" class="button button-big">確定，開始抽籤</button>
+      </form>
+    </section>
+
+    <!-- 抽籤 -->
+    <section id="game" hidden aria-labelledby="game-title">
+      <div class="card machine-card">
+        <h2 id="game-title" class="visually-hidden">抽籤</h2>
+        <p id="status" class="status"></p>
+        <p id="turn" class="turn" hidden></p>
+
+        <div class="machine" aria-hidden="true">
+          <svg viewBox="0 0 200 150" class="machine-svg">
+            <!-- 扭蛋機：圓頂、彩色小球、機身與出口（原創圖案） -->
+            <circle cx="100" cy="62" r="54" class="dome"/>
+            <g class="balls">
+              <circle cx="72" cy="78" r="13" fill="#f43f5e"/>
+              <circle cx="100" cy="86" r="13" fill="#facc15"/>
+              <circle cx="128" cy="78" r="13" fill="#38bdf8"/>
+              <circle cx="86" cy="58" r="13" fill="#a78bfa"/>
+              <circle cx="114" cy="58" r="13" fill="#4ade80"/>
+              <circle cx="100" cy="36" r="13" fill="#fb923c"/>
+            </g>
+            <ellipse cx="66" cy="38" rx="9" ry="6" class="shine"/>
+            <rect x="46" y="106" width="108" height="40" rx="12" class="body"/>
+            <circle cx="100" cy="126" r="11" class="knob"/>
+            <rect x="94" y="119" width="12" height="14" rx="3" class="knob-bar"/>
+            <rect x="130" y="118" width="16" height="18" rx="5" class="slot"/>
+          </svg>
+        </div>
+
+        <div class="result-wrap">
+          <output id="result" class="result" aria-live="assertive" aria-atomic="true">?</output>
+        </div>
+        <p id="result-note" class="result-note">按下面的按鈕開始抽籤</p>
+
+        <div class="actions">
+          <button id="draw" type="button" class="button button-big">🎲 抽一個！</button>
+          <button id="zoom" type="button" class="button button-secondary" disabled>🔍 放大號碼</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>📋 抽籤紀錄</h2>
+        <p id="history-empty" class="hint">還沒有抽籤紀錄。</p>
+        <ol id="history" class="history"></ol>
+      </div>
+
+      <div class="actions">
+        <button id="redo" type="button" class="button button-secondary">🔄 同樣號碼重新抽</button>
+        <button id="reset" type="button" class="button button-secondary">⚙️ 重新設定號碼</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- 放大顯示：給大家看號碼 -->
+  <div id="zoom-layer" class="zoom-layer" role="dialog" aria-modal="true" aria-label="放大的號碼" hidden>
+    <p id="zoom-label" class="zoom-label"></p>
+    <p id="zoom-number" class="zoom-number"></p>
+    <button id="zoom-close" type="button" class="button">關閉</button>
+  </div>
+
+  <div id="confetti" class="confetti" aria-hidden="true"></div>
+
+  <footer class="site-footer">
+    <p>抽籤用手機內建的亂數產生，號碼存在這台手機上；重新整理也不會不見。</p>
+  </footer>
+
+  <script src="logic.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

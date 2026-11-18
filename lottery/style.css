@@ -1,0 +1,266 @@
+/* 交換禮物抽籤機：卡通風格（手機優先） */
+:root {
+  --bg: #fff1f2;
+  --dot: rgba(244, 63, 94, 0.10);
+  --card: #ffffff;
+  --text: #3b0a18;
+  --muted: #7a4b57;
+  --ink: #4c0519;          /* 卡通粗外框 */
+  --accent: #e11d48;
+  --accent-dark: #9f1239;
+  --accent-text: #ffffff;
+  --soft: #ffe4e6;
+  --yellow: #facc15;
+  --sky: #38bdf8;
+  --error-bg: #fef2f2;
+  --error-text: #991b1b;
+  --number: #e11d48;
+  --number-shadow: #facc15;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1a0a0f;
+    --dot: rgba(251, 113, 133, 0.10);
+    --card: #2a1219;
+    --text: #ffe4e6;
+    --muted: #d4a5b0;
+    --ink: #fda4af;
+    --accent: #fb7185;
+    --accent-dark: #be123c;
+    --accent-text: #1f0a10;
+    --soft: #4c0519;
+    --error-bg: #450a0a;
+    --error-text: #fecaca;
+    --number: #fda4af;
+    --number-shadow: #a16207;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  color: var(--text);
+  background-color: var(--bg);
+  background-image: radial-gradient(var(--dot) 18%, transparent 19%);
+  background-size: 28px 28px;
+  font-family: "Hiragino Maru Gothic ProN", "Arial Rounded MT Bold", system-ui, -apple-system, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.hero, main, .site-footer { max-width: 560px; margin: 0 auto; }
+main { padding: 0 16px; }
+
+.hero {
+  margin: 12px 12px 16px;
+  padding: 18px 18px 14px;
+  border: 3px solid var(--ink);
+  border-radius: 24px;
+  background: linear-gradient(135deg, #e11d48, #db2777 55%, #f472b6);
+  color: #ffffff;
+  box-shadow: 0 6px 0 var(--ink);
+  text-align: center;
+}
+@media (min-width: 584px) { .hero { margin: 12px auto 16px; } }
+.hero h1 { margin: 0 0 4px; font-size: 1.7rem; line-height: 1.3; text-shadow: 0 2px 0 rgba(0, 0, 0, 0.25); }
+.hero p { margin: 0; }
+.motifs { margin-top: 8px !important; font-size: 1.5rem; letter-spacing: 6px; }
+
+.card {
+  background: var(--card);
+  border: 3px solid var(--ink);
+  border-radius: 22px;
+  padding: 16px;
+  margin-bottom: 18px;
+  box-shadow: 0 5px 0 var(--ink);
+}
+h2 { margin: 0 0 12px; font-size: 1.2rem; }
+
+/* ---- 設定 ---- */
+.row { display: flex; align-items: flex-end; gap: 8px; }
+.row .field { flex: 1 1 0; min-width: 0; }
+.to { font-size: 1.4rem; font-weight: 800; padding-bottom: 12px; }
+.field { margin-bottom: 14px; }
+.field label { display: block; font-weight: 800; margin-bottom: 6px; }
+input[type="number"], input[type="text"] {
+  width: 100%;
+  font: inherit;
+  font-size: 1.4rem;
+  font-weight: 800;
+  text-align: center;
+  color: var(--text);
+  background: var(--soft);
+  border: 3px solid var(--ink);
+  border-radius: 14px;
+  padding: 8px 10px;
+  min-height: 56px;
+}
+input[type="text"] { font-size: 1.05rem; text-align: left; }
+input:focus-visible, .button:focus-visible { outline: 4px solid var(--sky); outline-offset: 2px; }
+.hint { margin: 6px 0 0; color: var(--muted); font-size: 0.9rem; }
+.check { display: flex; gap: 10px; align-items: flex-start; margin: 4px 0 14px; cursor: pointer; }
+.check input { width: 26px; height: 26px; margin-top: 2px; flex-shrink: 0; accent-color: var(--accent); }
+.check span { font-weight: 800; }
+.check small { display: block; font-weight: 400; color: var(--muted); font-size: 0.88rem; }
+.preview { margin: 0 0 12px; font-weight: 700; color: var(--accent-dark); }
+@media (prefers-color-scheme: dark) { .preview { color: var(--ink); } }
+.error { margin: 0 0 12px; padding: 10px 12px; border-radius: 12px; background: var(--error-bg); color: var(--error-text); font-weight: 700; }
+.error[hidden] { display: none; }
+
+/* ---- 按鈕：卡通立體感 ---- */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 52px;
+  padding: 0 18px;
+  font: inherit;
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: var(--accent-text);
+  background: var(--accent);
+  border: 3px solid var(--ink);
+  border-radius: 999px;
+  box-shadow: 0 5px 0 var(--ink);
+  cursor: pointer;
+  transition: transform 0.08s, box-shadow 0.08s;
+  -webkit-tap-highlight-color: transparent;
+}
+.button:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 1px 0 var(--ink); }
+.button:disabled { opacity: 0.45; cursor: not-allowed; }
+.button-big { width: 100%; min-height: 64px; font-size: 1.35rem; }
+.button-secondary { background: var(--card); color: var(--text); }
+.actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 14px; }
+.actions .button { flex: 1 1 200px; }
+
+/* ---- 抽籤區 ---- */
+.machine-card { text-align: center; }
+.status { margin: 0; font-weight: 800; font-size: 1.05rem; }
+.turn {
+  margin: 8px auto 0;
+  display: inline-block;
+  padding: 4px 14px;
+  border: 3px solid var(--ink);
+  border-radius: 999px;
+  background: var(--yellow);
+  color: #3b0a18;
+  font-weight: 800;
+  font-size: 1.1rem;
+}
+.turn[hidden] { display: none; }
+
+.machine { margin: 6px auto 0; width: 150px; }
+.machine-svg { display: block; width: 100%; height: auto; overflow: visible; }
+.dome { fill: rgba(255, 255, 255, 0.75); stroke: var(--ink); stroke-width: 4; }
+.shine { fill: #ffffff; opacity: 0.8; }
+.body { fill: var(--accent); stroke: var(--ink); stroke-width: 4; }
+.knob { fill: var(--yellow); stroke: var(--ink); stroke-width: 3; }
+.knob-bar { fill: #ffffff; stroke: var(--ink); stroke-width: 2; }
+.slot { fill: #3b0a18; }
+.balls circle { stroke: var(--ink); stroke-width: 3; transform-box: fill-box; transform-origin: center; }
+.machine.rolling .balls circle { animation: jiggle 0.28s ease-in-out infinite alternate; }
+.machine.rolling .balls circle:nth-child(2n) { animation-duration: 0.22s; animation-direction: alternate-reverse; }
+.machine.rolling .knob, .machine.rolling .knob-bar { transform-box: view-box; transform-origin: 100px 126px; animation: spin 0.5s linear infinite; }
+@keyframes jiggle {
+  from { transform: translate(-4px, 3px) rotate(-12deg); }
+  to { transform: translate(4px, -5px) rotate(12deg); }
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* 大號碼：抽到的號碼要一眼看得清楚 */
+.result-wrap {
+  margin: 10px auto 0;
+  padding: 6px 8px;
+  border: 4px solid var(--ink);
+  border-radius: 32px;
+  background: linear-gradient(180deg, var(--soft), var(--card));
+  min-height: 1.15em;
+}
+.result {
+  display: block;
+  font-size: clamp(7rem, 44vw, 13rem);
+  font-weight: 900;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  color: var(--number);
+  text-shadow: 0 5px 0 var(--number-shadow), 0 9px 0 var(--ink);
+  letter-spacing: -0.02em;
+}
+.result.long { font-size: clamp(5.5rem, 32vw, 10rem); }
+.result.rolling { opacity: 0.55; text-shadow: none; }
+.result.pop { animation: pop 0.55s cubic-bezier(0.2, 1.6, 0.4, 1); }
+@keyframes pop {
+  0% { transform: scale(0.3) rotate(-8deg); }
+  70% { transform: scale(1.12) rotate(3deg); }
+  100% { transform: scale(1) rotate(0); }
+}
+.result-note { margin: 10px 0 0; font-weight: 800; font-size: 1.15rem; min-height: 1.6em; }
+
+/* 抽籤紀錄 */
+.history { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.history li {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 4px 12px;
+  border: 3px solid var(--ink);
+  border-radius: 14px;
+  background: var(--soft);
+  font-weight: 800;
+}
+.history .h-order { font-size: 0.8rem; color: var(--muted); }
+.history .h-number { font-size: 1.5rem; color: var(--number); }
+.history li.latest { background: var(--yellow); color: #3b0a18; }
+.history li.latest .h-number, .history li.latest .h-order { color: #3b0a18; }
+
+/* 放大顯示 */
+.zoom-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px;
+  background: linear-gradient(160deg, #e11d48, #db2777 60%, #f472b6);
+  color: #ffffff;
+  text-align: center;
+}
+.zoom-layer[hidden] { display: none; }
+.zoom-label { margin: 0; font-size: 1.5rem; font-weight: 800; }
+.zoom-number {
+  margin: 0;
+  font-size: min(62vw, 58vh);
+  font-weight: 900;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 8px 0 #facc15, 0 14px 0 #4c0519;
+}
+.zoom-number.long { font-size: min(42vw, 50vh); }
+.zoom-layer .button { background: #ffffff; color: #4c0519; border-color: #4c0519; box-shadow: 0 5px 0 #4c0519; min-width: 160px; }
+
+/* 彩帶 */
+.confetti { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 30; }
+.confetti i {
+  position: absolute;
+  top: -20px;
+  width: 10px;
+  height: 16px;
+  border-radius: 3px;
+  animation: fall linear forwards;
+}
+@keyframes fall {
+  to { transform: translate(var(--dx), 110vh) rotate(var(--rot)); }
+}
+
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.site-footer { padding: 0 16px 28px; color: var(--muted); font-size: 0.85rem; text-align: center; }
+
+@media (prefers-reduced-motion: reduce) {
+  .machine.rolling .balls circle, .machine.rolling .knob, .machine.rolling .knob-bar, .result.pop { animation: none; }
+  .confetti { display: none; }
+}
