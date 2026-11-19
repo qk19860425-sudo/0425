@@ -453,3 +453,28 @@ body {
 .official-links .button { flex: 1 1 100%; }
 .detour-note { color: var(--accent-soft-text); font-weight: 600; }
 .quick-region { margin: 12px 0 0; font-weight: 700; font-size: 0.95rem; color: var(--accent-soft-text); }
+
+/* ---- 今日匯率換算 ---- */
+.fx-card { border: 2px solid var(--accent); }
+.fx-title { margin: 0 0 10px; font-size: 1.15rem; }
+.fx-currencies { margin-bottom: 10px; }
+.fx-currencies[hidden], .fx-inputs[hidden] { display: none; }
+.fx-inputs { display: flex; align-items: flex-end; gap: 8px; margin-bottom: 10px; }
+.fx-field { flex: 1 1 0; min-width: 0; display: block; }
+.fx-field input {
+  width: 100%;
+  font: inherit;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text);
+  background: var(--accent-soft);
+  border: 2px solid var(--accent);
+  border-radius: 10px;
+  padding: 10px 12px;
+  min-height: 52px;
+}
+.fx-unit { display: block; margin-bottom: 4px; font-weight: 700; color: var(--accent-soft-text); font-size: 0.95rem; }
+.fx-eq { font-weight: 800; color: var(--muted); padding-bottom: 14px; }
+.fx-quick { margin-bottom: 8px; }
+.fx-rate { margin: 6px 0 2px; font-weight: 700; }
+.fx-status.fx-error { color: var(--error-text); font-weight: 600; }
