@@ -36,30 +36,15 @@
   </div>
 
   <nav class="tabs" role="tablist" aria-label="功能">
-    <button type="button" role="tab" id="tab-plans" aria-controls="panel-plans" aria-selected="true">推薦行程</button>
+    <button type="button" role="tab" id="tab-plans" aria-controls="panel-plans" aria-selected="true">熱門景點</button>
     <button type="button" role="tab" id="tab-route" aria-controls="panel-route" aria-selected="false">路線查詢</button>
     <button type="button" role="tab" id="tab-guide" aria-controls="panel-guide" aria-selected="false">旅遊指南</button>
     <button type="button" role="tab" id="tab-translate" aria-controls="panel-translate" aria-selected="false">翻譯</button>
   </nav>
 
   <main>
-    <!-- 推薦行程 -->
+    <!-- 熱門景點與推薦行程 -->
     <section id="panel-plans" role="tabpanel" aria-labelledby="tab-plans">
-      <form id="plan-form" class="card">
-        <fieldset class="field">
-          <legend>城市</legend>
-          <div id="plan-regions" class="chips"></div>
-        </fieldset>
-        <fieldset class="field">
-          <legend>主題（可複選，符合任一個就會列出；括號內是行程數）</legend>
-          <div id="plan-themes" class="chips"></div>
-        </fieldset>
-        <div class="form-actions">
-          <button type="submit" class="button">確定搜尋</button>
-          <button type="button" id="plan-reset" class="button button-secondary">清除條件</button>
-        </div>
-        <p id="plan-pending" class="pending" hidden>條件已變更，按「確定搜尋」更新結果。</p>
-      </form>
       <p id="plan-count" class="result-count" aria-live="polite"></p>
       <div id="plan-list"></div>
     </section>

@@ -1324,3 +1324,142 @@ window.AIRPORTS = {
     },
   ],
 };
+
+// ===================================================================
+// 熱門景點：依月份顯示「當季最紅」的景點
+//   spot   ：對應 REGIONS 裡的景點 id（座標、車站沿用景點資料）
+//   months ：熱門的月份（1–12）；"all" 表示全年熱門
+//   reason ：為什麼這時候最紅（祭典、花季的確切日期每年不同，畫面上會提醒以官方公告為準）
+// 修改方式：新增一筆 { spot, months, reason } 即可；每月更新時可順便調整。
+// ===================================================================
+window.HOT_SPOTS = {
+  tokyo: [
+    { spot: "ueno", months: [3, 4], reason: "櫻花季（約 3 月下旬到 4 月上旬），東京賞櫻人潮最多的公園之一" },
+    { spot: "shinjuku-gyoen", months: [3, 4], reason: "櫻花季，園內品種多、花期長，需購票入園" },
+    { spot: "shinjuku-gyoen", months: [11, 12], reason: "秋天紅葉與銀杏（約 11 月中旬到 12 月上旬）" },
+    { spot: "tokyo-station", months: [11, 12, 1, 2], reason: "丸之內一帶冬季燈飾，行道樹掛滿燈光（期間依年份而定）" },
+    { spot: "meiji", months: [1], reason: "新年參拜（初詣），1 月上旬是全日本參拜人數最多的神社之一" },
+    { spot: "daibutsu", months: [6], reason: "附近的長谷寺是鎌倉知名的繡球花景點（約 6 月）" },
+    { spot: "odaiba", months: [7, 8], reason: "夏天的海濱公園，傍晚看彩虹大橋與東京灣夜景" },
+    { spot: "asakusa", months: "all", reason: "雷門、仲見世通，第一次去東京必訪" },
+    { spot: "skytree", months: "all", reason: "東京最高的展望台，晴天可以看到富士山" },
+  ],
+  kansai: [
+    { spot: "osaka-castle", months: [2, 3], reason: "大阪城梅林（約 2 月到 3 月上旬）" },
+    { spot: "osaka-castle", months: [3, 4], reason: "櫻花季，西之丸庭園與護城河一帶最熱門" },
+    { spot: "arashiyama", months: [3, 4], reason: "嵐山櫻花，渡月橋一帶整片粉紅" },
+    { spot: "gion", months: [7], reason: "祇園祭（整個 7 月），山鉾巡行是京都最大的祭典" },
+    { spot: "kasuga", months: [2, 8], reason: "萬燈籠（2 月初節分與 8 月中旬），上千盞燈籠一起點亮" },
+    { spot: "kiyomizu", months: [11, 12], reason: "紅葉季（約 11 月中旬到 12 月上旬），部分年份有夜間特別參拜" },
+    { spot: "arashiyama", months: [11, 12], reason: "嵐山紅葉，搭配嵯峨野小火車最熱門" },
+    { spot: "umeda-sky", months: [11, 12], reason: "梅田藍天大廈的德國聖誕市集（約 11 月中旬到聖誕節）" },
+    { spot: "kinkakuji", months: [1, 2], reason: "下雪時的「雪景金閣」特別美，可遇不可求" },
+    { spot: "fushimi-inari", months: "all", reason: "千本鳥居，京都外國旅客最多的景點" },
+    { spot: "dotonbori", months: "all", reason: "固力果跑跑人看板與美食，大阪夜晚最熱鬧的地方" },
+  ],
+  sapporo: [
+    { spot: "odori-park", months: [2], reason: "札幌雪祭（2 月上旬），巨大雪雕和冰雕" },
+    { spot: "otaru-canal", months: [2], reason: "小樽雪燈之路（2 月），運河旁點滿雪燈" },
+    { spot: "hokkaido-jingu", months: [4, 5], reason: "櫻花季（北海道較晚，約 4 月下旬到 5 月上旬）" },
+    { spot: "odori-park", months: [7, 8], reason: "夏季啤酒花園，大通公園變成露天啤酒廣場" },
+    { spot: "odori-park", months: [11, 12], reason: "白色燈樹節與德國聖誕市集（約 11 月下旬起）" },
+    { spot: "moiwa", months: "all", reason: "藻岩山夜景，名列日本新三大夜景" },
+    { spot: "otaru-canal", months: "all", reason: "小樽運河與倉庫群，晚上點燈後最美" },
+  ],
+  sendai: [
+    { spot: "jozenji-dori", months: [8], reason: "仙台七夕祭（8 月 6～8 日），市中心掛滿巨大彩飾" },
+    { spot: "jozenji-dori", months: [12], reason: "SENDAI 光之樂章（12 月），整條櫸木大道點滿燈" },
+    { spot: "godaido", months: [11], reason: "松島一帶秋天紅葉" },
+    { spot: "zuiganji", months: "all", reason: "日本三景松島的代表寺院" },
+    { spot: "sendai-castle", months: "all", reason: "伊達政宗騎馬像，可以俯瞰仙台市區" },
+  ],
+  nagoya: [
+    { spot: "nagoya-castle", months: [3, 4], reason: "櫻花季，天守閣搭配櫻花是名古屋代表景色" },
+    { spot: "atsuta", months: [1], reason: "新年參拜（初詣）人潮最多的時候" },
+    { spot: "nagoya-castle", months: "all", reason: "金鯱天守與本丸御殿" },
+    { spot: "osu", months: "all", reason: "大須商店街，美食和二手、動漫小店" },
+  ],
+  kanazawa: [
+    { spot: "kenrokuen", months: [3, 4], reason: "櫻花季（約 4 月上旬）" },
+    { spot: "kenrokuen", months: [11, 12, 1, 2], reason: "雪吊（約 11 月上旬起架設），冬天雪景最有名" },
+    { spot: "omicho", months: [11, 12, 1, 2, 3], reason: "螃蟹季（約 11 月上旬解禁），市場吃松葉蟹、香箱蟹" },
+    { spot: "higashi-chaya", months: "all", reason: "保存完整的茶屋街，金箔霜淇淋" },
+    { spot: "21st-century-museum", months: "all", reason: "「游泳池」作品是金澤最熱門的拍照點" },
+  ],
+  hiroshima: [
+    { spot: "peace-park", months: [8], reason: "8 月 6 日和平紀念儀式，晚上在元安川放水燈" },
+    { spot: "itsukushima", months: [11], reason: "宮島紅葉谷公園紅葉（約 11 月）" },
+    { spot: "itsukushima", months: [12, 1, 2], reason: "冬天是廣島牡蠣季，宮島表參道商店街吃烤牡蠣" },
+    { spot: "shukkeien", months: [11], reason: "日式庭園秋天紅葉" },
+    { spot: "itsukushima", months: "all", reason: "海上大鳥居，日本三景之一" },
+    { spot: "atomic-bomb-dome", months: "all", reason: "世界遺產，廣島必訪" },
+  ],
+  takamatsu: [
+    { spot: "ritsurin", months: [11, 12], reason: "秋天紅葉（約 11 月下旬到 12 月上旬）" },
+    { spot: "ritsurin", months: "all", reason: "日本最大的大名庭園之一，搭小船遊湖" },
+    { spot: "kotohiragu", months: "all", reason: "785 級石階到本宮，四國最有名的神社" },
+  ],
+  fukuoka: [
+    { spot: "dazaifu-tenmangu", months: [2, 3], reason: "梅花季（約 2 月到 3 月上旬），祭祀學問之神" },
+    { spot: "ohori-park", months: [3, 4], reason: "旁邊的舞鶴公園（福岡城跡）是福岡賞櫻名所" },
+    { spot: "kushida", months: [7], reason: "博多祇園山笠（7 月 1～15 日），15 日清晨的追山最精彩" },
+    { spot: "hakata-station", months: [11, 12], reason: "博多站前聖誕市集與燈飾（約 11 月中旬起）" },
+    { spot: "nakasu-yatai", months: "all", reason: "中洲屋台，晚上吃博多拉麵、關東煮" },
+    { spot: "dazaifu-tenmangu", months: "all", reason: "太宰府天滿宮與表參道梅枝餅" },
+  ],
+  nagasaki: [
+    { spot: "meganebashi", months: [1, 2], reason: "長崎燈會（農曆新年期間），市區掛滿上萬盞燈籠" },
+    { spot: "inasayama", months: "all", reason: "稻佐山夜景，名列世界新三大夜景" },
+    { spot: "glover-garden", months: "all", reason: "洋館與大浦天主堂，可以眺望長崎港" },
+  ],
+  okinawa: [
+    { spot: "naminoue", months: [1], reason: "新年參拜（初詣），沖繩參拜人潮最多的神社" },
+    { spot: "naminoue", months: [4, 5, 6, 7, 8, 9, 10], reason: "旁邊的波之上海灘，市區就能玩水" },
+    { spot: "churaumi", months: "all", reason: "鯨鯊大水槽，沖繩最熱門的景點" },
+    { spot: "kokusai-dori", months: "all", reason: "國際通伴手禮、沖繩料理" },
+  ],
+  seoul: [
+    { spot: "yeouido", months: [4], reason: "汝矣島櫻花（約 4 月上旬），輪中路整排櫻花" },
+    { spot: "namsan", months: [4], reason: "南山櫻花步道" },
+    { spot: "yeouido", months: [10], reason: "首爾國際煙火節（通常 10 月初，依年份而定）" },
+    { spot: "gyeongbokgung", months: [10, 11], reason: "秋天銀杏與楓葉，穿韓服拍照最熱門" },
+    { spot: "namsan", months: [10, 11], reason: "南山秋天楓葉，搭配 N 首爾塔" },
+    { spot: "myeongdong", months: [11, 12], reason: "聖誕燈飾，新世界百貨外牆燈光秀（約 11 月中旬起）" },
+    { spot: "seongsu", months: "all", reason: "咖啡廳與品牌快閃店，首爾最潮的街區" },
+    { spot: "gyeongbokgung", months: "all", reason: "穿韓服可以免費入場（依現場規定）" },
+  ],
+  gangneung: [
+    { spot: "jeongdongjin", months: [12, 1], reason: "跨年看日出，韓國最有名的看日出地點" },
+    { spot: "gyeongpo", months: [4], reason: "鏡浦湖櫻花（約 4 月上旬）" },
+    { spot: "gyeongpo", months: [7, 8], reason: "海水浴場開放季" },
+    { spot: "anmok", months: "all", reason: "安木咖啡街，邊看海邊喝咖啡" },
+    { spot: "gangneung-market", months: "all", reason: "江陵中央市場小吃" },
+  ],
+  daegu: [
+    { spot: "83-tower", months: [3, 4], reason: "E-World 櫻花季（約 3 月下旬到 4 月上旬）" },
+    { spot: "seomun-market", months: "all", reason: "西門市場夜市，大邱最大的傳統市場" },
+    { spot: "kim-kwangseok", months: "all", reason: "金光石路壁畫街" },
+  ],
+  busan: [
+    { spot: "daereungwon", months: [4], reason: "慶州一帶櫻花（約 4 月上旬）" },
+    { spot: "haeundae", months: [7, 8], reason: "海水浴場開放季，韓國最熱鬧的海灘" },
+    { spot: "bulguksa", months: [11], reason: "佛國寺秋天紅葉" },
+    { spot: "gwangalli", months: [11], reason: "釜山煙火節（通常 11 月，依年份而定），廣安大橋前施放" },
+    { spot: "haeundae", months: [11, 12, 1], reason: "海雲台光之慶典（冬季燈飾）" },
+    { spot: "gamcheon", months: "all", reason: "甘川文化村彩色房子，釜山拍照首選" },
+    { spot: "donggung", months: "all", reason: "慶州東宮與月池夜景" },
+  ],
+  jeonju: [
+    { spot: "gyeonggijeon", months: [11], reason: "秋天銀杏與楓葉" },
+    { spot: "hanok-village", months: "all", reason: "全州韓屋村，穿韓服逛老街" },
+    { spot: "nambu-market", months: "all", reason: "南部市場青年夜市（週末晚上）" },
+  ],
+  jeju: [
+    { spot: "seongsan-ilchulbong", months: [3, 4], reason: "油菜花季（約 3 月到 4 月上旬）" },
+    { spot: "seopjikoji", months: [3, 4], reason: "海邊油菜花田" },
+    { spot: "seongsan-ilchulbong", months: [12, 1], reason: "城山日出祭（跨年看日出）" },
+    { spot: "dongmun-market", months: [11, 12, 1], reason: "橘子季，市場買當季濟州橘子" },
+    { spot: "jusangjeolli", months: "all", reason: "柱狀節理海岸，濟州代表景觀" },
+    { spot: "cheonjiyeon", months: "all", reason: "天地淵瀑布，晚上也開放" },
+  ],
+};

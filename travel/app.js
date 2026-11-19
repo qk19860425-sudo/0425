@@ -124,47 +124,7 @@
   // ---------------------------------------------------------------
   // 推薦行程
   // ---------------------------------------------------------------
-  const planState = { region: "", themes: new Set() };
-  const allThemes = [...new Set(REGIONS.flatMap((r) => r.itineraries.flatMap((i) => i.themes)))];
-
-  // 目前選的城市（「全部」時是所有城市）
-  function planRegions() {
-    return planState.region ? REGIONS.filter((r) => r.id === planState.region) : REGIONS;
-  }
-
-  // 這些城市裡有哪些主題、各有幾個行程（依 allThemes 的順序）
-  function themeCounts(regions) {
-    const counts = new Map();
-    for (const r of regions) {
-      for (const it of r.itineraries) {
-        for (const t of it.themes) counts.set(t, (counts.get(t) || 0) + 1);
-      }
-    }
-    return allThemes.filter((t) => counts.has(t)).map((t) => ({ theme: t, count: counts.get(t) }));
-  }
-
-  function renderPlanFilters() {
-    const regionBox = $("plan-regions");
-    regionBox.replaceChildren(
-      chip("全部", planState.region === "", () => { planState.region = ""; renderPlanFilters(); markPlanPending(); }),
-      ...REGIONS.map((r) => chip(regionLabel(r), planState.region === r.id, () => {
-        planState.region = r.id; renderPlanFilters(); markPlanPending();
-      }))
-    );
-    // 主題只列出這個城市有的，並標出行程數；換城市後，新城市沒有的主題自動取消
-    const available = themeCounts(planRegions());
-    const availableSet = new Set(available.map((x) => x.theme));
-    for (const t of [...planState.themes]) if (!availableSet.has(t)) planState.themes.delete(t);
-    const themeBox = $("plan-themes");
-    themeBox.replaceChildren(...available.map(({ theme: t, count }) => chip(t + "（" + count + "）", planState.themes.has(t), () => {
-      if (planState.themes.has(t)) planState.themes.delete(t); else planState.themes.add(t);
-      renderPlanFilters(); markPlanPending();
-    })));
-  }
-
-  function markPlanPending() { $("plan-pending").hidden = false; }
-
-  function renderItinerary(region, it, matched) {
+  function renderItinerary(region, it) {
     const card = el("article", "card plan");
     const head = el("div", "plan-head");
     head.append(el("h2", "plan-title", it.title), el("span", "badge", regionLabel(region)));
@@ -172,7 +132,7 @@
 
     const meta = el("div", "tags");
     meta.append(el("span", "tag tag-days", it.days >= 1 ? it.days + " 天" : "半天"));
-    for (const t of it.themes) meta.append(el("span", "tag" + (matched && matched.has(t) ? " tag-match" : ""), (matched && matched.has(t) ? "✓ " : "") + t));
+    for (const t of it.themes) meta.append(el("span", "tag", t));
     card.append(meta, el("p", "plan-summary", it.summary));
 
     const totalMin = it.legs.reduce((s, l) => s + l.minutes, 0);
@@ -206,42 +166,82 @@
     return card;
   }
 
-  // 主題複選時：符合任一個主題就列出，符合越多排越前面（同分維持原本順序）
-  function updatePlans() {
-    $("plan-pending").hidden = true;
-    const list = $("plan-list");
-    const themes = [...planState.themes];
-    const all = [];
-    for (const region of planRegions()) {
-      for (const it of region.itineraries) all.push({ region, it, score: themes.filter((t) => it.themes.includes(t)).length });
-    }
-    let shown = themes.length ? all.filter((x) => x.score > 0) : all;
-    let note = "";
-    if (themes.length && !shown.length) {
-      // 理論上不會發生（主題只列出這個城市有的），保險起見改列出全部行程
-      note = "沒有「" + themes.join("、") + "」主題的行程，以下列出全部行程。";
-      shown = all;
-    }
-    shown = shown.map((x, i) => Object.assign(x, { i })).sort((a, b) => b.score - a.score || a.i - b.i);
-    const matched = new Set(themes);
-    const cards = shown.map((x) => renderItinerary(x.region, x.it, themes.length ? matched : null));
-    list.replaceChildren(...cards);
-    if (!cards.length) list.append(el("p", "card empty", "這個城市還沒有整理推薦行程。"));
-    $("plan-count").textContent = note || ("找到 " + cards.length + " 個行程" +
-      (themes.length > 1 ? "（符合任一主題就列出，符合越多排越前面）" : ""));
+  // ---- 熱門景點：依今天的月份顯示當季最紅的景點 ----
+  const HOT = window.HOT_SPOTS || {};
+  const THIS_MONTH = new Date().getMonth() + 1;
+
+  // 當季景點全部列出；全年熱門的補到每個城市至少 3 個（同一景點不重複）
+  function hotFor(region) {
+    const list = HOT[region.id] || [];
+    const seasonal = list.filter((h) => h.months !== "all" && h.months.includes(THIS_MONTH));
+    const seen = new Set(seasonal.map((h) => h.spot));
+    const allYear = list.filter((h) => h.months === "all" && !seen.has(h.spot)).slice(0, Math.max(0, 3 - seasonal.length));
+    return [...seasonal.map((h) => ({ h, seasonal: true })), ...allYear.map((h) => ({ h, seasonal: false }))]
+      .filter((x) => findSpot(region, x.h.spot));
   }
 
-  $("plan-form").addEventListener("submit", (e) => {
-    e.preventDefault();
-    updatePlans();
-    $("plan-count").scrollIntoView({ behavior: "smooth", block: "start" });
-  });
-  $("plan-reset").addEventListener("click", () => {
-    planState.region = "";
-    planState.themes.clear();
-    renderPlanFilters();
-    updatePlans();
-  });
+  // 從「我現在的位置」出發：不帶出發地，地圖 App 會用手機目前的位置
+  function fromHereUrl(spot) {
+    return "https://www.google.com/maps/dir/?api=1&destination=" + spot.lat + "," + spot.lng + "&travelmode=transit";
+  }
+
+  function renderHotCard(region, item) {
+    const spot = findSpot(region, item.h.spot);
+    const card = el("article", "card hot-spot");
+    const head = el("div", "plan-head");
+    head.append(el("h3", "hot-name", spot.name),
+      el("span", "badge " + (item.seasonal ? "badge-hot" : "badge-allyear"), item.seasonal ? "🔥 當季" : "⭐ 全年熱門"));
+    card.append(head, el("p", "hot-reason", item.h.reason));
+    card.append(el("p", "stop-meta", "🚉 " + spot.station + "　⏱ 建議停留 " + spot.stay));
+
+    const box = el("div", "map-links hot-actions");
+    box.append(link("📍 從我現在的位置怎麼去", fromHereUrl(spot), "button button-small"));
+    if (region.country === "kr") {
+      box.append(link("KakaoMap 從目前位置導航", kakaoToUrl(spot), "button button-secondary button-small"));
+    }
+    // 從機場怎麼去：最多列兩個機場，點了跳到路線查詢並直接算好
+    for (const ap of airportsOf(region).slice(0, 2)) {
+      const b = el("button", "button button-secondary button-small hot-airport", "✈️ 從" + ap.name + "怎麼去");
+      b.type = "button";
+      b.addEventListener("click", () => runQuickRoute(region, { airport: ap.id, to: spot.id }));
+      box.append(b);
+    }
+    card.append(box);
+    return card;
+  }
+
+  // 熱門景點在上、推薦行程在下，都依城市分組（城市順序同 REGIONS：由北到南）
+  function renderPlans() {
+    const list = $("plan-list");
+    const parts = [];
+    let hotTotal = 0;
+
+    const intro = el("div", "card hot-intro");
+    intro.append(el("h2", "plan-section-title", "🔥 " + THIS_MONTH + " 月熱門景點"),
+      el("p", "stop-meta", "依今天的月份自動顯示當季最紅的景點，每個月會換一批。祭典、花季的日期每年不同，出發前請以官方公告為準。"),
+      el("p", "stop-meta", "「📍 從我現在的位置怎麼去」會打開地圖 App，用你手機目前的位置規劃路線（第一次使用時請允許位置權限）。"));
+    parts.push(intro);
+    for (const region of REGIONS) {
+      const items = hotFor(region);
+      if (!items.length) continue;
+      parts.push(el("h2", "plan-region", regionLabel(region)));
+      for (const item of items) parts.push(renderHotCard(region, item));
+      hotTotal += items.length;
+    }
+
+    let planTotal = 0;
+    const planParts = [];
+    for (const region of REGIONS) {
+      if (!region.itineraries.length) continue;
+      planParts.push(el("h2", "plan-region", regionLabel(region) + "（" + region.itineraries.length + "）"));
+      for (const it of region.itineraries) planParts.push(renderItinerary(region, it));
+      planTotal += region.itineraries.length;
+    }
+    if (planTotal) parts.push(el("h2", "plan-section-title plan-section-sep", "🗺️ 推薦行程（" + planTotal + "）"), ...planParts);
+
+    list.replaceChildren(...parts);
+    $("plan-count").textContent = THIS_MONTH + " 月熱門景點 " + hotTotal + " 個・推薦行程 " + planTotal + " 個";
+  }
 
   // ---------------------------------------------------------------
   // 路線查詢
@@ -1025,8 +1025,7 @@
   // ---------------------------------------------------------------
   // 初始化
   // ---------------------------------------------------------------
-  renderPlanFilters();
-  updatePlans();
+  renderPlans();
   onRegionChange();
   renderGuide();
 })();
