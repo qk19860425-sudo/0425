@@ -1384,6 +1384,204 @@
   }
 
   // ---------------------------------------------------------------
+  // 今日天氣與穿著建議（熱門景點分頁最上方）
+  //   資料來源：Open-Meteo（免費、免金鑰）；最後一次的結果存在手機上，離線時也能看
+  // ---------------------------------------------------------------
+  const WX_KEY = "travel-weather-v1";
+  const WX_MAX_AGE = 60 * 60 * 1000; // 1 小時內不重抓
+
+  // WMO 天氣代碼 → 中文與圖示
+  function wxDesc(code) {
+    if (code === 0) return ["☀️", "晴天"];
+    if (code === 1) return ["🌤️", "大致晴朗"];
+    if (code === 2) return ["⛅", "多雲時晴"];
+    if (code === 3) return ["☁️", "陰天"];
+    if (code === 45 || code === 48) return ["🌫️", "有霧"];
+    if (code >= 51 && code <= 57) return ["🌦️", "毛毛雨"];
+    if (code >= 61 && code <= 67) return ["🌧️", code >= 65 ? "大雨" : "下雨"];
+    if (code >= 71 && code <= 77) return ["🌨️", "下雪"];
+    if (code >= 80 && code <= 82) return ["🌦️", "陣雨"];
+    if (code === 85 || code === 86) return ["🌨️", "陣雪"];
+    if (code >= 95) return ["⛈️", "雷雨"];
+    return ["🌡️", "—"];
+  }
+
+  // 依溫度、溫差、雨、雪、風、紫外線給建議（純規則，不需網路）
+  function wxAdvice(d) {
+    const hi = d.tmax;
+    const lo = d.tmin;
+    const feel = d.feel;
+    const avg = (hi + lo) / 2;
+    let wear;
+    if (avg >= 27) wear = "短袖、短褲或透氣的薄衣服";
+    else if (avg >= 23) wear = "短袖，帶一件薄長袖進冷氣房";
+    else if (avg >= 18) wear = "長袖上衣，加一件薄外套";
+    else if (avg >= 13) wear = "長袖＋外套（針織衫、風衣）";
+    else if (avg >= 8) wear = "毛衣＋厚外套";
+    else if (avg >= 3) wear = "羽絨衣、圍巾、手套";
+    else wear = "保暖內衣＋羽絨衣，戴帽子、圍巾、手套";
+    const tips = [];
+    if (hi - lo >= 8) tips.push("早晚溫差 " + Math.round(hi - lo) + "°C，建議洋蔥式穿法，方便穿脫");
+    if (d.wind >= 30 && avg < 20) tips.push("風大，體感更冷，外套選防風的");
+    else if (feel != null && d.now != null && d.now - feel >= 3 && avg < 25) tips.push("現在體感 " + Math.round(feel) + "°C，比氣溫冷，多帶一件外套");
+    const snow = (d.code >= 71 && d.code <= 77) || d.code === 85 || d.code === 86;
+    if (snow) tips.push("可能下雪，穿防滑的鞋子");
+    if (d.uv >= 8) tips.push("紫外線很強，記得防曬乳、帽子、太陽眼鏡");
+    else if (d.uv >= 6 && hi >= 25) tips.push("紫外線偏強，出門擦防曬");
+
+    let rain;
+    let rainLevel;
+    const p = d.rainProb;
+    const mm = d.rainSum;
+    if (snow && (p >= 30 || mm >= 1)) {
+      rain = "🌨️ 會下雪：降水機率 " + p + "%。帶傘或穿防水外套，鞋子選防滑、防水的。";
+      rainLevel = "high";
+    } else if (p >= 60 || mm >= 5 || (d.code >= 61 && d.code <= 67) || d.code >= 95) {
+      rain = "☔ 一定要帶雨具：降雨機率 " + p + "%" + (mm >= 1 ? "，預估雨量約 " + Math.round(mm) + " 毫米" : "") + "。建議帶傘或雨衣，鞋子選防水的。";
+      rainLevel = "high";
+    } else if (p >= 30 || mm >= 1) {
+      rain = "🌂 建議帶折疊傘：降雨機率 " + p + "%，可能會有短暫陣雨。";
+      rainLevel = "mid";
+    } else {
+      rain = "😎 不太需要雨具：降雨機率 " + p + "%。";
+      rainLevel = "low";
+    }
+    if (d.wind >= 36 && rainLevel !== "low") rain += " 風很大，雨衣會比傘好用。";
+    return { wear, tips, rain, rainLevel };
+  }
+
+  const wxState = { place: "", data: null, error: "" };
+  let wxCache = {};
+  try { wxCache = JSON.parse(localStorage.getItem(WX_KEY) || "{}") || {}; } catch (e) { wxCache = {}; }
+
+  // 地點選項：每個地區用第一個城市中心
+  const wxPlaces = REGIONS.map((r) => ({ id: r.id, name: regionLabel(r), lat: r.hubs[0].lat, lng: r.hubs[0].lng }));
+
+  async function loadWeather(place, force) {
+    const key = place.id;
+    const cached = wxCache[key];
+    if (!force && cached && Date.now() - cached.fetchedAt < WX_MAX_AGE) {
+      wxState.data = cached; wxState.error = ""; renderWeather(); return;
+    }
+    wxState.data = cached || null;
+    wxState.error = "";
+    renderWeather(true);
+    const url = "https://api.open-meteo.com/v1/forecast?latitude=" + place.lat.toFixed(4) + "&longitude=" + place.lng.toFixed(4) +
+      "&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m" +
+      "&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,uv_index_max,wind_speed_10m_max" +
+      "&timezone=auto&forecast_days=1";
+    try {
+      const res = await fetch(url, { cache: "no-store" });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      const j = await res.json();
+      const dl = j.daily;
+      const data = {
+        name: place.name,
+        date: dl.time[0],
+        code: dl.weather_code[0],
+        tmax: dl.temperature_2m_max[0],
+        tmin: dl.temperature_2m_min[0],
+        rainProb: dl.precipitation_probability_max[0] != null ? dl.precipitation_probability_max[0] : 0,
+        rainSum: dl.precipitation_sum[0] || 0,
+        uv: dl.uv_index_max ? dl.uv_index_max[0] || 0 : 0,
+        wind: dl.wind_speed_10m_max ? dl.wind_speed_10m_max[0] || 0 : 0,
+        now: j.current ? j.current.temperature_2m : null,
+        feel: j.current ? j.current.apparent_temperature : null,
+        fetchedAt: Date.now(),
+      };
+      wxCache[key] = data;
+      try { localStorage.setItem(WX_KEY, JSON.stringify(wxCache)); } catch (e) { /* 無法儲存時照常顯示 */ }
+      if (wxState.place === key) { wxState.data = data; renderWeather(); }
+    } catch (e) {
+      if (wxState.place === key) {
+        wxState.error = cached ? "目前無法更新天氣，先顯示上次的資料。" : "目前無法取得天氣，請連上網路後再試。";
+        renderWeather();
+      }
+    }
+  }
+
+  let wxCard = null;
+  function renderWeather(loading) {
+    if (!wxCard) return;
+    const body = wxCard.querySelector(".wx-body");
+    const d = wxState.data;
+    const parts = [];
+    if (d) {
+      const [icon, text] = wxDesc(d.code);
+      const a = wxAdvice(d);
+      const top = el("div", "wx-top");
+      top.append(el("span", "wx-icon", icon), el("div", "wx-temps"));
+      top.lastChild.append(el("p", "wx-desc", text + (d.now != null ? "・現在 " + Math.round(d.now) + "°C" : "")),
+        el("p", "wx-range", "最高 " + Math.round(d.tmax) + "°C／最低 " + Math.round(d.tmin) + "°C・降雨機率 " + d.rainProb + "%"));
+      parts.push(top);
+      const wear = el("p", "wx-line");
+      wear.append(el("strong", "", "👕 建議穿著："), a.wear);
+      parts.push(wear);
+      for (const t of a.tips) parts.push(el("p", "wx-tip", "・" + t));
+      parts.push(el("p", "wx-rain wx-rain-" + a.rainLevel, a.rain));
+      parts.push(el("p", "stop-meta", "預報日期：" + d.date + "（當地時間）。資料來源：Open-Meteo。"));
+    } else if (!wxState.error) {
+      parts.push(el("p", "stop-meta", "讀取天氣中…"));
+    }
+    if (loading && d) parts.push(el("p", "stop-meta", "更新中…"));
+    if (wxState.error) parts.push(el("p", "wx-error", wxState.error));
+    body.replaceChildren(...parts);
+  }
+
+  function selectWxPlace(place) {
+    wxState.place = place.id;
+    wxState.data = wxCache[place.id] || null;
+    try { localStorage.setItem("travel-weather-place", place.id); } catch (e) { /* 忽略 */ }
+    loadWeather(place, false);
+  }
+
+  function buildWeatherCard() {
+    if (!wxPlaces.length) return;
+    const card = el("section", "card wx-card");
+    card.setAttribute("aria-labelledby", "wx-title");
+    const title = el("h2", "wx-title", "🌤️ 今日天氣與穿著建議");
+    title.id = "wx-title";
+    const row = el("div", "wx-controls");
+    const label = el("label", "visually-hidden", "選擇城市");
+    label.htmlFor = "wx-place";
+    const select = document.createElement("select");
+    select.id = "wx-place";
+    for (const p of wxPlaces) {
+      const o = el("option", "", p.name);
+      o.value = p.id;
+      select.append(o);
+    }
+    const here = el("button", "button button-secondary button-small", "📍 用我現在的位置");
+    here.type = "button";
+    row.append(label, select, here);
+    card.append(title, row, el("div", "wx-body"));
+    wxCard = card;
+    $("panel-plans").prepend(card);
+
+    let saved = "";
+    try { saved = localStorage.getItem("travel-weather-place") || ""; } catch (e) { saved = ""; }
+    const start = wxPlaces.find((p) => p.id === saved) || wxPlaces[0];
+    select.value = start.id;
+    select.addEventListener("change", () => selectWxPlace(wxPlaces.find((p) => p.id === select.value)));
+    here.addEventListener("click", () => {
+      if (!navigator.geolocation) { wxState.error = "這個瀏覽器不支援定位。"; renderWeather(); return; }
+      here.disabled = true;
+      navigator.geolocation.getCurrentPosition((pos) => {
+        here.disabled = false;
+        const place = { id: "here", name: "目前位置", lat: pos.coords.latitude, lng: pos.coords.longitude };
+        wxState.place = "here";
+        wxState.data = null;
+        loadWeather(place, true);
+      }, () => {
+        here.disabled = false;
+        wxState.error = "無法取得目前位置，請允許定位權限，或改選城市。";
+        renderWeather();
+      }, { timeout: 10000, maximumAge: 10 * 60 * 1000 });
+    });
+    selectWxPlace(start);
+  }
+
+  // ---------------------------------------------------------------
   // 初始化
   // ---------------------------------------------------------------
   renderPlans();
@@ -1391,6 +1589,7 @@
   renderGuide();
   buildFxCard();
   buildFxCorner();
+  buildWeatherCard();
   renderFx();
   recalc();
   fetchFx(false);

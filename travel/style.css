@@ -564,3 +564,22 @@ body {
 .fx-compact .fx-quick .chip { min-height: 36px; padding: 0 10px; font-size: 0.85rem; }
 .fx-compact .fx-rate { font-size: 0.9rem; }
 .fx-view .button-small { margin-top: 4px; }
+
+/* ---- 今日天氣與穿著建議 ---- */
+.wx-card { border: 2px solid var(--c5, var(--accent)); }
+.wx-title { margin: 0 0 10px; font-size: 1.15rem; }
+.wx-controls { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+.wx-controls select { flex: 1 1 180px; width: auto; }
+.wx-controls .button { flex: 0 0 auto; }
+.wx-top { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.wx-icon { font-size: 2.6rem; line-height: 1; }
+.wx-desc { margin: 0; font-weight: 800; font-size: 1.1rem; }
+.wx-range { margin: 2px 0 0; color: var(--muted); font-weight: 600; font-size: 0.92rem; }
+.wx-line { margin: 6px 0; }
+.wx-tip { margin: 2px 0; font-size: 0.92rem; }
+.wx-rain { margin: 10px 0 6px; padding: 10px 12px; border-radius: 10px; font-weight: 700; }
+.wx-rain-high { background: var(--s6); color: var(--t6); }
+.wx-rain-mid { background: var(--s3); color: var(--t3); }
+.wx-rain-low { background: var(--s4); color: var(--t4); }
+.wx-error { margin: 6px 0 0; color: var(--error-text); font-weight: 600; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
