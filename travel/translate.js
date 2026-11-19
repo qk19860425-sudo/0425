@@ -1,4 +1,4 @@
-// 日韓景點路線：翻譯分頁
+// 日韓印景點路線：翻譯分頁
 //   A. 常用語句：依情境分類，可念出來（手機內建語音）或放大給對方看，離線可用
 //   B. 自由輸入：按按鈕用 Google 翻譯或 Papago 開啟，文字已經填好（需要網路）
 (function () {
@@ -11,6 +11,7 @@
   const LANGS = {
     ja: { label: "日文", speech: "ja-JP", text: "ja", roma: "jaRoma" },
     ko: { label: "韓文", speech: "ko-KR", text: "ko", roma: "koRoma" },
+    id: { label: "印尼文", speech: "id-ID", text: "id", roma: "idRoma" },
   };
 
   function el(tag, className, text) {
@@ -27,11 +28,14 @@
     try { localStorage.setItem(key, value); } catch (e) { /* 無法儲存時忽略 */ }
   }
 
-  // 日本 App 只顯示日文、韓國 App 只顯示韓文
-  const ONLY_LANG = { jp: "ja", kr: "ko" }[window.APP_COUNTRY || ""] || "";
+  // 依 App 的國家決定語言：日本 App 只有日文、韓國只有韓文、印尼只有印尼文；日韓合併版有日文和韓文
+  const COUNTRY_LANG = { jp: "ja", kr: "ko", id: "id" };
+  const appLangs = String(window.APP_COUNTRY || "jp,kr").split(",").map((c) => COUNTRY_LANG[c.trim()]).filter(Boolean);
+  for (const k of Object.keys(LANGS)) if (!appLangs.includes(k)) delete LANGS[k];
+  const ONLY_LANG = appLangs.length === 1 ? appLangs[0] : "";
 
   const state = {
-    lang: ONLY_LANG || (LANGS[readPref("travel-phrase-lang", "ja")] ? readPref("travel-phrase-lang", "ja") : "ja"),
+    lang: ONLY_LANG || (LANGS[readPref("travel-phrase-lang", appLangs[0])] ? readPref("travel-phrase-lang", appLangs[0]) : appLangs[0]),
     category: CATEGORIES[0] || "",
   };
 
@@ -155,8 +159,10 @@
   const TARGETS = {
     ja: { label: "日文", google: "ja", papago: "ja" },
     ko: { label: "韓文", google: "ko", papago: "ko" },
+    id: { label: "印尼文", google: "id", papago: "id" },
     en: { label: "英文", google: "en", papago: "en" },
   };
+  for (const k of Object.keys(TARGETS)) if (k !== "en" && !appLangs.includes(k)) delete TARGETS[k];
 
   function googleUrl(text, target) {
     return "https://translate.google.com/?sl=zh-TW&tl=" + target + "&text=" + encodeURIComponent(text) + "&op=translate";

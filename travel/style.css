@@ -430,6 +430,7 @@ body {
 .mode-taxi { background: var(--s3); color: var(--t3); }
 .mode-walk { background: var(--s5); color: var(--t5); }
 .mode-cable, .mode-other { background: var(--s2); color: var(--t2); }
+.mode-boat { background: var(--s6); color: var(--t6); }
 
 /* 地區的特色圖案 */
 .region-emoji { margin-right: 4px; }
