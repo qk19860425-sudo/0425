@@ -668,8 +668,8 @@
     const range = fare.min === fare.max || Math.round(fare.min) === Math.round(fare.max)
       ? formatMoney(fare.min)
       : formatMoney(fare.min) + "–" + formatMoney(fare.max);
-    if (fare.unknown) return "部分票價未知：已知部分約 " + range + " " + fare.currency + "，其餘請以官網為準";
-    return "約 " + range + " " + fare.currency + (fare.open ? " 起" : "") +
+    if (fare.unknown) return "部分票價未知：已知部分約 " + range + " " + fare.currency + twdText(fare) + "，其餘請以官網為準";
+    return "約 " + range + " " + fare.currency + (fare.open ? " 起" : "") + twdText(fare) +
       (fare.estimated ? "（含估算）" : "") + (fare.open ? "，部分票價請以官網為準" : "");
   }
 
@@ -1083,9 +1083,197 @@
   }
 
   // ---------------------------------------------------------------
+  // 今日匯率換算（台幣 ↔ 日圓／韓元／印尼盾）
+  //   匯率來源：ExchangeRate-API 免費版（每日更新），抓不到時改用 fawazahmed0 currency-api。
+  //   最後一次抓到的匯率存在手機上，離線也能換算；畫面會標出匯率日期。
+  // ---------------------------------------------------------------
+  const FX_KEY = "travel-fx-v1";
+  const FX_MAX_AGE = 6 * 60 * 60 * 1000; // 6 小時內不重抓
+  const CURRENCIES = {
+    "日圓": { code: "JPY", quick: [100, 500, 1000, 5000, 10000] },
+    "韓元": { code: "KRW", quick: [1000, 5000, 10000, 50000, 100000] },
+    "印尼盾": { code: "IDR", quick: [10000, 50000, 100000, 500000, 1000000] },
+  };
+  const appCurrencies = [...new Set(REGIONS.map((r) => r.currency))].filter((c) => CURRENCIES[c]);
+
+  // fx = { rates: { JPY: 1 台幣可換的日圓, ... }, date: "YYYY-MM-DD", source, fetchedAt }
+  let fx = null;
+  try { fx = JSON.parse(localStorage.getItem(FX_KEY) || "null"); } catch (e) { fx = null; }
+  let fxError = "";
+
+  const FX_SOURCES = [
+    {
+      name: "ExchangeRate-API",
+      url: "https://open.er-api.com/v6/latest/TWD",
+      parse: (d) => d && d.result === "success" && d.rates
+        ? { rates: { JPY: d.rates.JPY, KRW: d.rates.KRW, IDR: d.rates.IDR }, date: new Date(d.time_last_update_unix * 1000).toISOString().slice(0, 10) }
+        : null,
+    },
+    {
+      name: "currency-api",
+      url: "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/twd.json",
+      parse: (d) => d && d.twd ? { rates: { JPY: d.twd.jpy, KRW: d.twd.krw, IDR: d.twd.idr }, date: d.date } : null,
+    },
+  ];
+
+  function fxRate(currencyName) {
+    const c = CURRENCIES[currencyName];
+    const r = c && fx && fx.rates ? Number(fx.rates[c.code]) : 0;
+    return r > 0 ? r : 0;
+  }
+
+  // 外幣 → 台幣
+  function toTwd(amount, currencyName) {
+    const r = fxRate(currencyName);
+    return r ? amount / r : null;
+  }
+
+  function formatTwd(n) {
+    if (n < 10) return n.toFixed(1);
+    return Math.round(n).toLocaleString("en-US");
+  }
+
+  // 結果卡的總票價後面加上「約 NT$ …」
+  function twdText(fare) {
+    if (!fxRate(fare.currency) || !fare.max) return "";
+    const a = toTwd(fare.min, fare.currency);
+    const b = toTwd(fare.max, fare.currency);
+    return "（≈ NT$ " + (Math.round(a) === Math.round(b) ? formatTwd(a) : formatTwd(a) + "–" + formatTwd(b)) + "）";
+  }
+
+  async function fetchFx(force) {
+    if (!force && fx && fx.fetchedAt && Date.now() - fx.fetchedAt < FX_MAX_AGE) return;
+    for (const src of FX_SOURCES) {
+      try {
+        const res = await fetch(src.url, { cache: "no-store" });
+        if (!res.ok) continue;
+        const parsed = src.parse(await res.json());
+        if (!parsed || !(parsed.rates.JPY > 0)) continue;
+        fx = Object.assign(parsed, { source: src.name, fetchedAt: Date.now() });
+        fxError = "";
+        try { localStorage.setItem(FX_KEY, JSON.stringify(fx)); } catch (e) { /* 無法儲存時照常使用 */ }
+        renderFx();
+        return;
+      } catch (e) { /* 換下一個來源 */ }
+    }
+    fxError = fx ? "目前無法更新匯率，先用上次抓到的匯率。" : "目前無法取得匯率，請連上網路後按「更新匯率」。";
+    renderFx();
+  }
+
+  const fxState = { currency: appCurrencies[0] || "", foreign: "", twd: "", last: "foreign" };
+  try {
+    const saved = localStorage.getItem("travel-fx-currency");
+    if (appCurrencies.includes(saved)) fxState.currency = saved;
+  } catch (e) { /* 忽略 */ }
+
+  const parseAmount = (t) => {
+    const n = Number(String(t).replace(/[,，\s]/g, ""));
+    return Number.isFinite(n) && n >= 0 ? n : NaN;
+  };
+
+  let fxCard = null;
+  function renderFx() {
+    if (!fxCard) return;
+    const cur = fxState.currency;
+    const rate = fxRate(cur);
+    const chipsBox = fxCard.querySelector(".fx-currencies");
+    chipsBox.hidden = appCurrencies.length < 2;
+    chipsBox.replaceChildren(...appCurrencies.map((c) => chip(c, c === cur, () => {
+      fxState.currency = c;
+      try { localStorage.setItem("travel-fx-currency", c); } catch (e) { /* 忽略 */ }
+      recalc();
+      renderFx();
+    })));
+    fxCard.querySelector(".fx-foreign-label").textContent = cur;
+    const quick = fxCard.querySelector(".fx-quick");
+    quick.replaceChildren(...(CURRENCIES[cur] ? CURRENCIES[cur].quick : []).map((n) => {
+      const b = el("button", "chip", n.toLocaleString("en-US"));
+      b.type = "button";
+      b.addEventListener("click", () => {
+        fxState.foreign = n.toLocaleString("en-US");
+        fxState.last = "foreign";
+        recalc();
+      });
+      return b;
+    }));
+    const rateLine = fxCard.querySelector(".fx-rate");
+    rateLine.textContent = rate
+      ? "1 " + cur + " ≈ " + (1 / rate).toPrecision(3) + " 台幣；100 台幣 ≈ " + Math.round(100 * rate).toLocaleString("en-US") + " " + cur
+      : "還沒有匯率資料。";
+    const status = fxCard.querySelector(".fx-status");
+    status.textContent = (fx && fx.date ? "匯率日期：" + fx.date + "（來源：" + fx.source + "）。" : "") + (fxError ? " " + fxError : "");
+    status.classList.toggle("fx-error", !!fxError);
+    fxCard.querySelector(".fx-inputs").hidden = !rate;
+  }
+
+  // 依最後輸入的那一欄換算另一欄
+  function recalc() {
+    const rate = fxRate(fxState.currency);
+    const fIn = fxCard.querySelector("#fx-foreign");
+    const tIn = fxCard.querySelector("#fx-twd");
+    if (!rate) return;
+    if (fxState.last === "foreign") {
+      const n = parseAmount(fxState.foreign);
+      fIn.value = fxState.foreign;
+      tIn.value = fxState.foreign === "" || Number.isNaN(n) ? "" : formatTwd(n / rate);
+    } else {
+      const n = parseAmount(fxState.twd);
+      tIn.value = fxState.twd;
+      fIn.value = fxState.twd === "" || Number.isNaN(n) ? "" : Math.round(n * rate).toLocaleString("en-US");
+    }
+  }
+
+  function buildFxCard() {
+    if (!appCurrencies.length) return;
+    const card = el("section", "card fx-card");
+    card.setAttribute("aria-labelledby", "fx-title");
+    const title = el("h2", "fx-title", "💱 今日匯率換算");
+    title.id = "fx-title";
+    const currencies = el("div", "chips fx-currencies");
+    currencies.setAttribute("role", "group");
+    currencies.setAttribute("aria-label", "幣別");
+
+    const inputs = el("div", "fx-inputs");
+    const field = (id, labelText, labelClass) => {
+      const wrap = el("label", "fx-field");
+      wrap.htmlFor = id;
+      const input = document.createElement("input");
+      input.id = id;
+      input.type = "text";
+      input.inputMode = "decimal";
+      input.autocomplete = "off";
+      input.placeholder = "0";
+      wrap.append(el("span", "fx-unit " + labelClass, labelText), input);
+      return { wrap, input };
+    };
+    const f = field("fx-foreign", "", "fx-foreign-label");
+    const t = field("fx-twd", "台幣", "");
+    inputs.append(f.wrap, el("span", "fx-eq", "＝"), t.wrap);
+    for (const ev of ["input", "change", "compositionend", "keyup"]) {
+      f.input.addEventListener(ev, () => { fxState.foreign = f.input.value; fxState.last = "foreign"; recalc(); });
+      t.input.addEventListener(ev, () => { fxState.twd = t.input.value; fxState.last = "twd"; recalc(); });
+    }
+
+    const refresh = el("button", "button button-secondary button-small", "🔄 更新匯率");
+    refresh.type = "button";
+    refresh.addEventListener("click", () => { refresh.disabled = true; fetchFx(true).finally(() => { refresh.disabled = false; }); });
+
+    card.append(title, currencies, inputs, el("div", "chips fx-quick"),
+      el("p", "fx-rate"), el("p", "stop-meta fx-status"),
+      el("p", "stop-meta", "這是市場參考匯率；在當地換錢或刷卡的實際匯率會比較差，另有手續費。"),
+      refresh);
+    fxCard = card;
+    $("panel-guide").prepend(card);
+    renderFx();
+    recalc();
+  }
+
+  // ---------------------------------------------------------------
   // 初始化
   // ---------------------------------------------------------------
   renderPlans();
   onRegionChange();
   renderGuide();
+  buildFxCard();
+  fetchFx(false);
 })();
