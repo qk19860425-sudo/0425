@@ -23,10 +23,12 @@
   function openDb() {
     if (!dbPromise) {
       dbPromise = new Promise((resolve, reject) => {
-        const req = indexedDB.open(DB_NAME, 1);
+        // 版本 2：新增 files（存幻燈片用的音樂檔）
+        const req = indexedDB.open(DB_NAME, 2);
         req.onupgradeneeded = () => {
           const db = req.result;
           if (!db.objectStoreNames.contains(STORE)) db.createObjectStore(STORE, { keyPath: "id" });
+          if (!db.objectStoreNames.contains("files")) db.createObjectStore("files", { keyPath: "key" });
         };
         req.onsuccess = () => resolve(req.result);
         req.onerror = () => reject(req.error);
@@ -35,11 +37,11 @@
     return dbPromise;
   }
 
-  async function tx(mode, fn) {
+  async function tx(mode, fn, storeName) {
     const db = await openDb();
     return new Promise((resolve, reject) => {
-      const t = db.transaction(STORE, mode);
-      const store = t.objectStore(STORE);
+      const t = db.transaction(storeName || STORE, mode);
+      const store = t.objectStore(storeName || STORE);
       let result;
       Promise.resolve(fn(store)).then((r) => { result = r; });
       t.oncomplete = () => resolve(result);
@@ -97,14 +99,17 @@
   // ---------------------------------------------------------------
   // 分頁
   // ---------------------------------------------------------------
-  const tabs = ["list", "map", "backup"];
+  const tabs = ["list", "map", "slideshow", "backup"];
   function showTab(name) {
     for (const t of tabs) {
       $("tab-" + t).setAttribute("aria-selected", String(t === name));
       $("panel-" + t).hidden = t !== name;
     }
+    // 「＋ 記錄這裡」只在足跡與地圖分頁顯示，避免蓋住播放、備份的設定
+    $("add").hidden = !(name === "list" || name === "map");
     if (name === "map") showMap();
     if (name === "backup") renderBackupStats();
+    if (name === "slideshow" && window.FootprintsApp.onShowSlideshow) window.FootprintsApp.onShowSlideshow();
   }
   for (const t of tabs) $("tab-" + t).addEventListener("click", () => showTab(t));
 
@@ -626,6 +631,18 @@
   function requestPersist() {
     try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) { /* 忽略 */ }
   }
+
+  // ---------------------------------------------------------------
+  // 給幻燈片（slideshow.js）用的介面
+  // ---------------------------------------------------------------
+  window.FootprintsApp = {
+    getRecords: () => records,
+    blobUrl,
+    getFile: (key) => tx("readonly", (st) => reqP(st.get(key)), "files"),
+    putFile: (obj) => tx("readwrite", (st) => { st.put(obj); }, "files"),
+    deleteFile: (key) => tx("readwrite", (st) => { st.delete(key); }, "files"),
+    onShowSlideshow: null,
+  };
 
   // ---------------------------------------------------------------
   // 啟動
