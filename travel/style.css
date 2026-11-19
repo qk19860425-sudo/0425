@@ -583,3 +583,20 @@ body {
 .wx-rain-low { background: var(--s4); color: var(--t4); }
 .wx-error { margin: 6px 0 0; color: var(--error-text); font-weight: 600; }
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* 電車路線導引（搭哪條線、往哪個方向、幾號出口） */
+.rail-guide { margin: 10px 0 8px; padding: 10px 12px; border-radius: 12px; border: 1px dashed var(--accent); background: var(--card); color: var(--text); }
+.rail-title { margin: 0 0 6px; font-weight: 700; }
+.rail-steps { margin: 0; padding: 0; list-style: none; counter-reset: rail; }
+.rail-steps li { position: relative; margin: 0; padding: 6px 0 8px 34px; font-size: 0.93rem; line-height: 1.6; overflow-wrap: anywhere; counter-increment: rail; }
+.rail-steps li::before {
+  content: counter(rail); position: absolute; left: 0; top: 6px;
+  width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center;
+  font-size: 0.8rem; font-weight: 700; background: var(--accent-soft); color: var(--accent-soft-text);
+}
+.rail-steps li:not(:last-child)::after { content: ""; position: absolute; left: 11px; top: 32px; bottom: -4px; width: 2px; background: var(--border); }
+.rail-steps li.rail-ride::before { background: var(--rail, var(--accent)); color: #fff; }
+.rail-steps li.rail-ride::after { background: var(--rail, var(--border)); width: 4px; left: 10px; }
+.line-badge { display: inline-block; padding: 1px 9px; border-radius: 999px; font-size: 0.85rem; font-weight: 700; line-height: 1.5; white-space: nowrap; }
+.rail-stations { display: block; color: var(--muted); font-size: 0.86rem; }
+.rail-note { margin: 4px 0 0; color: var(--muted); font-size: 0.8rem; }
