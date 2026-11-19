@@ -128,7 +128,8 @@
   }
 
   // ---- 備份檔 ----
-  // 格式：{ app: "footprints", version: 1, exportedAt, records: [{ id, name, date, note, lat, lng, createdAt, photos: [{ id, full, thumb }] }] }
+  // 格式：{ app: "footprints", version: 1, exportedAt, records: [{ id, name, date, note, lat, lng, createdAt, photos: [{ id, caption, full, thumb }] }] }
+  // caption 是照片文字（舊備份沒有這個欄位，視為空白）
   // full、thumb 是 data URL（data:image/jpeg;base64,...）
   function checkBackup(obj) {
     if (!obj || obj.app !== "footprints" || !Array.isArray(obj.records)) {
@@ -138,7 +139,9 @@
     for (const r of obj.records) {
       if (!r || typeof r.id !== "string") continue;
       const photos = Array.isArray(r.photos)
-        ? r.photos.filter((p) => p && typeof p.id === "string" && /^data:image\//.test(p.full || "") && /^data:image\//.test(p.thumb || ""))
+        ? r.photos
+          .filter((p) => p && typeof p.id === "string" && /^data:image\//.test(p.full || "") && /^data:image\//.test(p.thumb || ""))
+          .map((p) => ({ id: p.id, caption: String(p.caption || "").slice(0, 500), full: p.full, thumb: p.thumb }))
         : [];
       records.push({
         id: r.id,
