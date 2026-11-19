@@ -103,7 +103,7 @@ test("備份檔檢查：格式不對會拒絕，欄位會整理", () => {
   assert.equal(F.checkBackup(null).ok, false);
   const r = F.checkBackup({ app: "footprints", version: 1, records: [
     { id: "x1", name: "清水寺", date: "2026-11-19", lat: 34.99, lng: 135.78, photos: [
-      { id: "p1", full: "data:image/jpeg;base64,AAA", thumb: "data:image/jpeg;base64,BBB" },
+      { id: "p1", caption: "清水舞台的紅葉", full: "data:image/jpeg;base64,AAA", thumb: "data:image/jpeg;base64,BBB" },
       { id: "p2", full: "javascript:alert(1)", thumb: "data:image/jpeg;base64,BBB" },
     ] },
     { name: "沒有 id 的會略過" },
@@ -112,6 +112,7 @@ test("備份檔檢查：格式不對會拒絕，欄位會整理", () => {
   assert.equal(r.ok, true);
   assert.equal(r.records.length, 2);
   assert.equal(r.records[0].photos.length, 1);
+  assert.equal(r.records[0].photos[0].caption, "清水舞台的紅葉");
   assert.equal(r.records[1].name, "未命名地點");
   assert.equal(r.records[1].date, "");
   assert.equal(r.records[1].lat, null);

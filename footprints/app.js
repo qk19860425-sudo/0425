@@ -158,7 +158,8 @@
       r.photos.forEach((p, i) => {
         const b = el("button");
         b.type = "button";
-        b.setAttribute("aria-label", "看大圖：" + (r.name || "照片") + " 第 " + (i + 1) + " 張");
+        b.setAttribute("aria-label", "看大圖：" + (r.name || "照片") + " 第 " + (i + 1) + " 張" + (p.caption ? "（" + p.caption + "）" : ""));
+        if (p.caption) b.classList.add("has-caption");
         const img = el("img");
         img.src = blobUrl(r.photos.length === 1 ? p.full : p.thumb);
         img.alt = "";
@@ -447,6 +448,12 @@
     $("viewer-img").alt = (r.name || "照片") + " 第 " + (viewer.index + 1) + " 張";
     $("viewer-caption").textContent = (r.name || "未命名地點") + "・" + F.formatDate(r.date) + "（" + (viewer.index + 1) + "／" + r.photos.length + "）";
     $("viewer-prev").hidden = $("viewer-next").hidden = r.photos.length < 2;
+    // 照片文字
+    const text = p.caption || "";
+    $("viewer-text").textContent = text;
+    $("viewer-text").hidden = !text;
+    $("viewer-text-edit").textContent = text ? "✏️ 編輯文字" : "✏️ 添加文字";
+    setViewerEditing(false);
   }
   function openViewer(r, i) {
     viewer.record = r;
@@ -462,13 +469,57 @@
     document.body.classList.remove("no-scroll");
     if (lastFocus) lastFocus.focus();
   }
-  const step = (d) => { const n = viewer.record.photos.length; viewer.index = (viewer.index + d + n) % n; showViewerPhoto(); };
+  const step = (d) => {
+    if (viewer.editing) return;
+    const n = viewer.record.photos.length;
+    viewer.index = (viewer.index + d + n) % n;
+    showViewerPhoto();
+  };
+
+  // ---- 照片文字：點「添加文字」→ 輸入 → 儲存 ----
+  function setViewerEditing(on) {
+    viewer.editing = on;
+    $("viewer-edit").hidden = !on;
+    $("viewer-text-edit").hidden = on;
+    $("viewer-prev").disabled = $("viewer-next").disabled = on;
+    $("viewer").classList.toggle("editing", on);
+    if (on) {
+      const p = viewer.record.photos[viewer.index];
+      $("viewer-input").value = p.caption || "";
+      $("viewer-text").hidden = true;
+      $("viewer-input").focus();
+    }
+  }
+  $("viewer-text-edit").addEventListener("click", () => setViewerEditing(true));
+  $("viewer-text-cancel").addEventListener("click", () => { showViewerPhoto(); $("viewer-text-edit").focus(); });
+  $("viewer-text-save").addEventListener("click", async () => {
+    const r = viewer.record;
+    const text = $("viewer-input").value.trim().slice(0, 500);
+    const photos = r.photos.slice();
+    photos[viewer.index] = Object.assign({}, photos[viewer.index], { caption: text });
+    const updated = Object.assign({}, r, { photos, updatedAt: Date.now() });
+    $("viewer-text-save").disabled = true;
+    try {
+      await putRecord(updated);
+      viewer.record = updated;
+      await reload();
+      showViewerPhoto();
+      $("viewer-text-edit").focus();
+    } catch (e) {
+      window.alert("儲存失敗，請稍後再試。");
+    }
+    $("viewer-text-save").disabled = false;
+  });
   $("viewer-close").addEventListener("click", closeViewer);
   $("viewer-prev").addEventListener("click", () => step(-1));
   $("viewer-next").addEventListener("click", () => step(1));
-  $("viewer").addEventListener("click", (e) => { if (e.target.id === "viewer") closeViewer(); });
+  $("viewer").addEventListener("click", (e) => { if (e.target.id === "viewer" && !viewer.editing) closeViewer(); });
   document.addEventListener("keydown", (e) => {
     if (!$("viewer").hidden) {
+      if (viewer.editing) {
+        if (e.key === "Escape") { showViewerPhoto(); $("viewer-text-edit").focus(); }
+        return;
+      }
       if (e.key === "Escape") closeViewer();
       if (e.key === "ArrowLeft") step(-1);
       if (e.key === "ArrowRight") step(1);
@@ -481,7 +532,7 @@
     if (touchX == null) return;
     const dx = e.changedTouches[0].clientX - touchX;
     touchX = null;
-    if (Math.abs(dx) > 50 && viewer.record && viewer.record.photos.length > 1) step(dx < 0 ? 1 : -1);
+    if (Math.abs(dx) > 50 && !viewer.editing && viewer.record && viewer.record.photos.length > 1) step(dx < 0 ? 1 : -1);
   });
 
   // ---------------------------------------------------------------
@@ -528,7 +579,7 @@
       const out = { app: "footprints", version: 1, exportedAt: new Date().toISOString(), records: [] };
       for (const r of records) {
         const photos = [];
-        for (const p of r.photos || []) photos.push({ id: p.id, full: await blobToDataUrl(p.full), thumb: await blobToDataUrl(p.thumb) });
+        for (const p of r.photos || []) photos.push({ id: p.id, caption: p.caption || "", full: await blobToDataUrl(p.full), thumb: await blobToDataUrl(p.thumb) });
         out.records.push({ id: r.id, name: r.name, date: r.date, note: r.note, lat: r.lat, lng: r.lng, createdAt: r.createdAt, photos });
       }
       const blob = new Blob([JSON.stringify(out)], { type: "application/json" });
@@ -559,7 +610,7 @@
       for (const r of check.records) {
         if (existing.has(r.id)) continue;
         const photos = [];
-        for (const p of r.photos) photos.push({ id: p.id, full: await dataUrlToBlob(p.full), thumb: await dataUrlToBlob(p.thumb) });
+        for (const p of r.photos) photos.push({ id: p.id, caption: p.caption || "", full: await dataUrlToBlob(p.full), thumb: await dataUrlToBlob(p.thumb) });
         await putRecord(Object.assign({}, r, { photos }));
         added++;
       }

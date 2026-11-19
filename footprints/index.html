@@ -134,6 +134,16 @@
   <div id="viewer" class="viewer" role="dialog" aria-modal="true" aria-label="照片" hidden>
     <img id="viewer-img" alt="">
     <p id="viewer-caption" class="viewer-caption"></p>
+    <p id="viewer-text" class="viewer-text" hidden></p>
+    <div id="viewer-edit" class="viewer-edit" hidden>
+      <label for="viewer-input" class="visually-hidden">照片文字</label>
+      <textarea id="viewer-input" rows="3" maxlength="500" placeholder="寫下這張照片的故事…"></textarea>
+      <div class="viewer-edit-actions">
+        <button type="button" id="viewer-text-save" class="button">💾 儲存文字</button>
+        <button type="button" id="viewer-text-cancel" class="button button-secondary">取消</button>
+      </div>
+    </div>
+    <button type="button" id="viewer-text-edit" class="button button-secondary viewer-text-button">✏️ 添加文字</button>
     <div class="viewer-actions">
       <button type="button" id="viewer-prev" class="button button-secondary" aria-label="上一張">‹</button>
       <button type="button" id="viewer-close" class="button">關閉</button>
