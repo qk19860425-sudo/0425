@@ -390,6 +390,9 @@ body {
 .tags .tag.tag-days { background: var(--c1); color: var(--on-color); }
 /* 熱門景點 */
 .plan-section-title { margin: 0 0 6px; font-size: 1.25rem; }
+.hot-months { margin: 10px 0 8px; }
+.hot-month-chips .chip { min-width: 64px; }
+.hot-month-actions { margin-bottom: 4px; }
 .plan-section-sep { margin: 32px 4px 6px; padding-top: 16px; border-top: 3px dashed var(--line); }
 .hot-name { margin: 0; font-size: 1.15rem; line-height: 1.4; }
 .hot-reason { margin: 8px 0 6px; font-weight: 600; }

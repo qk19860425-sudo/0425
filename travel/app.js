@@ -178,11 +178,13 @@
   // ---- 熱門景點：依今天的月份顯示當季最紅的景點 ----
   const HOT = window.HOT_SPOTS || {};
   const THIS_MONTH = new Date().getMonth() + 1;
+  // 可以自選出門的月份：pending 是點選但還沒按「確定」的月份
+  const hotState = { month: THIS_MONTH, pending: THIS_MONTH };
 
   // 當季景點全部列出；全年熱門的補到每個城市至少 3 個（同一景點不重複）
   function hotFor(region) {
     const list = HOT[region.id] || [];
-    const seasonal = list.filter((h) => h.months !== "all" && h.months.includes(THIS_MONTH));
+    const seasonal = list.filter((h) => h.months !== "all" && h.months.includes(hotState.month));
     const seen = new Set(seasonal.map((h) => h.spot));
     const allYear = list.filter((h) => h.months === "all" && !seen.has(h.spot)).slice(0, Math.max(0, 3 - seasonal.length));
     return [...seasonal.map((h) => ({ h, seasonal: true })), ...allYear.map((h) => ({ h, seasonal: false }))]
@@ -225,9 +227,47 @@
     const parts = [];
     let hotTotal = 0;
 
+    const month = hotState.month;
     const intro = el("div", "card hot-intro");
-    intro.append(el("h2", "plan-section-title", "🔥 " + THIS_MONTH + " 月熱門景點"),
-      el("p", "stop-meta", "依今天的月份自動顯示當季最紅的景點，每個月會換一批。祭典、花季的日期每年不同，出發前請以官方公告為準。"),
+    intro.append(el("h2", "plan-section-title", "🔥 " + month + " 月熱門景點" + (month === THIS_MONTH ? "（本月）" : "")));
+
+    // 選擇出門的月份：點選後按「確定」才更新清單
+    const monthBox = el("fieldset", "field hot-months");
+    monthBox.append(el("legend", "", "出門月份"));
+    const chips = el("div", "chips hot-month-chips");
+    chips.setAttribute("role", "group");
+    chips.setAttribute("aria-label", "選擇出門的月份");
+    const pendingNote = el("p", "pending", "已選 " + hotState.pending + " 月，按「確定」更新熱門景點。");
+    pendingNote.hidden = hotState.pending === month;
+    const setPending = (m) => {
+      hotState.pending = m;
+      chips.querySelectorAll(".chip").forEach((c) => c.setAttribute("aria-pressed", String(Number(c.dataset.month) === m)));
+      pendingNote.textContent = "已選 " + m + " 月，按「確定」更新熱門景點。";
+      pendingNote.hidden = m === hotState.month;
+    };
+    for (let m = 1; m <= 12; m++) {
+      const c = chip(m + " 月" + (m === THIS_MONTH ? "・本月" : ""), m === hotState.pending, () => setPending(m));
+      c.dataset.month = String(m);
+      chips.append(c);
+    }
+    const actions = el("div", "form-actions hot-month-actions");
+    const ok = el("button", "button", "確定");
+    ok.type = "button";
+    ok.addEventListener("click", () => {
+      hotState.month = hotState.pending;
+      renderPlans();
+      $("plan-count").scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+    const back = el("button", "button button-secondary", "回到本月");
+    back.type = "button";
+    back.addEventListener("click", () => {
+      hotState.month = hotState.pending = THIS_MONTH;
+      renderPlans();
+    });
+    actions.append(ok, back);
+    monthBox.append(chips);
+    intro.append(monthBox, actions, pendingNote,
+      el("p", "stop-meta", "預設顯示這個月，可以改選出門的月份。祭典、花季的日期每年不同，出發前請以官方公告為準。"),
       el("p", "stop-meta", "「📍 從我現在的位置怎麼去」會打開地圖 App，用你手機目前的位置規劃路線（第一次使用時請允許位置權限）。"));
     parts.push(intro);
     for (const region of REGIONS) {
@@ -249,7 +289,7 @@
     if (planTotal) parts.push(el("h2", "plan-section-title plan-section-sep", "🗺️ 推薦行程（" + planTotal + "）"), ...planParts);
 
     list.replaceChildren(...parts);
-    $("plan-count").textContent = THIS_MONTH + " 月熱門景點 " + hotTotal + " 個・推薦行程 " + planTotal + " 個";
+    $("plan-count").textContent = month + " 月熱門景點 " + hotTotal + " 個・推薦行程 " + planTotal + " 個";
   }
 
   // ---------------------------------------------------------------
