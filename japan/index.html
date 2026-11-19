@@ -44,21 +44,6 @@
   <main>
     <!-- 推薦行程 -->
     <section id="panel-plans" role="tabpanel" aria-labelledby="tab-plans">
-      <form id="plan-form" class="card">
-        <fieldset class="field">
-          <legend>城市</legend>
-          <div id="plan-regions" class="chips"></div>
-        </fieldset>
-        <fieldset class="field">
-          <legend>主題（可複選，符合任一個就會列出；括號內是行程數）</legend>
-          <div id="plan-themes" class="chips"></div>
-        </fieldset>
-        <div class="form-actions">
-          <button type="submit" class="button">確定搜尋</button>
-          <button type="button" id="plan-reset" class="button button-secondary">清除條件</button>
-        </div>
-        <p id="plan-pending" class="pending" hidden>條件已變更，按「確定搜尋」更新結果。</p>
-      </form>
       <p id="plan-count" class="result-count" aria-live="polite"></p>
       <div id="plan-list"></div>
     </section>
