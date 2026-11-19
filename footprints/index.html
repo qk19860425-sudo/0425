@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <title>旅行足跡</title>
+  <meta name="description" content="記錄去過的地方和拍的照片，標在地圖上；資料只存在自己的手機。">
+  <meta name="theme-color" content="#ea580c">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-title" content="旅行足跡">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha384-sHL9NAb7lN7rfvG5lfHpm643Xkcjzp4jFvuavGOndn6pjVqS6ny56CAt3nsEVT4H"
+        crossorigin="anonymous">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="hero">
+    <h1><span aria-hidden="true">📍</span> 旅行足跡</h1>
+    <p>記錄去過的地方和拍的照片，全部標在地圖上。資料只存在這支手機，不會上傳。</p>
+    <p id="stats" class="stats"></p>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="功能">
+    <button type="button" role="tab" id="tab-list" aria-controls="panel-list" aria-selected="true">📖 足跡</button>
+    <button type="button" role="tab" id="tab-map" aria-controls="panel-map" aria-selected="false">🗺️ 地圖</button>
+    <button type="button" role="tab" id="tab-backup" aria-controls="panel-backup" aria-selected="false">💾 備份</button>
+  </nav>
+
+  <main>
+    <!-- 足跡列表 -->
+    <section id="panel-list" role="tabpanel" aria-labelledby="tab-list">
+      <div id="list"></div>
+    </section>
+
+    <!-- 足跡地圖 -->
+    <section id="panel-map" role="tabpanel" aria-labelledby="tab-map" hidden>
+      <div class="card map-card">
+        <div id="map" class="map" aria-label="足跡地圖"></div>
+        <p id="map-error" class="message" hidden>地圖載入失敗，請確認網路連線後重新整理。足跡資料不受影響。</p>
+        <p class="hint">點地圖上的照片可以查看這筆足跡。</p>
+      </div>
+    </section>
+
+    <!-- 備份 -->
+    <section id="panel-backup" role="tabpanel" aria-labelledby="tab-backup" hidden>
+      <div class="card">
+        <h2>💾 備份與還原</h2>
+        <p id="backup-stats" class="hint"></p>
+        <p>足跡和照片存在這支手機的瀏覽器裡。換手機、清除瀏覽器資料或刪除 App 前，請先匯出備份。</p>
+        <div class="actions">
+          <button id="export" type="button" class="button">⬇️ 匯出備份</button>
+          <label class="button button-secondary file-button">⬆️ 匯入備份
+            <input id="import" type="file" accept="application/json,.json" hidden>
+          </label>
+        </div>
+        <p id="backup-message" class="message" role="status" hidden></p>
+        <p class="hint">匯入時已存在的足跡不會重複加入。備份檔包含照片，檔案可能比較大。</p>
+      </div>
+      <div class="card">
+        <h2>🔒 隱私</h2>
+        <p>照片、地點和心得只存在這支手機，不會上傳到任何伺服器。地圖畫面會向 OpenStreetMap 下載地圖圖片，但不會傳送你的足跡資料。</p>
+      </div>
+    </section>
+  </main>
+
+  <button id="add" type="button" class="fab">＋ 記錄這裡</button>
+
+  <!-- 新增／編輯足跡 -->
+  <div id="editor" class="sheet" role="dialog" aria-modal="true" aria-labelledby="editor-title" hidden>
+    <form id="editor-form" class="sheet-box" novalidate>
+      <div class="sheet-head">
+        <h2 id="editor-title">記錄這裡</h2>
+        <button type="button" id="editor-close" class="icon-button" aria-label="關閉">✕</button>
+      </div>
+
+      <div class="field">
+        <span class="label">照片</span>
+        <div id="photo-list" class="photo-edit-list"></div>
+        <div class="actions">
+          <label class="button button-secondary file-button">📷 拍照
+            <input id="photo-camera" type="file" accept="image/*" capture="environment" hidden>
+          </label>
+          <label class="button button-secondary file-button">🖼️ 從相簿選
+            <input id="photo-library" type="file" accept="image/*" multiple hidden>
+          </label>
+        </div>
+        <p id="photo-status" class="hint" aria-live="polite"></p>
+      </div>
+
+      <div class="field">
+        <label for="f-name" class="label">地點名稱</label>
+        <input id="f-name" type="text" maxlength="100" placeholder="例如：清水寺、外婆家巷口的麵店" autocomplete="off">
+      </div>
+
+      <div class="field">
+        <span class="label">位置</span>
+        <p id="loc-status" class="loc-status" aria-live="polite">還沒有位置</p>
+        <div class="actions">
+          <button type="button" id="loc-here" class="button button-secondary">📍 用目前位置</button>
+          <button type="button" id="loc-clear" class="button button-secondary">清除位置</button>
+        </div>
+        <div id="pick-map" class="map pick-map" aria-label="點地圖選擇位置"></div>
+        <p class="hint">也可以直接點上面的地圖選位置；照片有拍攝地點時會自動帶入。</p>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label for="f-date" class="label">日期</label>
+          <input id="f-date" type="date">
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="f-note" class="label">心得</label>
+        <textarea id="f-note" rows="4" maxlength="5000" placeholder="今天吃了什麼、看到什麼、跟誰一起…"></textarea>
+      </div>
+
+      <p id="editor-error" class="message message-error" role="alert" hidden></p>
+      <div class="actions sheet-actions">
+        <button type="submit" id="editor-save" class="button">💾 儲存</button>
+        <button type="button" id="editor-cancel" class="button button-secondary">取消</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- 看大圖 -->
+  <div id="viewer" class="viewer" role="dialog" aria-modal="true" aria-label="照片" hidden>
+    <img id="viewer-img" alt="">
+    <p id="viewer-caption" class="viewer-caption"></p>
+    <div class="viewer-actions">
+      <button type="button" id="viewer-prev" class="button button-secondary" aria-label="上一張">‹</button>
+      <button type="button" id="viewer-close" class="button">關閉</button>
+      <button type="button" id="viewer-next" class="button button-secondary" aria-label="下一張">›</button>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha384-cxOPjt7s7Iz04uaHJceBmS+qpjv2JkIHNVcuOrM+YHwZOmJGBXI00mdUXEq65HTH"
+          crossorigin="anonymous"></script>
+  <script src="logic.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

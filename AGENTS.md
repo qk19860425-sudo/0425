@@ -16,6 +16,8 @@ The Osaka travel prototype (`osaka/`) has no build step. Serve the repository ro
 
 The gift-exchange lottery (`lottery/`) also has no build step: open `http://localhost:8000/lottery/` from the same server, and run its tests from `lottery/` with `node --test`. Bump `CACHE_VERSION` in `lottery/sw.js` whenever its files change.
 
+The travel journal (`footprints/`) follows the same pattern: open `http://localhost:8000/footprints/`, run its tests from `footprints/` with `node --test`, and bump `CACHE_VERSION` in `footprints/sw.js` on every change. Its data lives only in the browser's IndexedDB; never add code that uploads photos or locations without the user's explicit request.
+
 When introducing a framework, commit its dependency manifest and lockfile, and document the exact installation, local development, build, and test commands here. Keep generated outputs and installed dependencies out of version control.
 
 ## Coding Style & Naming Conventions
