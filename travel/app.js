@@ -127,6 +127,22 @@
   const planState = { region: "", themes: new Set() };
   const allThemes = [...new Set(REGIONS.flatMap((r) => r.itineraries.flatMap((i) => i.themes)))];
 
+  // 目前選的城市（「全部」時是所有城市）
+  function planRegions() {
+    return planState.region ? REGIONS.filter((r) => r.id === planState.region) : REGIONS;
+  }
+
+  // 這些城市裡有哪些主題、各有幾個行程（依 allThemes 的順序）
+  function themeCounts(regions) {
+    const counts = new Map();
+    for (const r of regions) {
+      for (const it of r.itineraries) {
+        for (const t of it.themes) counts.set(t, (counts.get(t) || 0) + 1);
+      }
+    }
+    return allThemes.filter((t) => counts.has(t)).map((t) => ({ theme: t, count: counts.get(t) }));
+  }
+
   function renderPlanFilters() {
     const regionBox = $("plan-regions");
     regionBox.replaceChildren(
@@ -135,8 +151,12 @@
         planState.region = r.id; renderPlanFilters(); markPlanPending();
       }))
     );
+    // 主題只列出這個城市有的，並標出行程數；換城市後，新城市沒有的主題自動取消
+    const available = themeCounts(planRegions());
+    const availableSet = new Set(available.map((x) => x.theme));
+    for (const t of [...planState.themes]) if (!availableSet.has(t)) planState.themes.delete(t);
     const themeBox = $("plan-themes");
-    themeBox.replaceChildren(...allThemes.map((t) => chip(t, planState.themes.has(t), () => {
+    themeBox.replaceChildren(...available.map(({ theme: t, count }) => chip(t + "（" + count + "）", planState.themes.has(t), () => {
       if (planState.themes.has(t)) planState.themes.delete(t); else planState.themes.add(t);
       renderPlanFilters(); markPlanPending();
     })));
@@ -144,7 +164,7 @@
 
   function markPlanPending() { $("plan-pending").hidden = false; }
 
-  function renderItinerary(region, it) {
+  function renderItinerary(region, it, matched) {
     const card = el("article", "card plan");
     const head = el("div", "plan-head");
     head.append(el("h2", "plan-title", it.title), el("span", "badge", regionLabel(region)));
@@ -152,7 +172,7 @@
 
     const meta = el("div", "tags");
     meta.append(el("span", "tag tag-days", it.days >= 1 ? it.days + " 天" : "半天"));
-    for (const t of it.themes) meta.append(el("span", "tag", t));
+    for (const t of it.themes) meta.append(el("span", "tag" + (matched && matched.has(t) ? " tag-match" : ""), (matched && matched.has(t) ? "✓ " : "") + t));
     card.append(meta, el("p", "plan-summary", it.summary));
 
     const totalMin = it.legs.reduce((s, l) => s + l.minutes, 0);
@@ -186,19 +206,29 @@
     return card;
   }
 
+  // 主題複選時：符合任一個主題就列出，符合越多排越前面（同分維持原本順序）
   function updatePlans() {
     $("plan-pending").hidden = true;
     const list = $("plan-list");
-    const cards = [];
-    for (const region of REGIONS) {
-      if (planState.region && region.id !== planState.region) continue;
-      for (const it of region.itineraries) {
-        if ([...planState.themes].every((t) => it.themes.includes(t))) cards.push(renderItinerary(region, it));
-      }
+    const themes = [...planState.themes];
+    const all = [];
+    for (const region of planRegions()) {
+      for (const it of region.itineraries) all.push({ region, it, score: themes.filter((t) => it.themes.includes(t)).length });
     }
+    let shown = themes.length ? all.filter((x) => x.score > 0) : all;
+    let note = "";
+    if (themes.length && !shown.length) {
+      // 理論上不會發生（主題只列出這個城市有的），保險起見改列出全部行程
+      note = "沒有「" + themes.join("、") + "」主題的行程，以下列出全部行程。";
+      shown = all;
+    }
+    shown = shown.map((x, i) => Object.assign(x, { i })).sort((a, b) => b.score - a.score || a.i - b.i);
+    const matched = new Set(themes);
+    const cards = shown.map((x) => renderItinerary(x.region, x.it, themes.length ? matched : null));
     list.replaceChildren(...cards);
-    if (!cards.length) list.append(el("p", "card empty", "沒有符合條件的行程，試著減少主題。"));
-    $("plan-count").textContent = "找到 " + cards.length + " 個行程";
+    if (!cards.length) list.append(el("p", "card empty", "這個城市還沒有整理推薦行程。"));
+    $("plan-count").textContent = note || ("找到 " + cards.length + " 個行程" +
+      (themes.length > 1 ? "（符合任一主題就列出，符合越多排越前面）" : ""));
   }
 
   $("plan-form").addEventListener("submit", (e) => {
