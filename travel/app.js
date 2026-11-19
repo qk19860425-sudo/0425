@@ -1171,56 +1171,111 @@
     return Number.isFinite(n) && n >= 0 ? n : NaN;
   };
 
-  let fxCard = null;
+  // 換算畫面可以有好幾個（旅遊指南裡的卡片、右上角的換算框），共用同一份 fxState
+  const fxViews = [];
+  const FX_SAMPLE = { "日圓": 1000, "韓元": 10000, "印尼盾": 100000 };
+  let fxIdSeq = 0;
+
   function renderFx() {
-    if (!fxCard) return;
     const cur = fxState.currency;
     const rate = fxRate(cur);
-    const chipsBox = fxCard.querySelector(".fx-currencies");
-    chipsBox.hidden = appCurrencies.length < 2;
-    chipsBox.replaceChildren(...appCurrencies.map((c) => chip(c, c === cur, () => {
-      fxState.currency = c;
-      try { localStorage.setItem("travel-fx-currency", c); } catch (e) { /* 忽略 */ }
-      recalc();
-      renderFx();
-    })));
-    fxCard.querySelector(".fx-foreign-label").textContent = cur;
-    const quick = fxCard.querySelector(".fx-quick");
-    quick.replaceChildren(...(CURRENCIES[cur] ? CURRENCIES[cur].quick : []).map((n) => {
-      const b = el("button", "chip", n.toLocaleString("en-US"));
-      b.type = "button";
-      b.addEventListener("click", () => {
-        fxState.foreign = n.toLocaleString("en-US");
-        fxState.last = "foreign";
+    for (const root of fxViews) {
+      const chipsBox = root.querySelector(".fx-currencies");
+      chipsBox.hidden = appCurrencies.length < 2;
+      chipsBox.replaceChildren(...appCurrencies.map((c) => chip(c, c === cur, () => {
+        fxState.currency = c;
+        try { localStorage.setItem("travel-fx-currency", c); } catch (e) { /* 忽略 */ }
+        renderFx();
         recalc();
-      });
-      return b;
-    }));
-    const rateLine = fxCard.querySelector(".fx-rate");
-    rateLine.textContent = rate
-      ? "1 " + cur + " ≈ " + (1 / rate).toPrecision(3) + " 台幣；100 台幣 ≈ " + Math.round(100 * rate).toLocaleString("en-US") + " " + cur
-      : "還沒有匯率資料。";
-    const status = fxCard.querySelector(".fx-status");
-    status.textContent = (fx && fx.date ? "匯率日期：" + fx.date + "（來源：" + fx.source + "）。" : "") + (fxError ? " " + fxError : "");
-    status.classList.toggle("fx-error", !!fxError);
-    fxCard.querySelector(".fx-inputs").hidden = !rate;
+      })));
+      root.querySelector(".fx-foreign-label").textContent = cur;
+      root.querySelector(".fx-quick").replaceChildren(...(CURRENCIES[cur] ? CURRENCIES[cur].quick : []).map((n) => {
+        const b = el("button", "chip", n.toLocaleString("en-US"));
+        b.type = "button";
+        b.addEventListener("click", () => {
+          fxState.foreign = n.toLocaleString("en-US");
+          fxState.last = "foreign";
+          recalc();
+        });
+        return b;
+      }));
+      root.querySelector(".fx-rate").textContent = rate
+        ? "1 " + cur + " ≈ " + (1 / rate).toPrecision(3) + " 台幣；100 台幣 ≈ " + Math.round(100 * rate).toLocaleString("en-US") + " " + cur
+        : "還沒有匯率資料。";
+      const status = root.querySelector(".fx-status");
+      status.textContent = (fx && fx.date ? "匯率日期：" + fx.date + "（來源：" + fx.source + "）。" : "") + (fxError ? " " + fxError : "");
+      status.classList.toggle("fx-error", !!fxError);
+      root.querySelector(".fx-inputs").hidden = !rate;
+    }
+    // 右上角按鈕上的換算：例如「1,000 日圓 ≈ NT$210」
+    const pill = $("fx-pill");
+    if (pill) {
+      const n = FX_SAMPLE[cur] || 1000;
+      pill.textContent = rate ? "💱 " + n.toLocaleString("en-US") + " " + cur + " ≈ NT$" + formatTwd(n / rate) : "💱 匯率換算";
+      pill.setAttribute("aria-label", "今日匯率換算" + (rate ? "：" + pill.textContent.replace("💱 ", "") : ""));
+    }
   }
 
-  // 依最後輸入的那一欄換算另一欄
+  // 依最後輸入的那一欄換算另一欄，所有換算畫面同步
   function recalc() {
     const rate = fxRate(fxState.currency);
-    const fIn = fxCard.querySelector("#fx-foreign");
-    const tIn = fxCard.querySelector("#fx-twd");
     if (!rate) return;
+    let foreign = fxState.foreign;
+    let twd = fxState.twd;
     if (fxState.last === "foreign") {
-      const n = parseAmount(fxState.foreign);
-      fIn.value = fxState.foreign;
-      tIn.value = fxState.foreign === "" || Number.isNaN(n) ? "" : formatTwd(n / rate);
+      const n = parseAmount(foreign);
+      twd = foreign === "" || Number.isNaN(n) ? "" : formatTwd(n / rate);
     } else {
-      const n = parseAmount(fxState.twd);
-      tIn.value = fxState.twd;
-      fIn.value = fxState.twd === "" || Number.isNaN(n) ? "" : Math.round(n * rate).toLocaleString("en-US");
+      const n = parseAmount(twd);
+      foreign = twd === "" || Number.isNaN(n) ? "" : Math.round(n * rate).toLocaleString("en-US");
     }
+    for (const root of fxViews) {
+      const fIn = root.querySelector(".fx-foreign-input");
+      const tIn = root.querySelector(".fx-twd-input");
+      if (document.activeElement !== fIn) fIn.value = foreign;
+      if (document.activeElement !== tIn) tIn.value = twd;
+    }
+  }
+
+  // 建立一個換算畫面；compact 為右上角的精簡版（少一些說明文字）
+  function buildFxView(compact) {
+    const root = el("div", "fx-view" + (compact ? " fx-compact" : ""));
+    const currencies = el("div", "chips fx-currencies");
+    currencies.setAttribute("role", "group");
+    currencies.setAttribute("aria-label", "幣別");
+
+    const inputs = el("div", "fx-inputs");
+    const field = (cls, labelText, labelClass) => {
+      const id = "fx-input-" + (++fxIdSeq);
+      const wrap = el("label", "fx-field");
+      wrap.htmlFor = id;
+      const input = document.createElement("input");
+      input.id = id;
+      input.className = cls;
+      input.type = "text";
+      input.inputMode = "decimal";
+      input.autocomplete = "off";
+      input.placeholder = "0";
+      wrap.append(el("span", "fx-unit " + labelClass, labelText), input);
+      return input;
+    };
+    const f = field("fx-foreign-input", "", "fx-foreign-label");
+    const t = field("fx-twd-input", "台幣", "");
+    inputs.append(f.parentNode, el("span", "fx-eq", "＝"), t.parentNode);
+    for (const ev of ["input", "change", "compositionend", "keyup"]) {
+      f.addEventListener(ev, () => { fxState.foreign = f.value; fxState.last = "foreign"; recalc(); });
+      t.addEventListener(ev, () => { fxState.twd = t.value; fxState.last = "twd"; recalc(); });
+    }
+
+    const refresh = el("button", "button button-secondary button-small", "🔄 更新匯率");
+    refresh.type = "button";
+    refresh.addEventListener("click", () => { refresh.disabled = true; fetchFx(true).finally(() => { refresh.disabled = false; }); });
+
+    root.append(currencies, inputs, el("div", "chips fx-quick"), el("p", "fx-rate"), el("p", "stop-meta fx-status"));
+    if (!compact) root.append(el("p", "stop-meta", "這是市場參考匯率；在當地換錢或刷卡的實際匯率會比較差，另有手續費。"));
+    root.append(refresh);
+    fxViews.push(root);
+    return root;
   }
 
   function buildFxCard() {
@@ -1229,43 +1284,63 @@
     card.setAttribute("aria-labelledby", "fx-title");
     const title = el("h2", "fx-title", "💱 今日匯率換算");
     title.id = "fx-title";
-    const currencies = el("div", "chips fx-currencies");
-    currencies.setAttribute("role", "group");
-    currencies.setAttribute("aria-label", "幣別");
-
-    const inputs = el("div", "fx-inputs");
-    const field = (id, labelText, labelClass) => {
-      const wrap = el("label", "fx-field");
-      wrap.htmlFor = id;
-      const input = document.createElement("input");
-      input.id = id;
-      input.type = "text";
-      input.inputMode = "decimal";
-      input.autocomplete = "off";
-      input.placeholder = "0";
-      wrap.append(el("span", "fx-unit " + labelClass, labelText), input);
-      return { wrap, input };
-    };
-    const f = field("fx-foreign", "", "fx-foreign-label");
-    const t = field("fx-twd", "台幣", "");
-    inputs.append(f.wrap, el("span", "fx-eq", "＝"), t.wrap);
-    for (const ev of ["input", "change", "compositionend", "keyup"]) {
-      f.input.addEventListener(ev, () => { fxState.foreign = f.input.value; fxState.last = "foreign"; recalc(); });
-      t.input.addEventListener(ev, () => { fxState.twd = t.input.value; fxState.last = "twd"; recalc(); });
-    }
-
-    const refresh = el("button", "button button-secondary button-small", "🔄 更新匯率");
-    refresh.type = "button";
-    refresh.addEventListener("click", () => { refresh.disabled = true; fetchFx(true).finally(() => { refresh.disabled = false; }); });
-
-    card.append(title, currencies, inputs, el("div", "chips fx-quick"),
-      el("p", "fx-rate"), el("p", "stop-meta fx-status"),
-      el("p", "stop-meta", "這是市場參考匯率；在當地換錢或刷卡的實際匯率會比較差，另有手續費。"),
-      refresh);
-    fxCard = card;
+    card.append(title, buildFxView(false));
     $("panel-guide").prepend(card);
-    renderFx();
-    recalc();
+  }
+
+  // 右上角的換算框：固定在畫面右上角，點一下展開
+  function buildFxCorner() {
+    if (!appCurrencies.length) return;
+    const pill = el("button", "fx-pill", "💱 匯率換算");
+    pill.id = "fx-pill";
+    pill.type = "button";
+    pill.setAttribute("aria-expanded", "false");
+    pill.setAttribute("aria-controls", "fx-pop");
+
+    const pop = el("div", "fx-pop card");
+    pop.id = "fx-pop";
+    pop.setAttribute("role", "dialog");
+    pop.setAttribute("aria-label", "今日匯率換算");
+    pop.hidden = true;
+    const head = el("div", "fx-pop-head");
+    const close = el("button", "fx-pop-close", "✕");
+    close.type = "button";
+    close.setAttribute("aria-label", "關閉匯率換算");
+    head.append(el("h2", "fx-title", "💱 今日匯率換算"), close);
+    pop.append(head, buildFxView(true));
+
+    const open = (show) => {
+      pop.hidden = !show;
+      pill.setAttribute("aria-expanded", String(show));
+      if (show) {
+        fetchFx(false);
+        const input = pop.querySelector(".fx-foreign-input");
+        if (input && !pop.querySelector(".fx-inputs").hidden) input.focus();
+      }
+    };
+    pill.addEventListener("click", () => open(pop.hidden));
+    close.addEventListener("click", () => { open(false); pill.focus(); });
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !pop.hidden) { open(false); pill.focus(); } });
+    document.addEventListener("click", (e) => {
+      // 用事件路徑判斷：點幣別時按鈕會重畫、元素被換掉，不能用 contains
+      const path = e.composedPath();
+      if (!pop.hidden && !path.includes(pop) && !path.includes(pill)) open(false);
+    });
+    document.body.append(pill, pop);
+
+    // 分頁列捲到頂端固定時，按鈕移到分頁列下方，避免蓋住分頁
+    const tabsBar = document.querySelector(".tabs");
+    let ticking = false;
+    const place = () => {
+      ticking = false;
+      const r = tabsBar ? tabsBar.getBoundingClientRect() : null;
+      const top = r && r.top <= 1 ? Math.round(r.bottom + 6) : 8;
+      pill.style.top = "calc(env(safe-area-inset-top, 0px) + " + top + "px)";
+      pop.style.top = "calc(env(safe-area-inset-top, 0px) + " + (top + 44) + "px)";
+    };
+    window.addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(place); } }, { passive: true });
+    window.addEventListener("resize", place);
+    place();
   }
 
   // ---------------------------------------------------------------
@@ -1275,5 +1350,8 @@
   onRegionChange();
   renderGuide();
   buildFxCard();
+  buildFxCorner();
+  renderFx();
+  recalc();
   fetchFx(false);
 })();
