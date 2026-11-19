@@ -166,20 +166,81 @@
     return card;
   }
 
-  // 列出全部推薦行程，依城市分組（城市順序同 REGIONS：由北到南）
+  // ---- 熱門景點：依今天的月份顯示當季最紅的景點 ----
+  const HOT = window.HOT_SPOTS || {};
+  const THIS_MONTH = new Date().getMonth() + 1;
+
+  // 當季景點全部列出；全年熱門的補到每個城市至少 3 個（同一景點不重複）
+  function hotFor(region) {
+    const list = HOT[region.id] || [];
+    const seasonal = list.filter((h) => h.months !== "all" && h.months.includes(THIS_MONTH));
+    const seen = new Set(seasonal.map((h) => h.spot));
+    const allYear = list.filter((h) => h.months === "all" && !seen.has(h.spot)).slice(0, Math.max(0, 3 - seasonal.length));
+    return [...seasonal.map((h) => ({ h, seasonal: true })), ...allYear.map((h) => ({ h, seasonal: false }))]
+      .filter((x) => findSpot(region, x.h.spot));
+  }
+
+  // 從「我現在的位置」出發：不帶出發地，地圖 App 會用手機目前的位置
+  function fromHereUrl(spot) {
+    return "https://www.google.com/maps/dir/?api=1&destination=" + spot.lat + "," + spot.lng + "&travelmode=transit";
+  }
+
+  function renderHotCard(region, item) {
+    const spot = findSpot(region, item.h.spot);
+    const card = el("article", "card hot-spot");
+    const head = el("div", "plan-head");
+    head.append(el("h3", "hot-name", spot.name),
+      el("span", "badge " + (item.seasonal ? "badge-hot" : "badge-allyear"), item.seasonal ? "🔥 當季" : "⭐ 全年熱門"));
+    card.append(head, el("p", "hot-reason", item.h.reason));
+    card.append(el("p", "stop-meta", "🚉 " + spot.station + "　⏱ 建議停留 " + spot.stay));
+
+    const box = el("div", "map-links hot-actions");
+    box.append(link("📍 從我現在的位置怎麼去", fromHereUrl(spot), "button button-small"));
+    if (region.country === "kr") {
+      box.append(link("KakaoMap 從目前位置導航", kakaoToUrl(spot), "button button-secondary button-small"));
+    }
+    // 從機場怎麼去：最多列兩個機場，點了跳到路線查詢並直接算好
+    for (const ap of airportsOf(region).slice(0, 2)) {
+      const b = el("button", "button button-secondary button-small hot-airport", "✈️ 從" + ap.name + "怎麼去");
+      b.type = "button";
+      b.addEventListener("click", () => runQuickRoute(region, { airport: ap.id, to: spot.id }));
+      box.append(b);
+    }
+    card.append(box);
+    return card;
+  }
+
+  // 熱門景點在上、推薦行程在下，都依城市分組（城市順序同 REGIONS：由北到南）
   function renderPlans() {
     const list = $("plan-list");
     const parts = [];
-    let total = 0;
+    let hotTotal = 0;
+
+    const intro = el("div", "card hot-intro");
+    intro.append(el("h2", "plan-section-title", "🔥 " + THIS_MONTH + " 月熱門景點"),
+      el("p", "stop-meta", "依今天的月份自動顯示當季最紅的景點，每個月會換一批。祭典、花季的日期每年不同，出發前請以官方公告為準。"),
+      el("p", "stop-meta", "「📍 從我現在的位置怎麼去」會打開地圖 App，用你手機目前的位置規劃路線（第一次使用時請允許位置權限）。"));
+    parts.push(intro);
+    for (const region of REGIONS) {
+      const items = hotFor(region);
+      if (!items.length) continue;
+      parts.push(el("h2", "plan-region", regionLabel(region)));
+      for (const item of items) parts.push(renderHotCard(region, item));
+      hotTotal += items.length;
+    }
+
+    let planTotal = 0;
+    const planParts = [];
     for (const region of REGIONS) {
       if (!region.itineraries.length) continue;
-      parts.push(el("h2", "plan-region", regionLabel(region) + "（" + region.itineraries.length + "）"));
-      for (const it of region.itineraries) parts.push(renderItinerary(region, it));
-      total += region.itineraries.length;
+      planParts.push(el("h2", "plan-region", regionLabel(region) + "（" + region.itineraries.length + "）"));
+      for (const it of region.itineraries) planParts.push(renderItinerary(region, it));
+      planTotal += region.itineraries.length;
     }
+    if (planTotal) parts.push(el("h2", "plan-section-title plan-section-sep", "🗺️ 推薦行程（" + planTotal + "）"), ...planParts);
+
     list.replaceChildren(...parts);
-    if (!total) list.append(el("p", "card empty", "還沒有整理推薦行程。"));
-    $("plan-count").textContent = "共 " + total + " 個推薦行程";
+    $("plan-count").textContent = THIS_MONTH + " 月熱門景點 " + hotTotal + " 個・推薦行程 " + planTotal + " 個";
   }
 
   // ---------------------------------------------------------------

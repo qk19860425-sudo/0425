@@ -388,6 +388,16 @@ body {
 .tags .tag:nth-child(8n+5) { background: var(--s2); color: var(--t2); }
 .tags .tag:nth-child(8n+6) { background: var(--s5); color: var(--t5); }
 .tags .tag.tag-days { background: var(--c1); color: var(--on-color); }
+/* 熱門景點 */
+.plan-section-title { margin: 0 0 6px; font-size: 1.25rem; }
+.plan-section-sep { margin: 32px 4px 6px; padding-top: 16px; border-top: 3px dashed var(--line); }
+.hot-name { margin: 0; font-size: 1.15rem; line-height: 1.4; }
+.hot-reason { margin: 8px 0 6px; font-weight: 600; }
+.badge-hot { background: var(--c1); color: var(--on-color); font-weight: 700; }
+.badge-allyear { background: var(--s6); color: var(--t6); font-weight: 700; }
+.hot-actions .button { flex: 1 1 100%; }
+.hot-actions .hot-airport { flex: 1 1 140px; }
+
 /* 推薦行程的城市分組標題 */
 .plan-region { margin: 22px 4px 10px; font-size: 1.15rem; color: var(--accent-soft-text); }
 .plan-region:first-child { margin-top: 4px; }
