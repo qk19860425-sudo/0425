@@ -562,6 +562,68 @@
     return box;
   }
 
+  // ---- 電車路線導引：搭哪條線、往哪個方向、在哪站轉乘、走幾號出口（資料在 rail.js）----
+  function lineBadge(line) {
+    const b = el("span", "line-badge", line.name);
+    const hex = line.color.replace("#", "");
+    const [r, g, bl] = [0, 2, 4].map((i) => parseInt(hex.slice(i, i + 2), 16));
+    const light = (r * 299 + g * 587 + bl * 114) / 1000 > 160;
+    b.style.background = line.color;
+    b.style.color = light ? "#111827" : "#ffffff";
+    return b;
+  }
+
+  function strong(text) {
+    return el("strong", "", text);
+  }
+
+  // 出口說明：有出口號碼就寫號碼，沒有就照站內指標
+  function exitParts(acc, entering) {
+    if (acc.exit) return ["從 ", strong(acc.exit), entering ? " 進站" : " 出站"];
+    if (acc.sign && !entering) return ["照站內「", strong(acc.sign), "」指標出站"];
+    return [entering ? "進站" : "出站"];
+  }
+
+  function renderRailGuide(region, a, b) {
+    const RG = window.RailGuide;
+    if (!RG || !a.id || !b.id || !RG.has(region.id, a.id) || !RG.has(region.id, b.id)) return null;
+    const p = RG.plan(region.id, a.id, b.id);
+    if (!p) return null;
+    const box = el("div", "rail-guide");
+    if (p.sameStation) {
+      box.append(el("p", "rail-title", "🚇 兩個地方都在 " + p.sameStation + " 附近，步行過去即可。"));
+      return box;
+    }
+    const st = RG.stationName;
+    box.append(el("p", "rail-title", "🚇 電車怎麼搭" + (p.transfers ? "（轉乘 " + p.transfers + " 次）" : "（直達，免轉乘）")));
+    const ol = el("ol", "rail-steps");
+    const li = (cls, ...parts) => {
+      const x = el("li", cls);
+      x.append(...parts);
+      ol.append(x);
+      return x;
+    };
+    li("rail-walk", "🚶 從「" + a.name + "」" + (p.from.note ? "前往 " : "步行約 " + p.from.walk + " 分鐘到 "), strong(st(p.from.st)), "，", ...exitParts(p.from, true));
+    const rides = p.segments.filter((s) => s.kind === "ride");
+    for (const s of p.segments) {
+      if (s.kind === "walk") {
+        li("rail-walk", "🚶 出站步行約 " + s.minutes + " 分鐘到 ", strong(st(s.to)), " 轉乘");
+        continue;
+      }
+      const last = s === rides[rides.length - 1];
+      const ride = li("rail-ride", "搭 ", lineBadge(s.line), " 往 ", strong(s.towards), " 方向");
+      ride.style.setProperty("--rail", s.line.color);
+      ride.append(el("span", "rail-stations", st(s.from) + " 上車 → " + st(s.to) + (last ? " 下車" : " 下車轉乘")));
+    }
+    // 有備註（例如還要轉公車、搭纜車）時，照備註前往，不寫步行時間
+    const end = li("rail-walk", "🚪 ", ...exitParts(p.to, false), p.to.note ? "，前往「" + b.name + "」" : "，步行約 " + p.to.walk + " 分鐘到「" + b.name + "」");
+    if (p.to.note) end.append(el("span", "rail-stations", "💡 " + p.to.note));
+    if (p.from.note) ol.firstChild.append(el("span", "rail-stations", "💡 這裡離車站較遠，請先搭接駁公車或計程車到車站。"));
+    box.append(ol);
+    box.append(el("p", "rail-note", "路線與出口是整理的參考資料（只列主要車站），現場請以站內指標為準；即時班次請用地圖 App。"));
+    return box;
+  }
+
   function renderLocalStep(region, title, a, b, aStation, bStation) {
     const step = el("div", "card route-step");
     step.append(el("h3", "step-title", title));
@@ -569,6 +631,10 @@
     const { km, opts } = localOptions(a, b, region);
     step.append(el("p", "stop-meta", "距離約 " + km.toFixed(1) + " 公里（估算）"));
     opts.forEach((o, i) => step.append(renderOption(o, i === 0)));
+    if (opts.some((o) => o.kind === "transit")) {
+      const guide = renderRailGuide(region, a, b);
+      if (guide) step.append(guide);
+    }
     step.append(mapLinks(region, a, b));
     return { step, minutes: opts[0].minutes, wait: opts[0].wait || 0 };
   }
@@ -965,6 +1031,10 @@
     if (curated) {
       header.append(el("p", "stop-meta", "這段在推薦行程中有整理過的走法："));
       header.append(renderOption({ mode: curated.mode, minutes: curated.minutes, cost: curated.cost, note: curated.detail }, true));
+      if (/電車|地鐵|大眾運輸/.test(curated.mode) || /線/.test(curated.detail)) {
+        const guide = renderRailGuide(region, a, b);
+        if (guide) header.append(guide);
+      }
       header.append(mapLinks(region, a, b));
     } else if (a.hub === b.hub) {
       const r = renderLocalStep(region, "建議交通方式", a, b, a.station, b.station);
