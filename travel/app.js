@@ -2,14 +2,16 @@
 (function () {
   "use strict";
 
-  // 只顯示某一國家：日本 App 設 window.APP_COUNTRY = "jp"，韓國 App 設 "kr"；未設定則兩國都顯示
-  const APP_COUNTRY = window.APP_COUNTRY || "";
-  const inCountry = (x) => !APP_COUNTRY || x.country === APP_COUNTRY;
+  // 只顯示某些國家：日本 App 設 window.APP_COUNTRY = "jp"、韓國 "kr"、印尼 "id"；
+  // 日韓合併版設 "jp,kr"（用逗號分開）。未設定則全部顯示。
+  const APP_COUNTRIES = String(window.APP_COUNTRY || "").split(",").map((x) => x.trim()).filter(Boolean);
+  const inCountry = (x) => !APP_COUNTRIES.length || APP_COUNTRIES.includes(x.country);
 
   // 地區依地理位置由北到南排列；不在清單裡的排在最後
   const REGION_ORDER = [
     "sapporo", "sendai", "tokyo", "nagoya", "kanazawa", "kansai", "hiroshima", "takamatsu", "fukuoka", "nagasaki", "okinawa",
     "seoul", "gangneung", "daegu", "busan", "jeonju", "jeju",
+    "jakarta", "yogyakarta", "bali", "lombok", "labuanbajo",
   ];
   const orderOf = (id) => { const i = REGION_ORDER.indexOf(id); return i < 0 ? 999 : i; };
   const REGIONS = (window.REGIONS || []).filter(inCountry).slice().sort((a, b) => orderOf(a.id) - orderOf(b.id));
@@ -52,12 +54,19 @@
     return "約 " + h + " 小時" + (r ? " " + r + " 分鐘" : "");
   }
 
-  const MODE_ICON = { "步行": "🚶", "大眾運輸": "🚇", "地鐵": "🚇", "電車": "🚆", "公車": "🚌", "計程車": "🚕", "纜車": "🚡" };
+  const MODE_ICON = { "步行": "🚶", "大眾運輸": "🚇", "地鐵": "🚇", "電車": "🚆", "公車": "🚌", "計程車": "🚕", "纜車": "🚡", "叫車": "🚗", "機車": "🛵", "船": "⛴️", "包車": "🚐" };
   function modeLabel(mode) {
     return (MODE_ICON[mode] || "➡️") + " " + mode;
   }
   // 交通方式的彩色標籤
-  const MODE_CLASS = { "步行": "walk", "大眾運輸": "transit", "地鐵": "subway", "電車": "rail", "公車": "bus", "計程車": "taxi", "纜車": "cable" };
+  const MODE_CLASS = { "步行": "walk", "大眾運輸": "transit", "地鐵": "subway", "電車": "rail", "公車": "bus", "計程車": "taxi", "纜車": "cable", "叫車": "taxi", "機車": "taxi", "船": "boat", "包車": "taxi" };
+
+  // 各國地圖 App 的補充說明
+  function mapAppNote(region) {
+    if (region.country === "kr") return "韓國的 Google 地圖可以查大眾運輸，但步行導航不可靠，建議搭配 Naver 地圖或 KakaoMap。";
+    if (region.country === "id") return "印尼的 Google 地圖可以查雅加達的捷運、通勤電車；峇里島、龍目島等地幾乎沒有大眾運輸，建議用 Grab 或 Gojek 叫車（App 會先顯示價格）。";
+    return "";
+  }
   function modeTag(mode) {
     return el("strong", "mode-tag mode-" + (MODE_CLASS[mode] || "other"), modeLabel(mode));
   }
@@ -364,6 +373,8 @@
   const LOCAL_FARE = {
     jp: { transit: [190, 300], taxiBase: 600, taxiPerKm: 400 },
     kr: { transit: [1500, 1800], taxiBase: 4800, taxiPerKm: 760 },
+    // 印尼：以 Grab／Gojek 汽車與機車叫車的約略價格估算
+    id: { transit: [3500, 15000], taxiBase: 10000, taxiPerKm: 6000, bikeBase: 5000, bikePerKm: 2500 },
   };
 
   // 從「約 1,450–1,670 日圓」之類的文字取出金額範圍；取不到就回傳 null
@@ -391,9 +402,13 @@
     const f = LOCAL_FARE[region.country] || LOCAL_FARE.jp;
     if (mode === "步行") return { min: 0, max: 0 };
     if (mode === "大眾運輸") return { min: f.transit[0], max: f.transit[1], estimated: true };
-    if (mode === "計程車") {
+    if (mode === "計程車" || mode === "叫車") {
       const base = f.taxiBase + Math.max(km - 1.5, 0) * f.taxiPerKm;
       return { min: base * 0.9, max: base * 1.2, estimated: true };
+    }
+    if (mode === "機車" && f.bikeBase) {
+      const base = f.bikeBase + Math.max(km - 1.5, 0) * f.bikePerKm;
+      return { min: base * 0.9, max: base * 1.3, estimated: true };
     }
     return null;
   }
@@ -431,12 +446,33 @@
 
   // 同城市內：依距離估算交通方式
   // minutes 為乘車＋步行時間，不含等車；wait 為估算的等車時間
-  function localOptions(a, b) {
+  function localOptions(a, b, region) {
     const km = distanceKm(a, b) * 1.3; // 直線距離乘上繞路係數
     const opts = [];
     const luggage = withLuggage();
     if (km <= (luggage ? 1.0 : 1.5)) {
       opts.push({ mode: "步行", kind: "walk", minutes: km / 4.5 * 60, wait: 0, note: luggage ? "距離很近，拖著行李走過去即可。" : "距離很近，建議步行。" });
+      return { km, opts };
+    }
+    // 島與島之間只能搭船（吉利群島、科莫多國家公園）
+    const boatHub = (p) => region && p.hub && (findHub(region, p.hub) || {}).boatOnly;
+    if (boatHub(a) || boatHub(b)) {
+      opts.push({ mode: "船", kind: "boat", minutes: 10 + km / 25 * 60, wait: 0,
+        note: "島與島之間只能搭船：吉利群島搭島間接駁船，科莫多國家公園通常跟著跳島行程移動。島上沒有汽機車，靠步行、腳踏車或馬車。" });
+      return { km, opts };
+    }
+    // 沒有像樣大眾運輸的地方（例如峇里島）：用 Grab／Gojek 叫車；路上常塞車，依地區的平均時速估算
+    if (region && region.localTransit === false) {
+      const kmh = region.rideKmh || 18;
+      opts.push({ mode: "叫車", kind: "taxi", minutes: 5 + km / kmh * 60, wait: 5, note: luggage
+        ? "用 Grab 或 Gojek 叫汽車（GrabCar／GoCar），行李放後車廂；App 會先顯示價格，等車時間約 5 分鐘（估算）。"
+        : "用 Grab 或 Gojek 叫汽車（GrabCar／GoCar），App 會先顯示價格；尖峰與雨天常塞車，時間為估算。" });
+      if (!luggage && km <= 15) {
+        opts.push({ mode: "機車", kind: "taxi", minutes: 3 + km / 25 * 60, wait: 5, note: "GrabBike／GoRide 機車叫車，一個人、沒有大行李時最快也最便宜；司機會提供安全帽。" });
+      }
+      if (!luggage && km <= 3) {
+        opts.push({ mode: "步行", kind: "walk", minutes: km / 4.5 * 60, wait: 0, note: "很多路段沒有人行道，天熱時不建議走太遠。" });
+      }
       return { km, opts };
     }
     const transit = { mode: "大眾運輸", kind: "transit", minutes: 3 + km / 22 * 60, wait: WAIT.transit,
@@ -490,7 +526,7 @@
     const step = el("div", "card route-step");
     step.append(el("h3", "step-title", title));
     step.append(el("p", "stop-meta", "🚉 " + aStation + " → " + bStation));
-    const { km, opts } = localOptions(a, b);
+    const { km, opts } = localOptions(a, b, region);
     step.append(el("p", "stop-meta", "距離約 " + km.toFixed(1) + " 公里（估算）"));
     opts.forEach((o, i) => step.append(renderOption(o, i === 0)));
     step.append(mapLinks(region, a, b));
@@ -515,14 +551,38 @@
     if (option.direct) {
       // 直達目的地（計程車）：依距離估算時間。前 20 公里以市區時速約 30 公里計，
       // 之後以高速公路時速約 65 公里計（避免長距離時高估）
-      const km = distanceKm(airport, spot) * 1.3;
-      const minutes = 10 + Math.min(km, 20) / 30 * 60 + Math.max(km - 20, 0) / 65 * 60;
-      return finishPlan(region, option, [{
-        mode: option.mode, kind: "taxi", from: airport.name, to: spot.name, minutes, wait: 0,
-        // 計程車依實際距離估算車資（資料裡的金額只對應某一個目的地）
-        cost: null, costRange: costEstimate(region, "計程車", km),
-        note: option.detail, noteBack: option.detailBack, estimated: true, official: option.official, transfers: 0,
-      }]);
+      const taxiSeg = (dest, destName, extraNote) => {
+        const km = distanceKm(airport, dest) * 1.3;
+        const minutes = 10 + Math.min(km, 20) / 30 * 60 + Math.max(km - 20, 0) / 65 * 60;
+        // 車資依實際距離估算（資料裡的金額只對應某一個目的地）；
+        // 機場計程車有起跳價較高的固定價（fare: { base, perKm }）時照資料算
+        const costRange = option.fare
+          ? { min: (option.fare.base + option.fare.perKm * km) * 0.9, max: (option.fare.base + option.fare.perKm * km) * 1.2, estimated: true }
+          : costEstimate(region, "計程車", km);
+        return {
+          mode: option.mode, kind: "taxi", from: airport.name, to: destName, minutes, wait: 0, cost: null, costRange,
+          note: option.detail + (extraNote || ""), noteBack: option.detailBack, estimated: true, official: option.official, transfers: 0,
+        };
+      };
+      const spotHub = findHub(region, spot.hub);
+      if (spotHub && spotHub.boatOnly) {
+        // 目的地在島上：車子開不上島，先坐到搭船的地方，再搭船
+        const link = region.intercity.find((x) => x.to === spot.hub || x.from === spot.hub);
+        if (!link) return null;
+        const inter = intercityLeg(region, link.from === spot.hub ? link.to : link.from, spot.hub);
+        const segs = [taxiSeg(inter.fromStop, inter.fromStop.name, "（島上不能開車，先坐到搭船的地方）")];
+        segs.push({ mode: inter.leg.mode, kind: "intercity", from: inter.fromStop.name, to: inter.toStop.name,
+          minutes: inter.leg.minutes, wait: WAIT.intercity, cost: inter.leg.cost, costRange: parseCost(inter.leg.cost),
+          note: inter.note, noteBack: inter.noteBack, official: inter.leg.official });
+        if (distanceKm(inter.toStop, spot) > 0.3) {
+          const { km, opts } = localOptions(inter.toStop, spot, region);
+          const best = opts[0];
+          segs.push({ mode: best.mode, kind: best.kind, from: inter.toStop.name, to: spot.name, minutes: best.minutes, wait: best.wait,
+            costRange: costEstimate(region, best.mode, km), note: best.note, estimated: true });
+        }
+        return finishPlan(region, option, segs);
+      }
+      return finishPlan(region, option, [taxiSeg(spot, spot.name)]);
     }
     const segs = [{
       mode: option.mode, kind: "airport", from: airport.name, to: option.to.name, title: option.title,
@@ -533,11 +593,11 @@
 
     function addLocal(a, aName, b, bName) {
       if (distanceKm(a, b) <= 0.3) return;
-      const { km, opts } = localOptions(a, b);
+      const { km, opts } = localOptions(a, b, region);
       const best = opts[0];
       segs.push({ mode: best.mode, kind: best.kind, from: aName, to: bName, minutes: best.minutes, wait: best.wait,
         costRange: costEstimate(region, best.mode, km), note: best.note, estimated: true,
-        official: best.kind === "transit" ? region.localLink : null });
+        official: best.kind === "transit" || best.mode === "叫車" ? region.localLink : null });
     }
 
     if (option.to.hub === spot.hub) {
@@ -689,7 +749,7 @@
     const airport = airportsOf(region).find((a) => a.id === airportId);
     const spot = findSpot(region, otherVal);
 
-    let plans = airport.options.map((o) => airportPlan(region, airport, o, spot));
+    let plans = airport.options.map((o) => airportPlan(region, airport, o, spot)).filter(Boolean);
     // 拿掉「先到別的城市再折返」的方案（例如去大阪卻先搭到京都）
     const detours = plans.filter((p) => isDetour(airport, p, spot));
     plans = plans.filter((p) => !detours.includes(p));
@@ -723,7 +783,7 @@
 
     const parts = [header, ...plans.map((p, i) => renderPlan(region, p, i, start, end))];
     parts.push(el("p", "card hint", "機場交通的時間、票價為約略值；到景點的最後一段依距離估算。出發前請用官方連結或地圖連結查即時班次。" +
-      (region.country === "kr" ? "韓國建議搭配 Naver 地圖或 KakaoMap。" : "")));
+      mapAppNote(region)));
     parts.push(el("p", "card tip", "💡 " + region.transportTip));
     out.replaceChildren(...parts);
     out.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -909,7 +969,7 @@
     }
 
     const note = el("p", "card hint", "「推薦」以外的時間為依距離估算，實際會因轉乘與班次不同；請用上面的地圖連結查即時路線。" +
-      (region.country === "kr" ? "韓國的 Google 地圖可以查大眾運輸，但步行導航不可靠，建議搭配 Naver 地圖或 KakaoMap。" : ""));
+      mapAppNote(region));
     parts.push(note, el("p", "card tip", "💡 " + region.transportTip));
 
     out.replaceChildren(...parts);

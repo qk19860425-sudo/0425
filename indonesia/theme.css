@@ -1,0 +1,59 @@
+/* 印尼景點路線：熱帶配色（土耳其綠＋夕陽橘）
+   載入在 ../travel/style.css 之後，只覆蓋顏色變數與頁首漸層；版面與功能沿用共用樣式。 */
+:root {
+  --bg: #f0fdfa;
+  --card: #ffffff;
+  --text: #134e4a;
+  --muted: #4b6b67;
+  --border: #99f6e4;
+  --accent: #0f766e;
+  --accent-text: #ffffff;
+  --accent-soft: #ccfbf1;
+  --accent-soft-text: #115e59;
+  --focus: #5eead4;
+  --chip: #f0fdfa;
+  --line: #5eead4;
+
+  /* 輪流使用的 8 種顏色：綠、橘、黃、青等熱帶色 */
+  --c1: #0f766e; --c2: #ea580c; --c3: #b45309; --c4: #15803d;
+  --c5: #0e7490; --c6: #c2410c; --c7: #047857; --c8: #be123c;
+  --s1: #ccfbf1; --t1: #115e59;  --s2: #ffedd5; --t2: #9a3412;
+  --s3: #fef3c7; --t3: #92400e;  --s4: #dcfce7; --t4: #166534;
+  --s5: #cffafe; --t5: #155e75;  --s6: #fed7aa; --t6: #9a3412;
+  --s7: #d1fae5; --t7: #065f46;  --s8: #ffe4e6; --t8: #9f1239;
+  --on-color: #ffffff;
+  --pattern-color: rgba(15, 118, 110, 0.07);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #04201d;
+    --card: #0b2e2a;
+    --text: #ccfbf1;
+    --muted: #8fbfb8;
+    --border: #134e4a;
+    --accent: #5eead4;
+    --accent-text: #04201d;
+    --accent-soft: #134e4a;
+    --accent-soft-text: #99f6e4;
+    --focus: #0f766e;
+    --chip: #0f2f2b;
+    --line: #115e59;
+
+    --c1: #5eead4; --c2: #fdba74; --c3: #fcd34d; --c4: #86efac;
+    --c5: #67e8f9; --c6: #fb923c; --c7: #6ee7b7; --c8: #fda4af;
+    --s1: #134e4a; --t1: #ccfbf1;  --s2: #431407; --t2: #fed7aa;
+    --s3: #451a03; --t3: #fde68a;  --s4: #052e16; --t4: #bbf7d0;
+    --s5: #164e63; --t5: #cffafe;  --s6: #7c2d12; --t6: #ffedd5;
+    --s7: #064e3b; --t7: #d1fae5;  --s8: #4c0519; --t8: #fecdd3;
+    --on-color: #04201d;
+    --pattern-color: rgba(94, 234, 212, 0.07);
+  }
+}
+
+/* 頁首：從海洋綠到夕陽橘的漸層 */
+.site-header {
+  background: linear-gradient(120deg, #0f766e 0%, #0d9488 35%, #f59e0b 75%, #ea580c 100%);
+  box-shadow: 0 6px 18px rgba(15, 118, 110, 0.3);
+}
+.site-header .subtitle a { margin-right: 8px; }

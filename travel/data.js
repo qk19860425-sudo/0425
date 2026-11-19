@@ -1,4 +1,4 @@
-// 日本・韓國景點路線資料
+// 日本・韓國・印尼景點路線資料
 // 整理日期：2026-11-12。票價、時間都是「約略值」，會隨班次、季節與票價調整變動，出發前請用地圖 App 查即時資訊。
 // 景點座標是概略位置（可能差數十到數百公尺），只用來估算距離與開啟地圖導航。
 //
@@ -871,6 +871,269 @@ window.REGIONS = [
       },
     ],
   },
+  // ===================================================================
+  // 印尼（country: "id"）
+  //   localTransit: false：沒有像樣大眾運輸，市區移動改估「Grab／Gojek 叫車」
+  //   機場方案的 fare: { base, perKm }：機場計程車固定價較高時，依「起跳＋每公里」估算車資
+  //   rideKmh：叫車的平均時速（塞車程度），未設定時以 18 公里計
+  //   hubs[].boatOnly：島嶼之間只能搭船（吉利群島、科莫多國家公園）
+  // ===================================================================
+  {
+    id: "jakarta",
+    name: "雅加達",
+    emoji: "🏙️",
+    country: "id",
+    currency: "印尼盾",
+    quickRoutes: [
+      { airport: "cgk", to: "bundaran-hi", label: "雅加達機場 → 市中心（Bundaran HI）" },
+      { airport: "cgk", to: "monas", label: "雅加達機場 → 國家紀念塔" },
+      { airport: "cgk", to: "kota-tua", label: "雅加達機場 → 老城區" },
+    ],
+    localLink: { name: "雅加達 MRT 官網", url: "https://jakartamrt.co.id/" },
+    transportTip: "雅加達塞車非常嚴重，市區移動優先搭 MRT（南北線）、KRL 通勤電車與 TransJakarta 快速公車，可以刷交通卡（Flazz、e-money 等）。短程或帶行李時用 Grab、Gojek 或 Blue Bird 計程車。",
+    hubs: [
+      { id: "jakarta-center", name: "雅加達市區", station: "BNI City 站（蘇迪曼）", lat: -6.2027, lng: 106.8227 },
+    ],
+    intercity: [],
+    spots: [
+      { id: "monas", name: "國家紀念塔（Monas）", hub: "jakarta-center", station: "甘比爾站（Gambir），步行約 10 分鐘", tags: ["地標", "歷史"], stay: "1–1.5 小時", lat: -6.1754, lng: 106.8272 },
+      { id: "istiqlal", name: "伊斯蒂克拉爾清真寺", hub: "jakarta-center", station: "Juanda 站，步行約 10 分鐘", tags: ["宗教", "建築"], stay: "45 分鐘", lat: -6.1702, lng: 106.8310 },
+      { id: "cathedral", name: "雅加達主教座堂", hub: "jakarta-center", station: "Juanda 站，步行約 10 分鐘（清真寺對面）", tags: ["宗教", "建築"], stay: "30 分鐘", lat: -6.1694, lng: 106.8331 },
+      { id: "kota-tua", name: "老城區（法塔希拉廣場）", hub: "jakarta-center", station: "Jakarta Kota 站（KRL 通勤電車），步行約 5 分鐘", tags: ["歷史", "拍照"], stay: "1.5–2 小時", lat: -6.1352, lng: 106.8133 },
+      { id: "glodok", name: "草埔中國城（Glodok）", hub: "jakarta-center", station: "Glodok 站（TransJakarta）", tags: ["美食", "歷史"], stay: "1 小時", lat: -6.1445, lng: 106.8139 },
+      { id: "bundaran-hi", name: "印尼大飯店圓環・Grand Indonesia", hub: "jakarta-center", station: "Bundaran HI 站（MRT）", tags: ["購物", "美食"], stay: "1–2 小時", lat: -6.1950, lng: 106.8231 },
+      { id: "blok-m", name: "Blok M", hub: "jakarta-center", station: "Blok M 站（MRT）", tags: ["美食", "購物"], stay: "1–2 小時", lat: -6.2443, lng: 106.7984 },
+      { id: "ancol", name: "安佐夢幻公園（Ancol）", hub: "jakarta-center", station: "搭 Grab／計程車，或 TransJakarta 到 Ancol", tags: ["親子", "海景"], stay: "半天", lat: -6.1222, lng: 106.8407 },
+    ],
+    itineraries: [
+      {
+        id: "jakarta-center-day",
+        title: "雅加達市中心：國家紀念塔・清真寺・主教座堂",
+        days: 0.5, themes: ["第一次去", "歷史"],
+        summary: "國家紀念塔、東南亞最大的清真寺與對面的主教座堂集中在市中心，步行就能串起來，傍晚到 Grand Indonesia 逛街吃飯。",
+        stops: ["monas", "istiqlal", "cathedral", "bundaran-hi"],
+        legs: [
+          { mode: "步行", detail: "國家紀念塔公園東北角出口 → 清真寺，約 1 公里；天熱可叫 Grab", minutes: 15, cost: "步行免費" },
+          { mode: "步行", detail: "清真寺 → 主教座堂，就在對面", minutes: 3, cost: "步行免費" },
+          { mode: "叫車", detail: "Grab／Gojek 叫車 主教座堂 → Grand Indonesia；也可以從 Juanda 一帶搭 TransJakarta", minutes: 20, cost: "約 25,000–40,000 印尼盾" },
+        ],
+      },
+      {
+        id: "jakarta-old-town",
+        title: "老城區與草埔中國城",
+        days: 0.5, themes: ["歷史", "美食", "拍照"],
+        summary: "荷蘭殖民時期的法塔希拉廣場、博物館與彩色腳踏車，再走到草埔中國城吃小吃、逛老廟。",
+        stops: ["kota-tua", "glodok"],
+        legs: [
+          { mode: "步行", detail: "法塔希拉廣場 → 草埔中國城，約 1 公里", minutes: 15, cost: "步行免費" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "yogyakarta",
+    name: "日惹（婆羅浮屠）",
+    emoji: "🛕",
+    country: "id",
+    currency: "印尼盾",
+    localTransit: false,
+    rideKmh: 28,
+    quickRoutes: [
+      { airport: "yia", to: "malioboro", label: "日惹機場 → 馬里奧波羅大街" },
+      { airport: "yia", to: "kraton", label: "日惹機場 → 蘇丹王宮" },
+      { airport: "yia", to: "borobudur", label: "日惹機場 → 婆羅浮屠" },
+    ],
+    localLink: { name: "KAI 印尼鐵路官網", url: "https://www.kai.id/" },
+    transportTip: "日惹市區景點用 Grab、Gojek 叫車最方便；去婆羅浮屠、普蘭巴南，多數旅客會包車一日（含司機）。從 YIA 機場到市區搭機場電車最準時。",
+    hubs: [
+      { id: "yogya-city", name: "日惹市區", station: "日惹站（Tugu）", lat: -7.7891, lng: 110.3633 },
+    ],
+    intercity: [],
+    spots: [
+      { id: "malioboro", name: "馬里奧波羅大街", hub: "yogya-city", station: "日惹站（Tugu），步行約 5 分鐘", tags: ["購物", "美食"], stay: "1–2 小時", lat: -7.7926, lng: 110.3658 },
+      { id: "kraton", name: "日惹蘇丹王宮（Kraton）", hub: "yogya-city", station: "馬里奧波羅大街南端，步行約 15 分鐘", tags: ["歷史", "文化"], stay: "1 小時", lat: -7.8053, lng: 110.3642 },
+      { id: "taman-sari", name: "水宮（Taman Sari）", hub: "yogya-city", station: "蘇丹王宮西南方，步行約 10 分鐘", tags: ["歷史", "拍照"], stay: "1 小時", lat: -7.8100, lng: 110.3593 },
+      { id: "tugu", name: "日惹紀念碑（Tugu）", hub: "yogya-city", station: "日惹站（Tugu），步行約 5 分鐘", tags: ["地標"], stay: "15 分鐘", lat: -7.7829, lng: 110.3671 },
+      { id: "borobudur", name: "婆羅浮屠", hub: "yogya-city", station: "從日惹市區搭車約 1–1.5 小時；登上佛塔需另購限量門票", tags: ["世界遺產", "寺廟"], stay: "2–3 小時", lat: -7.6079, lng: 110.2038 },
+      { id: "prambanan", name: "普蘭巴南寺廟群", hub: "yogya-city", station: "從日惹市區搭車約 40 分鐘，或搭 KRL 通勤電車到 Brambanan 站", tags: ["世界遺產", "寺廟"], stay: "2 小時", lat: -7.7520, lng: 110.4915 },
+    ],
+    itineraries: [
+      {
+        id: "yogya-old-town",
+        title: "日惹古城：蘇丹王宮・水宮・馬里奧波羅大街",
+        days: 1, themes: ["第一次去", "歷史"],
+        summary: "上午參觀仍有蘇丹居住的王宮與水宮，傍晚到馬里奧波羅大街逛蠟染、吃日惹菠蘿蜜飯（Gudeg）。",
+        stops: ["kraton", "taman-sari", "malioboro"],
+        legs: [
+          { mode: "步行", detail: "蘇丹王宮 → 水宮，穿過老街約 1 公里", minutes: 15, cost: "步行免費" },
+          { mode: "叫車", detail: "Grab／Gojek 叫車 水宮 → 馬里奧波羅大街，也可以搭三輪車（Becak）", minutes: 10, cost: "約 15,000–30,000 印尼盾" },
+        ],
+      },
+      {
+        id: "yogya-temples",
+        title: "世界遺產雙寺：婆羅浮屠＋普蘭巴南",
+        days: 1, themes: ["世界遺產", "拍照"],
+        summary: "清晨出發到婆羅浮屠，下午移動到普蘭巴南看夕陽；兩地相距遠，建議包車一日。",
+        stops: ["borobudur", "prambanan"],
+        legs: [
+          { mode: "包車", detail: "包車（含司機）婆羅浮屠 → 普蘭巴南，約 1.5 小時", minutes: 90, cost: "包車一日約 600,000–900,000 印尼盾（依車型，未查證）" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "bali",
+    name: "峇里島",
+    emoji: "🏝️",
+    country: "id",
+    currency: "印尼盾",
+    localTransit: false,
+    rideKmh: 18,
+    quickRoutes: [
+      { airport: "dps", to: "kuta-beach", label: "峇里島機場 → 庫塔" },
+      { airport: "dps", to: "seminyak", label: "峇里島機場 → 水明漾" },
+      { airport: "dps", to: "canggu", label: "峇里島機場 → 倉古" },
+      { airport: "dps", to: "ubud-palace", label: "峇里島機場 → 烏布" },
+    ],
+    localLink: { name: "Grab 印尼官網", url: "https://www.grab.com/id/en/" },
+    transportTip: "峇里島沒有像樣的大眾運輸，移動靠 Grab、Gojek 叫車或包車一日（含司機）。南部塞車嚴重，傍晚到海神廟、烏魯瓦圖看夕陽的路段特別塞，請多預留時間；部分地區叫車的上車點有限制，請依 App 指示。",
+    hubs: [
+      { id: "bali-south", name: "峇里島南部（庫塔・水明漾）", station: "庫塔一帶", lat: -8.7195, lng: 115.1686 },
+      { id: "ubud", name: "烏布", station: "烏布市中心（皇宮前）", lat: -8.5069, lng: 115.2625 },
+    ],
+    intercity: [
+      { from: "bali-south", to: "ubud", mode: "叫車", detail: "Grab／Gojek 叫車 庫塔・水明漾一帶 → 烏布市中心，約 1–1.5 小時（看塞車）", detailBack: "Grab／Gojek 叫車 烏布市中心 → 庫塔・水明漾一帶，約 1–1.5 小時（看塞車）", minutes: 80, cost: "約 250,000–400,000 印尼盾（未查證）" },
+    ],
+    spots: [
+      { id: "kuta-beach", name: "庫塔海灘", hub: "bali-south", station: "庫塔市中心", tags: ["海景", "購物"], stay: "1–2 小時", lat: -8.7180, lng: 115.1686 },
+      { id: "seminyak", name: "水明漾（Seminyak）", hub: "bali-south", station: "水明漾海灘一帶", tags: ["美食", "購物", "海景"], stay: "2–3 小時", lat: -8.6913, lng: 115.1569 },
+      { id: "canggu", name: "倉古（Canggu）", hub: "bali-south", station: "倉古海灘一帶", tags: ["咖啡", "海景"], stay: "2–3 小時", lat: -8.6478, lng: 115.1385 },
+      { id: "tanah-lot", name: "海神廟（Tanah Lot）", hub: "bali-south", station: "從水明漾叫車約 1 小時", tags: ["寺廟", "夕陽"], stay: "1.5 小時", lat: -8.6212, lng: 115.0868 },
+      { id: "uluwatu", name: "烏魯瓦圖斷崖廟", hub: "bali-south", station: "從庫塔叫車約 1 小時", tags: ["寺廟", "夕陽"], stay: "2 小時", lat: -8.8291, lng: 115.0849 },
+      { id: "jimbaran", name: "金巴蘭海灘", hub: "bali-south", station: "從庫塔叫車約 30 分鐘", tags: ["美食", "夕陽"], stay: "1.5 小時", lat: -8.7744, lng: 115.1640 },
+      { id: "ubud-palace", name: "烏布皇宮・烏布市場", hub: "ubud", station: "烏布市中心", tags: ["文化", "購物"], stay: "1 小時", lat: -8.5069, lng: 115.2625 },
+      { id: "monkey-forest", name: "聖猴森林", hub: "ubud", station: "烏布皇宮往南步行約 20 分鐘", tags: ["自然", "親子"], stay: "1 小時", lat: -8.5188, lng: 115.2585 },
+      { id: "tegallalang", name: "德格拉朗梯田", hub: "ubud", station: "從烏布市中心叫車約 30 分鐘", tags: ["自然", "拍照"], stay: "1–1.5 小時", lat: -8.4312, lng: 115.2793 },
+      { id: "tirta-empul", name: "聖泉寺（Tirta Empul）", hub: "ubud", station: "從烏布市中心叫車約 40 分鐘", tags: ["寺廟", "文化"], stay: "1 小時", lat: -8.4152, lng: 115.3154 },
+    ],
+    itineraries: [
+      {
+        id: "ubud-day",
+        title: "烏布一日：皇宮・聖猴森林・梯田",
+        days: 1, themes: ["第一次去", "自然"],
+        summary: "上午逛烏布皇宮和市場，走到聖猴森林看猴子，下午叫車去德格拉朗梯田拍照、盪鞦韆。",
+        stops: ["ubud-palace", "monkey-forest", "tegallalang"],
+        legs: [
+          { mode: "步行", detail: "烏布皇宮 → 猴林路（Monkey Forest Road）往南，約 1.5 公里", minutes: 20, cost: "步行免費" },
+          { mode: "叫車", detail: "Grab／Gojek 叫車 聖猴森林 → 德格拉朗梯田（烏布中心部分路段叫車上車點有限制）", minutes: 35, cost: "約 80,000–150,000 印尼盾" },
+        ],
+      },
+      {
+        id: "bali-sunset",
+        title: "烏魯瓦圖斷崖夕陽＋金巴蘭海鮮",
+        days: 0.5, themes: ["夕陽", "美食"],
+        summary: "傍晚在烏魯瓦圖斷崖廟看夕陽與 Kecak 火舞，再到金巴蘭海灘吃海鮮燒烤。",
+        stops: ["uluwatu", "jimbaran"],
+        legs: [
+          { mode: "叫車", detail: "Grab／Gojek 叫車 烏魯瓦圖 → 金巴蘭海灘；散場時叫車的人多，可請包車司機等候", minutes: 35, cost: "約 80,000–150,000 印尼盾" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "lombok",
+    name: "龍目島・吉利群島",
+    emoji: "🐢",
+    country: "id",
+    currency: "印尼盾",
+    localTransit: false,
+    rideKmh: 25,
+    quickRoutes: [
+      { airport: "lop", to: "senggigi", label: "龍目島機場 → 聖吉吉" },
+      { airport: "lop", to: "gili-t", label: "龍目島機場 → 吉利特拉旺安島" },
+      { airport: "lop", to: "kuta-lombok-beach", label: "龍目島機場 → 龍目島庫塔" },
+    ],
+    localLink: { name: "Grab 印尼官網", url: "https://www.grab.com/id/en/" },
+    transportTip: "龍目島移動靠叫車或包車；去吉利群島從 Bangsal 港搭公共船或快艇。吉利群島上沒有汽機車，只能步行、騎腳踏車或搭馬車（Cidomo）。",
+    hubs: [
+      { id: "senggigi-hub", name: "聖吉吉・馬塔蘭", station: "聖吉吉一帶", lat: -8.4917, lng: 116.0420 },
+      { id: "gili", name: "吉利群島", station: "吉利特拉旺安港", lat: -8.3510, lng: 116.0380, boatOnly: true },
+      { id: "kuta-lombok", name: "龍目島庫塔（南部）", station: "庫塔村（Kuta Mandalika）", lat: -8.8956, lng: 116.2808 },
+    ],
+    intercity: [
+      { from: "senggigi-hub", to: "gili", mode: "船", detail: "叫車 聖吉吉 → Bangsal 港（約 40 分鐘），搭公共船 Bangsal 港 → 吉利群島（約 30 分鐘）；也有從聖吉吉出發的快艇", detailBack: "公共船 吉利群島 → Bangsal 港（約 30 分鐘），再叫車 Bangsal 港 → 聖吉吉（約 40 分鐘）", minutes: 90, cost: "公共船約 25,000 印尼盾，另加叫車費（未查證）" },
+      { from: "kuta-lombok", to: "senggigi-hub", mode: "叫車", detail: "Grab／Gojek 或包車 龍目島庫塔 → 聖吉吉，約 1.5 小時", detailBack: "Grab／Gojek 或包車 聖吉吉 → 龍目島庫塔，約 1.5 小時", minutes: 90, cost: "約 300,000–450,000 印尼盾（未查證）" },
+    ],
+    spots: [
+      { id: "senggigi", name: "聖吉吉海灘", hub: "senggigi-hub", station: "聖吉吉一帶", tags: ["海景", "夕陽"], stay: "1–2 小時", lat: -8.4917, lng: 116.0420 },
+      { id: "gili-t", name: "吉利特拉旺安島（Gili Trawangan）", hub: "gili", station: "吉利特拉旺安港；島上只能步行、騎腳踏車或搭馬車", tags: ["海景", "浮潛"], stay: "1 天以上", lat: -8.3510, lng: 116.0380 },
+      { id: "gili-air", name: "吉利艾爾島（Gili Air）", hub: "gili", station: "吉利艾爾港；比特拉旺安安靜", tags: ["海景", "浮潛"], stay: "1 天以上", lat: -8.3600, lng: 116.0820 },
+      { id: "kuta-lombok-beach", name: "龍目島庫塔海灘", hub: "kuta-lombok", station: "庫塔村（Kuta Mandalika）", tags: ["海景", "衝浪"], stay: "1–2 小時", lat: -8.8956, lng: 116.2808 },
+      { id: "tanjung-aan", name: "丹絨安海灘（Tanjung Aan）", hub: "kuta-lombok", station: "從庫塔村叫車約 15 分鐘", tags: ["海景"], stay: "1–2 小時", lat: -8.9105, lng: 116.3215 },
+    ],
+    itineraries: [
+      {
+        id: "lombok-south",
+        title: "龍目島南部海灘：庫塔＋丹絨安",
+        days: 0.5, themes: ["海景"],
+        summary: "龍目島南部的白沙灣，比峇里島安靜；傍晚到丹絨安旁的小山丘看夕陽。",
+        stops: ["kuta-lombok-beach", "tanjung-aan"],
+        legs: [
+          { mode: "叫車", detail: "叫車或租機車 庫塔村 → 丹絨安海灘，約 6 公里", minutes: 15, cost: "約 50,000–80,000 印尼盾" },
+        ],
+      },
+      {
+        id: "gili-hopping",
+        title: "吉利群島跳島：特拉旺安＋艾爾",
+        days: 1, themes: ["海景", "浮潛"],
+        summary: "在特拉旺安島浮潛看海龜，下午搭島間接駁船到安靜的艾爾島，海邊看夕陽。",
+        stops: ["gili-t", "gili-air"],
+        legs: [
+          { mode: "船", detail: "島間接駁船 吉利特拉旺安港 → 吉利艾爾港，班次不多，請先看港口時刻表", minutes: 20, cost: "約數萬印尼盾（未查證）" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "labuanbajo",
+    name: "拉布安巴焦（科莫多）",
+    emoji: "🦎",
+    country: "id",
+    currency: "印尼盾",
+    localTransit: false,
+    rideKmh: 25,
+    quickRoutes: [
+      { airport: "lbj", to: "bajo-harbor", label: "科莫多機場 → 拉布安巴焦港" },
+    ],
+    localLink: { name: "科莫多國家公園官網", url: "https://komodonationalpark.id/" },
+    transportTip: "拉布安巴焦鎮很小，叫車或步行就能到；科莫多島、帕達爾島、粉紅沙灘都要跟船出海，通常參加一日或多日跳島行程。國家公園須事先線上購買入園許可，費用與每日人數上限常調整，請以官方公告為準。",
+    hubs: [
+      { id: "bajo-town", name: "拉布安巴焦鎮", station: "拉布安巴焦港", lat: -8.4920, lng: 119.8800 },
+      { id: "komodo-np", name: "科莫多國家公園（各島）", station: "各島碼頭", lat: -8.6000, lng: 119.5200, boatOnly: true },
+    ],
+    intercity: [
+      { from: "bajo-town", to: "komodo-np", mode: "船", detail: "跳島行程（快艇一日遊）拉布安巴焦港 → 帕達爾島、粉紅沙灘、科莫多島，單程約 1.5–2 小時", detailBack: "跳島行程回程 科莫多國家公園 → 拉布安巴焦港，約 1.5–2 小時", minutes: 110, cost: "快艇一日遊約 1,000,000 印尼盾起，不含國家公園門票（未查證）" },
+    ],
+    spots: [
+      { id: "bajo-harbor", name: "拉布安巴焦港・海濱步道", hub: "bajo-town", station: "拉布安巴焦港", tags: ["夕陽", "美食"], stay: "1 小時", lat: -8.4920, lng: 119.8800 },
+      { id: "padar", name: "帕達爾島（Padar）", hub: "komodo-np", station: "跳島行程的第一站，清晨登山看日出", tags: ["自然", "拍照"], stay: "1.5 小時", lat: -8.6500, lng: 119.5800 },
+      { id: "pink-beach", name: "粉紅沙灘", hub: "komodo-np", station: "跳島行程，浮潛", tags: ["海景", "浮潛"], stay: "1 小時", lat: -8.6000, lng: 119.5100 },
+      { id: "komodo-island", name: "科莫多島（科莫多龍）", hub: "komodo-np", station: "跳島行程，跟著國家公園巡守員步行看科莫多龍", tags: ["自然", "親子"], stay: "1.5 小時", lat: -8.5500, lng: 119.4500 },
+    ],
+    itineraries: [
+      {
+        id: "komodo-day",
+        title: "科莫多跳島一日：帕達爾島・粉紅沙灘・科莫多島",
+        days: 1, themes: ["第一次去", "自然", "海景"],
+        summary: "清晨登帕達爾島看三色海灣，再到粉紅沙灘浮潛，最後上科莫多島看科莫多龍。",
+        stops: ["padar", "pink-beach", "komodo-island"],
+        legs: [
+          { mode: "船", detail: "跳島快艇 帕達爾島 → 粉紅沙灘", minutes: 30, cost: "含在行程內" },
+          { mode: "船", detail: "跳島快艇 粉紅沙灘 → 科莫多島", minutes: 20, cost: "含在行程內" },
+        ],
+      },
+    ],
+  },
 ];
 
 // ===================================================================
@@ -1026,6 +1289,71 @@ window.GUIDES = [
       { title: "KTX 時刻表：龍山 → 全州", url: "https://info.koreacharts.com/traintime/10008/10216/contents.html?date=2026-11-02" },
       { title: "Creatrip：大邱機場到市區", url: "https://creatrip.com/blog/12889" },
       { title: "Creatrip：首爾 T-luggage 行李寄放與運送", url: "https://creatrip.com/zh-TW/blog/14919" },
+    ],
+  },
+  {
+    country: "id",
+    name: "印尼",
+    sections: [
+      {
+        id: "entry",
+        title: "入境與簽證",
+        items: [
+          { title: "電子落地簽（e-VOA）", body: "台灣旅客入境印尼觀光需要落地簽，費用約 500,000 印尼盾，可停留 30 天。建議出發前在印尼移民署官網申請電子落地簽（e-VOA），入境時走自動通關比較快；也可以到機場櫃台辦理。規定與費用可能調整，請以印尼移民署公告為準。" },
+          { title: "峇里島觀光稅", body: "外國旅客到峇里島要另付觀光稅，每人約 150,000 印尼盾，和落地簽是兩筆不同的費用。可以出發前在官方「Love Bali」網站線上付款，或到機場付款。只有官方網站付款才有效，小心假網站。" },
+          { title: "入境前的線上申報", body: "入境印尼前須依規定線上填寫入境與海關申報，取得 QR Code 後在機場出示。規定會調整，出發前請到印尼移民署與海關官網確認。" },
+        ],
+      },
+      {
+        id: "transport",
+        title: "交通",
+        items: [
+          { title: "Grab、Gojek 叫車", body: "印尼移動最方便的是 Grab 和 Gojek，可以叫汽車或機車，App 會先顯示價格，不用跟司機議價。可以綁信用卡或付現金。機車叫車（GrabBike、GoRide）最便宜，但帶大行李時請叫汽車。" },
+          { title: "計程車", body: "雅加達、峇里島建議搭 Blue Bird（藍鳥）計程車，跳錶計費比較有保障。機場請到官方計程車櫃台，不要跟大廳裡拉客的司機走。" },
+          { title: "包車一日", body: "峇里島、日惹、龍目島常見包車（含司機）一日遊，約 8–10 小時，適合一次跑好幾個景點。價格依車型和地區不同，先講好是否含油錢、停車費與門票。" },
+          { title: "雅加達大眾運輸", body: "雅加達有 MRT（南北線）、KRL 通勤電車與 TransJakarta 快速公車，可以刷交通卡（Flazz、e-money 等）。從機場進市區可搭機場電車到 BNI City 站。" },
+        ],
+      },
+      {
+        id: "money",
+        title: "錢與付款",
+        items: [
+          { title: "印尼盾（IDR）", body: "印尼盾面額大，100,000 印尼盾大約是台幣 200 元（匯率會變動）。看價格時注意零的數量，有些店家會把「000」省略寫成「K」，例如 50K 就是 50,000。" },
+          { title: "付款方式", body: "大城市、觀光區的餐廳和商店多數可以刷卡，很多店家也接受掃 QRIS 付款。小吃攤、市場、小費和寺廟門票請準備現金小鈔。" },
+          { title: "換錢與提款", body: "請到有執照的換匯所（招牌標示 Authorized Money Changer）換錢，當面點清楚金額；匯率好得不合理的店家要小心。提款請用銀行或商場裡的 ATM。" },
+        ],
+      },
+      {
+        id: "etiquette",
+        title: "禮儀與注意事項",
+        items: [
+          { title: "峇里島靜居日（Nyepi）", body: "每年約 3 月的峇里島新年是「靜居日」，全島 24 小時停止活動，機場關閉、商店休息、遊客也不能外出。日期每年不同，安排行程前請先查好。" },
+          { title: "寺廟與清真寺", body: "進寺廟要穿過膝的褲子或裙子（很多寺廟門口可以借紗龍），肩膀不要露出來；女性生理期間依規定不能進入峇里島寺廟。進清真寺要脫鞋、穿著端莊，女性需包頭巾（通常可以借）。" },
+          { title: "齋戒月（Ramadan）", body: "印尼多數人信仰伊斯蘭教。齋戒月期間白天在禁食的人面前吃喝要低調，部分餐廳白天會拉上簾子營業；開齋節前後交通和住宿很擁擠。日期依伊斯蘭曆每年提前約 11 天。" },
+          { title: "用右手", body: "遞東西、拿東西、吃飯時請用右手，左手被認為不禮貌。不要摸別人的頭。" },
+        ],
+      },
+      {
+        id: "health",
+        title: "健康與安全",
+        items: [
+          { title: "飲水與飲食", body: "自來水不能生飲，請喝瓶裝水；刷牙也建議用瓶裝水。路邊攤的冰塊、生菜要留意，腸胃比較敏感的人可以帶止瀉藥。" },
+          { title: "防蚊與防曬", body: "印尼一年四季都有登革熱，請帶防蚊液、穿淺色長袖。赤道附近的太陽很強，記得防曬、多喝水。" },
+          { title: "騎機車", body: "觀光區常見出租機車，但交通混亂、事故多。沒有國際駕照與機車駕照不要騎，騎乘時一定要戴安全帽；旅遊保險可能不理賠無照騎車的事故。" },
+          { title: "網路", body: "機場和市區都買得到 Telkomsel、XL 等電信公司的觀光 SIM 卡，也可以出發前買 eSIM。偏遠島嶼（如吉利群島、科莫多國家公園）訊號可能不穩。" },
+        ],
+      },
+    ],
+    sources: [
+      { title: "Wego：峇里島觀光稅 2026", url: "https://blog.wego.com/bali-tourist-levy/" },
+      { title: "峇里島觀光稅與入境規定 2026", url: "https://www.dijiwasanctuaries.com/magazine/bali-entry-requirements-tourist-levy" },
+      { title: "雅加達機場到市區交通比較 2026", url: "https://jakartaairportcgk.pages.dev/articles/airport-to-city-transport-guide" },
+      { title: "Berita Jakarta：TransJakarta 機場路線票價", url: "https://www.beritajakarta.id/en/read/154429/transjakarta-sets-rp15000-fare-for-blok-msoekarno-hatta-airport-route-starting-sept-1" },
+      { title: "RRI：日惹機場電車票價", url: "https://rri.co.id/bandung/bisnis/2619723/kai-bandara-perkuat-mobilitas-masyarakat-bertarif-mulai-rp5000" },
+      { title: "Wego：峇里島機場交通 2026", url: "https://blog.wego.com/bali-airport-transfer/" },
+      { title: "GoAsia：龍目島機場到聖吉吉", url: "https://goasia.cc/en/indonesia/senggigi-to-lombok" },
+      { title: "科莫多機場到拉布安巴焦交通", url: "https://airconnect.live/en/airports/labuan-bajo-airport-transport-guide" },
+      { title: "科莫多國家公園費用 2026", url: "https://komodo-1so.pages.dev/practical/komodo-national-park-fees" },
     ],
   },
 ];
@@ -1323,6 +1651,77 @@ window.AIRPORTS = {
       ],
     },
   ],
+  // ---- 印尼 ----
+  jakarta: [
+    {
+      id: "cgk", name: "雅加達蘇卡諾－哈達機場", lat: -6.1256, lng: 106.6559,
+      options: [
+        { mode: "電車", title: "機場電車 → 杜里・BNI City・曼加萊", detail: "機場電車（KA Bandara／Railink）雅加達機場站 → 杜里站 → BNI City 站 → 曼加萊站，約 30 分鐘一班；第 1、2、3 航廈先搭免費輕軌（Skytrain）到機場站", detailBack: "機場電車 曼加萊站 → BNI City 站 → 杜里站 → 雅加達機場站，再轉免費輕軌（Skytrain）到各航廈", minutes: 45, cost: "約 70,000 印尼盾", transfers: 0, luggage: "ok", luggageNote: "車廂有行李區；到航廈還要轉免費輕軌。", verified: false,
+          official: { name: "KAI 機場電車訂票（Railink）", url: "https://reservation.railink.co.id/" },
+          stops: [
+            { name: "杜里站（Duri）", lat: -6.1563, lng: 106.8017, minutes: 35 },
+            { name: "BNI City 站", lat: -6.2027, lng: 106.8227, minutes: 45 },
+            { name: "曼加萊站（Manggarai）", lat: -6.2101, lng: 106.8501, minutes: 55 },
+          ],
+          to: { name: "BNI City 站", hub: "jakarta-center", lat: -6.2027, lng: 106.8227 } },
+        { mode: "公車", title: "TransJakarta 機場路線 → Blok M", detail: "TransJakarta 機場路線 雅加達機場 → Blok M，最便宜；看路況約 1.5–2 小時", detailBack: "TransJakarta 機場路線 Blok M → 雅加達機場，看路況約 1.5–2 小時，請預留塞車時間", minutes: 100, cost: "約 15,000 印尼盾", transfers: 0, luggage: "ok", luggageNote: "一般公車車廂，行李放在身旁；尖峰時段擁擠。", verified: false,
+          official: { name: "TransJakarta 官網", url: "https://transjakarta.co.id/" },
+          to: { name: "Blok M", hub: "jakarta-center", lat: -6.2443, lng: 106.7984 } },
+        { mode: "計程車", title: "計程車／叫車（直達目的地）", detail: "Blue Bird 計程車（機場排班處）或 Grab／Gojek 叫車，直接坐到目的地；高速公路過路費另計，塞車時會比電車慢很多", detailBack: "Blue Bird 計程車或 Grab／Gojek 叫車，直接坐到雅加達機場；請告訴司機航廈（第 1、2、3 航廈）", minutes: 60, cost: "依距離跳錶", transfers: 0, luggage: "good", luggageNote: "門口到門口，行李放後車廂；請搭機場官方排班的計程車或用 App 叫車，避開拉客的司機。", verified: false, direct: true,
+          official: { name: "Blue Bird 計程車官網", url: "https://www.bluebirdgroup.com/" },
+          to: { name: "雅加達市區", hub: "jakarta-center", lat: -6.2027, lng: 106.8227 } },
+      ],
+    },
+  ],
+  yogyakarta: [
+    {
+      id: "yia", name: "日惹國際機場（YIA）", lat: -7.9075, lng: 110.0571,
+      options: [
+        { mode: "電車", title: "機場電車 YIA Xpress → 日惹站", detail: "機場電車 YIA Xpress 日惹機場站 → 日惹站（Tugu），對號座", detailBack: "機場電車 YIA Xpress 日惹站（Tugu）→ 日惹機場站，對號座", minutes: 40, cost: "約 50,000 印尼盾", transfers: 0, luggage: "good", luggageNote: "直達、對號座，車廂有行李空間。", verified: false,
+          official: { name: "KAI 機場電車訂票（Railink）", url: "https://reservation.railink.co.id/" },
+          to: { name: "日惹站（Tugu）", hub: "yogya-city", lat: -7.7891, lng: 110.3633 } },
+        { mode: "電車", title: "機場電車（一般班次）→ 日惹站", detail: "機場電車 一般班次 日惹機場站 → 日惹站（Tugu），途經 Wates，比 Xpress 便宜", detailBack: "機場電車 一般班次 日惹站（Tugu）→ 日惹機場站，途經 Wates", minutes: 50, cost: "約 20,000 印尼盾", transfers: 0, luggage: "ok", luggageNote: "通勤型車廂，尖峰時段擁擠。", verified: false,
+          official: { name: "KAI 機場電車訂票（Railink）", url: "https://reservation.railink.co.id/" },
+          to: { name: "日惹站（Tugu）", hub: "yogya-city", lat: -7.7891, lng: 110.3633 } },
+        { mode: "叫車", title: "叫車（直達目的地）", detail: "Grab／Gojek 或機場計程車，直接坐到目的地；機場離市區約 45 公里", detailBack: "Grab／Gojek 叫車，直接坐到日惹國際機場；機場離市區遠，請提早出發", minutes: 70, cost: "依距離計價", transfers: 0, luggage: "good", luggageNote: "門口到門口，行李放後車廂。", verified: false, direct: true,
+          to: { name: "日惹市區", hub: "yogya-city", lat: -7.7891, lng: 110.3633 } },
+      ],
+    },
+  ],
+  bali: [
+    {
+      id: "dps", name: "峇里島伍拉・賴機場", lat: -8.7467, lng: 115.1668,
+      options: [
+        { mode: "計程車", title: "機場計程車（官方櫃台，直達目的地）", detail: "入境大廳的官方計程車櫃台先付固定價，直接坐到目的地；約略價格：庫塔 150,000–200,000、水明漾 200,000–300,000、烏布 300,000–650,000 印尼盾", detailBack: "飯店叫的計程車或 Blue Bird 計程車，直接坐到伍拉・賴機場；傍晚往機場的路很塞，請提早出發", minutes: 30, cost: "櫃台固定價", fare: { base: 120000, perKm: 8000 }, transfers: 0, luggage: "good", luggageNote: "門口到門口，行李放後車廂；請到官方櫃台，不要跟大廳裡拉客的司機走。", verified: false, direct: true,
+          to: { name: "峇里島南部", hub: "bali-south", lat: -8.7195, lng: 115.1686 } },
+        { mode: "叫車", title: "Grab／Gojek 叫車（直達目的地）", detail: "用 Grab 或 Gojek 叫車，到機場指定的叫車上車區搭車；通常比官方櫃台便宜，App 會先顯示價格", detailBack: "用 Grab 或 Gojek 叫車，直接坐到伍拉・賴機場", minutes: 30, cost: "App 先顯示價格", fare: { base: 70000, perKm: 5000 }, transfers: 0, luggage: "good", luggageNote: "行李放後車廂；上車區要從航廈走一小段，帶很多行李的話官方櫃台比較省事。", verified: false, direct: true,
+          official: { name: "Grab 印尼官網", url: "https://www.grab.com/id/en/" },
+          to: { name: "峇里島南部", hub: "bali-south", lat: -8.7195, lng: 115.1686 } },
+      ],
+    },
+  ],
+  lombok: [
+    {
+      id: "lop", name: "龍目島國際機場", lat: -8.7573, lng: 116.2766,
+      options: [
+        { mode: "公車", title: "DAMRI 機場巴士 → 馬塔蘭", detail: "DAMRI 機場巴士 龍目島機場 → 馬塔蘭市區，約 1 小時一班，末班車較早", detailBack: "DAMRI 機場巴士 馬塔蘭市區 → 龍目島機場，約 1 小時一班", minutes: 60, cost: "約 25,000 印尼盾", transfers: 0, luggage: "good", luggageNote: "行李放在車底行李艙或車上行李區。", verified: false,
+          to: { name: "馬塔蘭市區", hub: "senggigi-hub", lat: -8.5833, lng: 116.1167 } },
+        { mode: "公車", title: "DAMRI 機場巴士 → 聖吉吉", detail: "DAMRI 機場巴士 龍目島機場 → 聖吉吉，班次不多，末班車較早", detailBack: "DAMRI 機場巴士 聖吉吉 → 龍目島機場，班次不多", minutes: 90, cost: "約 35,000–40,000 印尼盾", transfers: 0, luggage: "good", luggageNote: "行李放在車底行李艙或車上行李區。", verified: false,
+          to: { name: "聖吉吉", hub: "senggigi-hub", lat: -8.4917, lng: 116.0420 } },
+        { mode: "叫車", title: "叫車／機場計程車（直達目的地）", detail: "Grab／Gojek 或機場計程車，直接坐到目的地；到龍目島庫塔約 30 分鐘", detailBack: "Grab／Gojek 或計程車，直接坐到龍目島國際機場", minutes: 30, cost: "依距離計價", transfers: 0, luggage: "good", luggageNote: "門口到門口，行李放後車廂。", verified: false, direct: true,
+          to: { name: "龍目島庫塔", hub: "kuta-lombok", lat: -8.8956, lng: 116.2808 } },
+      ],
+    },
+  ],
+  labuanbajo: [
+    {
+      id: "lbj", name: "科莫多機場（拉布安巴焦）", lat: -8.4866, lng: 119.8890,
+      options: [
+        { mode: "計程車", title: "機場計程車（直達目的地）", detail: "出境大廳外的計程車櫃台依區域固定價，到拉布安巴焦鎮約 10–15 分鐘；很多飯店也提供接送", detailBack: "計程車或飯店接送，直接坐到科莫多機場，約 10–15 分鐘", minutes: 12, cost: "約 50,000–150,000 印尼盾", fare: { base: 50000, perKm: 5000 }, transfers: 0, luggage: "good", luggageNote: "門口到門口，行李放後車廂。", verified: false, direct: true,
+          to: { name: "拉布安巴焦鎮", hub: "bajo-town", lat: -8.4920, lng: 119.8800 } },
+      ],
+    },
+  ],
 };
 
 // ===================================================================
@@ -1461,5 +1860,41 @@ window.HOT_SPOTS = {
     { spot: "dongmun-market", months: [11, 12, 1], reason: "橘子季，市場買當季濟州橘子" },
     { spot: "jusangjeolli", months: "all", reason: "柱狀節理海岸，濟州代表景觀" },
     { spot: "cheonjiyeon", months: "all", reason: "天地淵瀑布，晚上也開放" },
+  ],
+  // ---- 印尼：乾季約 4–10 月、雨季約 11–3 月 ----
+  jakarta: [
+    { spot: "ancol", months: [12, 1], reason: "跨年煙火與海濱活動" },
+    { spot: "bundaran-hi", months: [12], reason: "年底聖誕裝飾與跨年購物季" },
+    { spot: "kota-tua", months: "all", reason: "荷蘭殖民時期老城區，彩色腳踏車拍照" },
+    { spot: "monas", months: "all", reason: "雅加達地標，可以登頂俯瞰市區" },
+    { spot: "istiqlal", months: "all", reason: "東南亞最大的清真寺（非禮拜時間開放參觀，須穿著端莊）" },
+  ],
+  yogyakarta: [
+    { spot: "borobudur", months: [5, 6], reason: "衛塞節（佛誕，約 5–6 月，依農曆而定），信眾遶行與祈福" },
+    { spot: "prambanan", months: [5, 6, 7, 8, 9, 10], reason: "乾季的露天羅摩衍那舞劇，以寺廟為背景（演出日期請以官方公告為準）" },
+    { spot: "borobudur", months: "all", reason: "世界最大的佛教遺跡，清晨看日出" },
+    { spot: "malioboro", months: "all", reason: "日惹最熱鬧的大街，蠟染與小吃" },
+    { spot: "taman-sari", months: "all", reason: "蘇丹的水宮與地下清真寺，日惹最熱門的拍照點" },
+  ],
+  bali: [
+    { spot: "tanah-lot", months: [4, 5, 6, 7, 8, 9, 10], reason: "乾季傍晚的海神廟夕陽最穩定" },
+    { spot: "canggu", months: [4, 5, 6, 7, 8, 9, 10], reason: "乾季西岸浪況好，衝浪與海灘俱樂部" },
+    { spot: "kuta-beach", months: [7, 8], reason: "暑假旺季，海灘最熱鬧（住宿請提早訂）" },
+    { spot: "uluwatu", months: "all", reason: "斷崖夕陽＋每天傍晚的 Kecak 火舞" },
+    { spot: "tegallalang", months: "all", reason: "梯田盪鞦韆，烏布最熱門的拍照點" },
+    { spot: "monkey-forest", months: "all", reason: "聖猴森林（小心眼鏡、帽子被猴子搶走）" },
+  ],
+  lombok: [
+    { spot: "gili-t", months: [4, 5, 6, 7, 8, 9, 10], reason: "乾季海況穩定，浮潛看海龜" },
+    { spot: "gili-air", months: [4, 5, 6, 7, 8, 9, 10], reason: "乾季的安靜小島，海邊看夕陽" },
+    { spot: "kuta-lombok-beach", months: "all", reason: "龍目島南部白沙灣，比峇里島安靜" },
+    { spot: "tanjung-aan", months: "all", reason: "丹絨安海灘，小山丘上看夕陽" },
+    { spot: "senggigi", months: "all", reason: "龍目島西岸夕陽，遠眺峇里島阿貢火山" },
+  ],
+  labuanbajo: [
+    { spot: "padar", months: [4, 5, 6, 7, 8, 9, 10, 11], reason: "乾季海況較穩，清晨登帕達爾島看三色海灣" },
+    { spot: "pink-beach", months: [4, 5, 6, 7, 8, 9, 10, 11], reason: "乾季浮潛，海水能見度高" },
+    { spot: "komodo-island", months: "all", reason: "看野生科莫多龍（跟著巡守員步行）" },
+    { spot: "bajo-harbor", months: "all", reason: "港邊看夕陽、吃海鮮夜市" },
   ],
 };
