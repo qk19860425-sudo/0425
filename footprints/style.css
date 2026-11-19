@@ -372,3 +372,65 @@ select {
   .ss-img { transition: none; }
   .ss-player.zoom .ss-img.show { animation: none; }
 }
+
+/* ---- 密碼鎖 ---- */
+/* 鎖住時只顯示鎖定畫面，其他內容都不顯示（避免先閃過足跡） */
+body.locked > *:not(#lock):not(script) { display: none !important; }
+body.locked { padding-bottom: 0; }
+.lock {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: linear-gradient(170deg, #36b6f0 0%, #0096e1 60%, #0079c2 100%);
+  color: #ffffff;
+}
+.lock[hidden] { display: none; }
+.lock-box { width: min(340px, 100%); text-align: center; }
+.lock-box h1 { margin: 6px 0 4px; font-size: 1.6rem; }
+.lock-bell {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto;
+  border-radius: 50%;
+  border: 3px solid #b38f00;
+  background:
+    linear-gradient(#5a3b00, #5a3b00) center 56% / 72% 4px no-repeat,
+    radial-gradient(circle at 50% 74%, #5a3b00 0 6px, transparent 7px),
+    radial-gradient(circle at 36% 32%, #fff7b0 0 7px, transparent 8px),
+    #ffd400;
+  box-shadow: 0 0 0 6px #d7000f;
+}
+.lock-message { margin: 6px 0 14px; min-height: 1.6em; font-weight: 700; }
+.lock-message.lock-error { color: #ffe066; }
+.lock-dots { display: flex; justify-content: center; gap: 14px; margin-bottom: 22px; }
+.lock-dot { width: 18px; height: 18px; border-radius: 50%; border: 3px solid #ffffff; }
+.lock-dot.filled { background: #ffd400; border-color: #ffd400; }
+.lock-keys { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; justify-items: center; }
+.lock-keys button {
+  width: 76px;
+  height: 76px;
+  font: inherit;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #0b2a44;
+  background: #ffffff;
+  border: 3px solid #d7000f;
+  border-radius: 50%;
+  box-shadow: 0 4px 0 rgba(11, 42, 68, 0.35);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.lock-keys button:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(11, 42, 68, 0.35); }
+.lock-keys button:focus-visible { outline: 4px solid #ffd400; outline-offset: 3px; }
+.lock-keys button[data-key="del"] { background: transparent; color: #ffffff; border-color: rgba(255, 255, 255, 0.7); box-shadow: none; }
+.shake { animation: lock-shake 0.4s; }
+@keyframes lock-shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-10px); }
+  40%, 80% { transform: translateX(10px); }
+}
+@media (prefers-reduced-motion: reduce) { .shake { animation: none; } }

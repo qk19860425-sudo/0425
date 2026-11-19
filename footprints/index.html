@@ -19,7 +19,31 @@
         crossorigin="anonymous">
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="locked">
+  <!-- 密碼鎖：輸入正確才顯示 App 內容 -->
+  <div id="lock" class="lock" role="dialog" aria-modal="true" aria-labelledby="lock-title">
+    <div class="lock-box">
+      <p class="lock-bell" aria-hidden="true"></p>
+      <h1 id="lock-title">📍 旅行足跡</h1>
+      <p id="lock-message" class="lock-message" aria-live="assertive">請輸入 4 位數密碼</p>
+      <div id="lock-dots" class="lock-dots" role="status"></div>
+      <div id="lock-keys" class="lock-keys">
+        <button type="button" data-key="1">1</button>
+        <button type="button" data-key="2">2</button>
+        <button type="button" data-key="3">3</button>
+        <button type="button" data-key="4">4</button>
+        <button type="button" data-key="5">5</button>
+        <button type="button" data-key="6">6</button>
+        <button type="button" data-key="7">7</button>
+        <button type="button" data-key="8">8</button>
+        <button type="button" data-key="9">9</button>
+        <span aria-hidden="true"></span>
+        <button type="button" data-key="0">0</button>
+        <button type="button" data-key="del" aria-label="刪除一位">⌫</button>
+      </div>
+    </div>
+  </div>
+
   <header class="hero">
     <h1><span aria-hidden="true">📍</span> 旅行足跡</h1>
     <p>記錄去過的地方和拍的照片，全部標在地圖上。資料只存在這支手機，不會上傳。</p>
@@ -233,6 +257,7 @@
     </div>
   </div>
 
+  <script src="lock.js"></script>
   <script src="logic.js"></script>
   <script src="app.js"></script>
   <script src="slideshow.js"></script>
