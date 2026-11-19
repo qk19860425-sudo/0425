@@ -57,3 +57,27 @@
   box-shadow: 0 6px 18px rgba(15, 118, 110, 0.3);
 }
 .site-header .subtitle a { margin-right: 8px; }
+
+/* 右上角匯率換算框：土耳其綠主色的對比色（玫瑰紅） */
+:root {
+  --fx-strong: #be123c;
+  --fx-strong-text: #ffffff;
+  --fx-ring: #ffffff;
+  --fx-bg: #fff1f2;
+  --fx-field: #ffe4e6;
+  --fx-text: #881337;
+  --fx-muted: #9f1239;
+  --fx-line: #fda4af;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fx-strong: #fb7185;
+    --fx-strong-text: #1f0a10;
+    --fx-ring: #1f0a10;
+    --fx-bg: #2a0b14;
+    --fx-field: #4c0519;
+    --fx-text: #ffe4e6;
+    --fx-muted: #fda4af;
+    --fx-line: #e11d48;
+  }
+}

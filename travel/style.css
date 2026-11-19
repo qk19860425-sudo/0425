@@ -479,7 +479,30 @@ body {
 .fx-rate { margin: 6px 0 2px; font-weight: 700; }
 .fx-status.fx-error { color: var(--error-text); font-weight: 600; }
 
-/* 右上角的匯率換算框 */
+/* 右上角的匯率換算框
+   顏色用主色的對比色（--fx-*）：紅粉主題配青綠；韓國、印尼在各自的 theme.css 覆寫 */
+:root {
+  --fx-strong: #0f766e;
+  --fx-strong-text: #ffffff;
+  --fx-ring: #ffffff;
+  --fx-bg: #f0fdfa;
+  --fx-field: #ccfbf1;
+  --fx-text: #134e4a;
+  --fx-muted: #3f6b66;
+  --fx-line: #5eead4;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fx-strong: #2dd4bf;
+    --fx-strong-text: #042f2e;
+    --fx-ring: #042f2e;
+    --fx-bg: #062a27;
+    --fx-field: #0d3d38;
+    --fx-text: #ccfbf1;
+    --fx-muted: #8fcfc6;
+    --fx-line: #14b8a6;
+  }
+}
 .fx-pill {
   position: fixed;
   top: calc(env(safe-area-inset-top, 0px) + 8px);
@@ -491,9 +514,9 @@ body {
   font: inherit;
   font-size: 0.85rem;
   font-weight: 700;
-  color: var(--accent-text);
-  background: var(--accent);
-  border: 2px solid var(--card);
+  color: var(--fx-strong-text);
+  background: var(--fx-strong);
+  border: 2px solid var(--fx-ring);
   border-radius: 999px;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
   white-space: nowrap;
@@ -511,8 +534,24 @@ body {
   max-height: calc(100vh - 70px);
   overflow-y: auto;
   margin: 0;
-  border: 2px solid var(--accent);
+  border: 3px solid var(--fx-strong);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  /* 對話框裡改用對比色：把共用的顏色變數換成 --fx-*，按鈕、選項、輸入框會一起換色 */
+  --accent: var(--fx-strong);
+  --accent-text: var(--fx-strong-text);
+  --accent-soft: var(--fx-field);
+  --accent-soft-text: var(--fx-text);
+  --card: var(--fx-bg);
+  --chip: var(--fx-bg);
+  --border: var(--fx-line);
+  --text: var(--fx-text);
+  --muted: var(--fx-muted);
+  --focus: var(--fx-line);
+  --c1: var(--fx-strong);
+  --c6: var(--fx-strong);
+  --on-color: var(--fx-strong-text);
+  background: var(--fx-bg);
+  color: var(--fx-text);
 }
 .fx-pop[hidden] { display: none; }
 .fx-pop-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
