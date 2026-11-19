@@ -30,6 +30,7 @@
   <nav class="tabs" role="tablist" aria-label="功能">
     <button type="button" role="tab" id="tab-list" aria-controls="panel-list" aria-selected="true">📖 足跡</button>
     <button type="button" role="tab" id="tab-map" aria-controls="panel-map" aria-selected="false">🗺️ 地圖</button>
+    <button type="button" role="tab" id="tab-slideshow" aria-controls="panel-slideshow" aria-selected="false">🎞️ 播放</button>
     <button type="button" role="tab" id="tab-backup" aria-controls="panel-backup" aria-selected="false">💾 備份</button>
   </nav>
 
@@ -46,6 +47,56 @@
         <p id="map-error" class="message" hidden>地圖載入失敗，請確認網路連線後重新整理。足跡資料不受影響。</p>
         <p class="hint">點地圖上的照片可以查看這筆足跡。</p>
       </div>
+    </section>
+
+    <!-- 幻燈片播放 -->
+    <section id="panel-slideshow" role="tabpanel" aria-labelledby="tab-slideshow" hidden>
+      <form id="ss-form" class="card" novalidate>
+        <h2>🎞️ 幻燈片播放</h2>
+        <p id="ss-count" class="hint"></p>
+        <div class="field">
+          <label for="ss-range" class="label">播放範圍</label>
+          <select id="ss-range"></select>
+        </div>
+        <div class="field">
+          <label for="ss-order" class="label">順序</label>
+          <select id="ss-order">
+            <option value="asc">從舊到新（像回憶錄）</option>
+            <option value="desc">從新到舊</option>
+          </select>
+        </div>
+        <fieldset class="field ss-choices">
+          <legend class="label">每張照片</legend>
+          <label><input type="radio" name="ss-seconds" value="3"> 3 秒</label>
+          <label><input type="radio" name="ss-seconds" value="5" checked> 5 秒</label>
+          <label><input type="radio" name="ss-seconds" value="8"> 8 秒</label>
+        </fieldset>
+        <fieldset class="field ss-choices">
+          <legend class="label">轉場效果</legend>
+          <label><input type="radio" name="ss-effect" value="fade" checked> 淡入淡出</label>
+          <label><input type="radio" name="ss-effect" value="zoom"> 緩慢放大</label>
+        </fieldset>
+        <fieldset class="field ss-choices ss-music">
+          <legend class="label">背景音樂</legend>
+          <label><input type="radio" name="ss-music" value="none"> 不要音樂</label>
+          <label><input type="radio" name="ss-music" value="builtin" checked> 🎵 內建輕音樂</label>
+          <label><input type="radio" name="ss-music" value="file"> 📁 我的音樂</label>
+        </fieldset>
+        <div id="ss-file-box" class="field ss-file" hidden>
+          <p id="ss-file-name" class="hint">還沒有選音樂檔。</p>
+          <div class="actions">
+            <label class="button button-secondary file-button">選擇音樂檔
+              <input id="ss-file" type="file" accept="audio/*,.mp3,.m4a,.aac,.wav" hidden>
+            </label>
+            <button type="button" id="ss-file-clear" class="button button-secondary" hidden>移除</button>
+          </div>
+          <p class="hint">可以選存在「檔案」裡的 MP3、M4A 等音樂檔，選過會記住。從 Apple Music 下載的歌有版權保護，網頁無法播放。</p>
+        </div>
+        <label class="check"><input id="ss-text" type="checkbox" checked> 顯示地點、日期與照片文字</label>
+        <label class="check"><input id="ss-loop" type="checkbox" checked> 播完重頭循環</label>
+        <p id="ss-error" class="message message-error" role="alert" hidden></p>
+        <button type="submit" class="button ss-start">▶️ 開始播放</button>
+      </form>
     </section>
 
     <!-- 備份 -->
@@ -154,7 +205,36 @@
   <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"
           integrity="sha384-cxOPjt7s7Iz04uaHJceBmS+qpjv2JkIHNVcuOrM+YHwZOmJGBXI00mdUXEq65HTH"
           crossorigin="anonymous"></script>
+  <!-- 幻燈片播放畫面 -->
+  <div id="ss-player" class="ss-player" role="dialog" aria-modal="true" aria-label="幻燈片播放" hidden>
+    <img id="ss-img-a" class="ss-img" alt="">
+    <img id="ss-img-b" class="ss-img" alt="">
+    <div id="ss-text-box" class="ss-text-box" aria-live="polite">
+      <p id="ss-place" class="ss-place"></p>
+      <p id="ss-caption" class="ss-caption"></p>
+    </div>
+    <div id="ss-end" class="ss-end" hidden>
+      <p>🎉 播放完畢</p>
+      <div class="actions">
+        <button type="button" id="ss-again" class="button">🔁 再播一次</button>
+        <button type="button" id="ss-end-close" class="button button-secondary">關閉</button>
+      </div>
+    </div>
+    <div id="ss-controls" class="ss-controls">
+      <div class="ss-progress"><div id="ss-bar"></div></div>
+      <div class="ss-buttons">
+        <button type="button" id="ss-prev" aria-label="上一張">⏮</button>
+        <button type="button" id="ss-play" aria-label="暫停">⏸</button>
+        <button type="button" id="ss-next" aria-label="下一張">⏭</button>
+        <button type="button" id="ss-mute" aria-label="靜音">🔊</button>
+        <button type="button" id="ss-close" aria-label="關閉">✕</button>
+      </div>
+      <p id="ss-counter" class="ss-counter"></p>
+    </div>
+  </div>
+
   <script src="logic.js"></script>
   <script src="app.js"></script>
+  <script src="slideshow.js"></script>
 </body>
 </html>

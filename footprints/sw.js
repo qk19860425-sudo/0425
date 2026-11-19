@@ -1,6 +1,6 @@
 // 旅行足跡：Service Worker（離線快取）
 // 更新網站檔案時，請把 CACHE_VERSION 加 1，使用者下次開啟就會換成新版。
-const CACHE_VERSION = "v4";
+const CACHE_VERSION = "v5";
 const CACHE_NAME = "footprints-" + CACHE_VERSION;
 
 const APP_SHELL = [
@@ -9,6 +9,7 @@ const APP_SHELL = [
   "./style.css",
   "./logic.js",
   "./app.js",
+  "./slideshow.js",
   "./manifest.webmanifest",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
