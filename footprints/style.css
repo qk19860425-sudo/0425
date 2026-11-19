@@ -1,41 +1,56 @@
-/* 旅行足跡：樣式（手機優先，夕陽橘＋紫） */
+/* 旅行足跡：樣式（手機優先）
+   哆啦A夢風格配色：天空藍＋白，搭配紅色項圈與黃色鈴鐺；只用配色與圖形元素，不使用角色圖像 */
 :root {
-  --bg: #fff7ed;
+  --bg: #e8f6ff;
   --card: #ffffff;
-  --text: #3b1d0b;
-  --muted: #7c5a44;
-  --border: #fed7aa;
-  --accent: #ea580c;
+  --text: #0b2a44;
+  --muted: #4a6a85;
+  --border: #b3e0fb;
+  --accent: #0079c2;        /* 藍（按鈕、分頁） */
   --accent-text: #ffffff;
-  --accent-soft: #ffedd5;
-  --accent-soft-text: #9a3412;
+  --accent-soft: #d6efff;
+  --accent-soft-text: #005a91;
+  --red: #d7000f;           /* 項圈紅 */
+  --bell: #ffd400;          /* 鈴鐺黃 */
   --purple: #7c3aed;
-  --focus: #fdba74;
+  --focus: #ffd400;
   --error-bg: #fef2f2;
   --error-text: #991b1b;
+  --dot: rgba(255, 212, 0, 0.35);
+  --dot2: rgba(0, 150, 225, 0.12);
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #1c1008;
-    --card: #2a180c;
-    --text: #ffedd5;
-    --muted: #d6b89f;
-    --border: #5c3519;
-    --accent: #fb923c;
-    --accent-text: #1c1008;
-    --accent-soft: #431407;
-    --accent-soft-text: #fed7aa;
+    --bg: #04182b;
+    --card: #0a2540;
+    --text: #e3f4ff;
+    --muted: #9cc2df;
+    --border: #164a73;
+    --accent: #4cc3ff;
+    --accent-text: #04182b;
+    --accent-soft: #0d3557;
+    --accent-soft-text: #bfe7ff;
+    --red: #ff5a5f;
+    --bell: #ffd400;
     --purple: #a78bfa;
-    --focus: #c2410c;
+    --focus: #ffd400;
     --error-bg: #450a0a;
     --error-text: #fecaca;
+    --dot: rgba(255, 212, 0, 0.16);
+    --dot2: rgba(76, 195, 255, 0.10);
   }
 }
 
 * { box-sizing: border-box; }
 body {
   margin: 0;
-  background: var(--bg);
+  /* 背景：黃色小鈴鐺圓點＋淡藍大圓點 */
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(circle at 20px 20px, var(--dot) 0 7px, transparent 8px),
+    radial-gradient(circle at 70px 64px, var(--dot2) 0 16px, transparent 17px);
+  background-size: 96px 96px;
+  background-attachment: fixed;
   color: var(--text);
   font-family: system-ui, -apple-system, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
   font-size: 16px;
@@ -44,17 +59,60 @@ body {
 }
 .hero, .tabs, main { max-width: 760px; margin: 0 auto; padding: 0 16px; }
 .hero {
+  position: relative;
+  overflow: hidden;
   margin: 12px 12px 0;
-  padding: 18px;
+  padding: 18px 18px 34px;
   border-radius: 20px;
-  background: linear-gradient(130deg, #ea580c 0%, #f97316 40%, #db2777 75%, #7c3aed 100%);
+  background: linear-gradient(160deg, #36b6f0 0%, #0096e1 55%, #0079c2 100%);
   color: #ffffff;
-  box-shadow: 0 6px 18px rgba(234, 88, 12, 0.3);
+  box-shadow: 0 6px 18px rgba(0, 121, 194, 0.3);
 }
+/* 頁首下緣：紅色項圈＋黃色鈴鐺 */
+.hero::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 14px;
+  background: var(--red);
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 1px;
+  width: 26px;
+  height: 26px;
+  margin-left: -13px;
+  border-radius: 50%;
+  background:
+    linear-gradient(#5a3b00, #5a3b00) center 58% / 70% 2px no-repeat,
+    radial-gradient(circle at 50% 74%, #5a3b00 0 3px, transparent 3.5px),
+    radial-gradient(circle at 38% 34%, #fff7b0 0 4px, transparent 5px),
+    var(--bell);
+  border: 2px solid #b38f00;
+}
+/* 右下角的白色半圓口袋 */
+.hero .pocket {
+  position: absolute;
+  right: 18px;
+  bottom: 14px;
+  width: 64px;
+  height: 32px;
+  border-radius: 0 0 64px 64px;
+  background: #ffffff;
+  border: 2px solid rgba(11, 42, 68, 0.25);
+  border-top: 0;
+  opacity: 0.95;
+}
+.hero h1, .hero p { position: relative; z-index: 1; }
 @media (min-width: 784px) { .hero { margin: 12px auto 0; } }
 .hero h1 { margin: 0 0 4px; font-size: 1.6rem; }
 .hero p { margin: 0; }
 .stats { margin-top: 8px !important; font-weight: 700; }
+.hero .stats { padding-right: 76px; }
 
 .tabs { position: sticky; top: 0; z-index: 10; display: flex; gap: 6px; background: var(--bg); padding-top: 10px; padding-bottom: 10px; }
 .tabs button {
@@ -70,7 +128,8 @@ body {
 }
 .tabs button[aria-selected="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-text); }
 
-.card { background: var(--card); border-radius: 16px; padding: 16px; margin-bottom: 14px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); }
+.card { background: var(--card); border-radius: 16px; padding: 16px; margin-bottom: 14px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); border-top: 4px solid var(--accent); }
+.entry { border-top-color: var(--red); }
 h2 { margin: 0 0 8px; font-size: 1.15rem; }
 .hint { margin: 6px 0 0; color: var(--muted); font-size: 0.9rem; }
 .message { margin: 10px 0 0; padding: 10px 12px; border-radius: 10px; background: var(--accent-soft); color: var(--accent-soft-text); font-weight: 600; }
@@ -103,6 +162,7 @@ button:focus-visible, .button:focus-visible, input:focus-visible, textarea:focus
 
 /* ---- 足跡列表 ---- */
 .month { margin: 18px 4px 8px; font-size: 1.05rem; color: var(--accent-soft-text); }
+.month::before { content: "🔔 "; }
 .empty { text-align: center; padding: 28px 16px; }
 .empty .big { font-size: 3rem; margin: 0; }
 .entry-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
@@ -121,9 +181,9 @@ button:focus-visible, .button:focus-visible, input:focus-visible, textarea:focus
 .map { height: 60vh; min-height: 320px; border-radius: 12px; z-index: 0; background: var(--accent-soft); }
 .map-card { padding: 8px; }
 .pick-map { height: 220px; min-height: 220px; margin-top: 8px; }
-.photo-pin { border: 3px solid #ffffff; border-radius: 50%; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4); overflow: hidden; background: #ea580c; }
+.photo-pin { border: 3px solid #ffffff; border-radius: 50%; box-shadow: 0 0 0 3px #d7000f, 0 2px 6px rgba(0, 0, 0, 0.4); overflow: hidden; background: #0096e1; }
 .photo-pin img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.dot-pin { width: 22px; height: 22px; border: 3px solid #ffffff; border-radius: 50%; background: #ea580c; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4); }
+.dot-pin { width: 22px; height: 22px; border: 3px solid #ffffff; border-radius: 50%; background: #ffd400; box-shadow: 0 0 0 2px #d7000f, 0 2px 6px rgba(0, 0, 0, 0.4); }
 .popup img { display: block; width: 180px; height: 120px; object-fit: cover; border-radius: 8px; margin-bottom: 6px; }
 .popup strong { display: block; font-size: 1rem; }
 .popup button { margin-top: 6px; }
@@ -140,10 +200,10 @@ button:focus-visible, .button:focus-visible, input:focus-visible, textarea:focus
   font-size: 1.1rem;
   font-weight: 800;
   color: #ffffff;
-  background: linear-gradient(135deg, #ea580c, #db2777);
-  border: 0;
+  background: #d7000f;
+  border: 3px solid var(--bell);
   border-radius: 999px;
-  box-shadow: 0 6px 16px rgba(219, 39, 119, 0.4);
+  box-shadow: 0 6px 16px rgba(215, 0, 15, 0.35);
   cursor: pointer;
 }
 .fab:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
