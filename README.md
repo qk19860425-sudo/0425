@@ -8,3 +8,4 @@
 大阪旅遊（原型）：[osaka/](osaka/)，啟動與資料修改方式見 [osaka/README.md](osaka/README.md)
 日本景點路線：[japan/](japan/)；韓國景點路線：[korea/](korea/)；印尼景點路線：[indonesia/](indonesia/)（與日韓景點路線共用 travel/ 的程式與資料）
 交換禮物抽籤機：[lottery/](lottery/)，使用方式見 [lottery/README.md](lottery/README.md)
+旅行足跡（記錄去過的地方和照片）：[footprints/](footprints/)，說明見 [footprints/README.md](footprints/README.md)
