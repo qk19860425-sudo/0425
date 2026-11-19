@@ -57,3 +57,27 @@
   background: linear-gradient(120deg, #172554 0%, #1e3a8a 35%, #1d4ed8 65%, #38bdf8 100%);
   box-shadow: 0 6px 18px rgba(30, 58, 138, 0.3);
 }
+
+/* 右上角匯率換算框：深藍主色的對比色（橘） */
+:root {
+  --fx-strong: #c2410c;
+  --fx-strong-text: #ffffff;
+  --fx-ring: #ffffff;
+  --fx-bg: #fff7ed;
+  --fx-field: #ffedd5;
+  --fx-text: #7c2d12;
+  --fx-muted: #9a4a1c;
+  --fx-line: #fdba74;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fx-strong: #fb923c;
+    --fx-strong-text: #1c0a02;
+    --fx-ring: #1c0a02;
+    --fx-bg: #2a1206;
+    --fx-field: #431407;
+    --fx-text: #ffedd5;
+    --fx-muted: #fdba74;
+    --fx-line: #ea580c;
+  }
+}
