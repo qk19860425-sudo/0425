@@ -60,6 +60,8 @@ body {
 h1 { margin: 0; font-size: 1.6rem; }
 .subtitle { margin: 4px 0 12px; color: var(--muted); }
 .subtitle a { color: var(--accent); font-weight: 600; white-space: nowrap; }
+.slogan { display: block; margin-bottom: 6px; font-size: 1.15rem; font-weight: 700; letter-spacing: 0.04em; }
+.subtitle .slogan + a ~ a { margin-left: 12px; }
 
 /* ---- 分頁 ---- */
 .tabs {
@@ -357,6 +359,34 @@ body {
 .site-header h1 { color: #ffffff; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25); }
 .site-header .subtitle { color: rgba(255, 255, 255, 0.95); margin-bottom: 4px; }
 .site-header .subtitle a { color: #ffffff; text-decoration: underline; }
+/* 日本版、韓國版：頁首放使用者畫的超商店面圖（招牌顏色當底色），標語淡淡地放在圖的右下角 */
+.site-header.store-lawson { background: linear-gradient(160deg, #2b95e0, #0a64b0); box-shadow: 0 6px 18px rgba(10, 100, 176, 0.3); }
+.site-header.store-gs25 { background: linear-gradient(120deg, #072b6b, #0a4aa6 60%, #0072ce); box-shadow: 0 6px 18px rgba(0, 114, 206, 0.3); }
+.store-scene { position: relative; margin: 12px -6px 10px; border-radius: 14px; overflow: hidden; background: rgba(255, 255, 255, 0.15); }
+.store-scene img { display: block; width: 100%; height: auto; }
+.scene-slogan {
+  position: absolute;
+  right: 10px;
+  bottom: 8px;
+  max-width: 70%;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-align: right;
+  color: rgba(255, 255, 255, 0.82);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.75), 0 0 8px rgba(0, 0, 0, 0.45);
+}
+/* 頁首右下角站著的小人物（蠟筆畫） */
+.site-header { position: relative; }
+.header-buddy {
+  position: absolute;
+  right: 14px;
+  bottom: 6px;
+  width: auto;
+  height: 128px;
+  pointer-events: none;
+  filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.3));
+}
+.site-header:has(.header-buddy) .motifs { padding-right: 56px; letter-spacing: 1px; }
 .motifs { margin: 8px 0 0; font-size: 1.6rem; letter-spacing: 6px; line-height: 1.2; }
 .pwa-bar { margin-top: 12px; }
 
