@@ -359,6 +359,21 @@ body {
 .site-header h1 { color: #ffffff; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25); }
 .site-header .subtitle { color: rgba(255, 255, 255, 0.95); margin-bottom: 4px; }
 .site-header .subtitle a { color: #ffffff; text-decoration: underline; }
+/* 日本版：LAWSON 風的天藍色招牌（只用顏色，不放商標） */
+.site-header.store-lawson {
+  background:
+    linear-gradient(to bottom, transparent calc(100% - 14px), #ffffff calc(100% - 14px), #ffffff calc(100% - 8px), transparent calc(100% - 8px)),
+    linear-gradient(160deg, #2b95e0 0%, #1a7fcc 50%, #0a64b0 100%);
+  box-shadow: 0 6px 18px rgba(10, 100, 176, 0.3);
+}
+/* 韓國版：GS25 風的深藍到青藍（只用顏色，不放商標） */
+.site-header.store-gs25 {
+  background:
+    linear-gradient(to bottom, transparent calc(100% - 12px), #00b4e6 calc(100% - 12px)),
+    linear-gradient(120deg, #072b6b 0%, #0a4aa6 45%, #0072ce 75%, #00a3db 100%);
+  box-shadow: 0 6px 18px rgba(0, 114, 206, 0.3);
+}
+.site-header.store-lawson, .site-header.store-gs25 { padding-bottom: 26px; }
 .motifs { margin: 8px 0 0; font-size: 1.6rem; letter-spacing: 6px; line-height: 1.2; }
 .pwa-bar { margin-top: 12px; }
 
