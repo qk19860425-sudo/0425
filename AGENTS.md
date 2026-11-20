@@ -18,7 +18,7 @@ The gift-exchange lottery (`lottery/`) also has no build step: open `http://loca
 
 The travel journal (`footprints/`) follows the same pattern: open `http://localhost:8000/footprints/`, run its tests from `footprints/` with `node --test`, and bump `CACHE_VERSION` in `footprints/sw.js` on every change. Its data lives only in the browser's IndexedDB; never add code that uploads photos or locations without the user's explicit request.
 
-The travel apps (`travel/`, `japan/`, `korea/`, `indonesia/`) share the code in `travel/`. Train directions for Japanese and Korean cities (line, direction, transfer station, exit number) live in `travel/rail.js`; run its tests from `travel/` with `node --test`. When anything in `travel/` changes, bump `CACHE_VERSION` in `travel/sw.js`, `japan/sw.js`, `korea/sw.js` and `indonesia/sw.js`.
+The travel apps (`travel/`, `japan/`, `korea/`, `indonesia/`) share the code in `travel/`. Train directions for Japanese and Korean cities (line, direction, transfer station, exit number) live in `travel/rail.js`, and the packing checklist in the travel guide (saved only in the browser's localStorage) lives in `travel/checklist.js`; run their tests from `travel/` with `node --test`. When anything in `travel/` changes, bump `CACHE_VERSION` in `travel/sw.js`, `japan/sw.js`, `korea/sw.js` and `indonesia/sw.js`.
 
 When introducing a framework, commit its dependency manifest and lockfile, and document the exact installation, local development, build, and test commands here. Keep generated outputs and installed dependencies out of version control.
 

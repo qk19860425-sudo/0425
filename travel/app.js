@@ -1108,6 +1108,8 @@
     if (!guide) { content.replaceChildren(); return; }
 
     const parts = [];
+    // 出國清單（可勾選，存在這支手機；資料與畫面在 checklist.js）
+    if (window.TravelChecklist) parts.push(window.TravelChecklist.build(guide.country, guide.name));
     const tips = REGIONS.filter((r) => r.country === guide.country);
     const tipCard = el("div", "card");
     tipCard.append(el("h2", "plan-title", "各城市交通建議"));
