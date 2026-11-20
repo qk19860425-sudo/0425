@@ -1678,7 +1678,7 @@
   btn.title = "回到頂端";
   btn.hidden = true;
   btn.innerHTML =
-    '<svg viewBox="0 0 64 64" width="56" height="56" aria-hidden="true" focusable="false">' +
+    '<svg viewBox="0 0 64 64" width="60" height="60" aria-hidden="true" focusable="false">' +
       // 紅色項圈
       '<rect x="4" y="6" width="56" height="12" rx="6" fill="#e60012" stroke="#1f2937" stroke-width="2"/>' +
       // 鈴鐺本體
@@ -1689,8 +1689,7 @@
       // 下方的圓孔與開口
       '<circle cx="32" cy="45" r="3.5" fill="#1f2937"/>' +
       '<path d="M32 48 V55" stroke="#1f2937" stroke-width="2.5" stroke-linecap="round"/>' +
-    "</svg>" +
-    '<span class="to-top-label" aria-hidden="true">TOP</span>';
+    "</svg>";
   document.body.append(btn);
 
   const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;

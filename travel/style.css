@@ -601,26 +601,25 @@ body {
 .rail-stations { display: block; color: var(--muted); font-size: 0.86rem; }
 .rail-note { margin: 4px 0 0; color: var(--muted); font-size: 0.8rem; }
 
-/* 回到頂端：多拉A夢的鈴鐺 */
+/* 回到頂端：多拉A夢的鈴鐺（只有鈴鐺，沒有邊框和文字） */
 .to-top {
   position: fixed;
-  right: calc(env(safe-area-inset-right, 0px) + 14px);
-  bottom: calc(env(safe-area-inset-bottom, 0px) + 18px);
+  right: calc(env(safe-area-inset-right, 0px) + 12px);
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
   z-index: 39;
-  display: flex; flex-direction: column; align-items: center;
-  width: 68px; padding: 6px 0 4px;
-  border: 3px solid #0096e0; border-radius: 22px;
-  background: #ffffff;
-  box-shadow: 0 6px 16px rgba(0, 80, 140, 0.35);
+  display: block;
+  width: 60px; height: 60px; padding: 0;
+  border: 0; border-radius: 50%;
+  background: transparent;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   transform-origin: 50% 10%;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
 }
 .to-top[hidden] { display: none; }
-.to-top svg { display: block; }
-.to-top-label { margin-top: -2px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; color: #0096e0; }
-.to-top:hover, .to-top:focus-visible { background: #e6f6ff; }
-.to-top:focus-visible { outline: 3px solid #e60012; outline-offset: 3px; }
+.to-top svg { display: block; width: 60px; height: 60px; }
+.to-top:active { transform: scale(0.94); }
+.to-top:focus-visible { outline: 3px solid #0096e0; outline-offset: 2px; }
 .to-top.ringing { animation: bell-ring 0.7s ease-in-out; }
 @keyframes bell-ring {
   0%, 100% { transform: rotate(0); }
@@ -630,8 +629,3 @@ body {
   75% { transform: rotate(-5deg); }
 }
 @media (prefers-reduced-motion: reduce) { .to-top.ringing { animation: none; } }
-@media (prefers-color-scheme: dark) {
-  .to-top { background: #0b2a40; border-color: #38bdf8; }
-  .to-top:hover, .to-top:focus-visible { background: #12405f; }
-  .to-top-label { color: #7dd3fc; }
-}
