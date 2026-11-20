@@ -374,6 +374,18 @@ body {
   box-shadow: 0 6px 18px rgba(0, 114, 206, 0.3);
 }
 .site-header.store-lawson, .site-header.store-gs25 { padding-bottom: 26px; }
+/* 頁首右下角站著的小人物（蠟筆畫） */
+.site-header { position: relative; }
+.header-buddy {
+  position: absolute;
+  right: 14px;
+  bottom: 6px;
+  width: auto;
+  height: 128px;
+  pointer-events: none;
+  filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.3));
+}
+.site-header:has(.header-buddy) .motifs { padding-right: 56px; letter-spacing: 1px; }
 .motifs { margin: 8px 0 0; font-size: 1.6rem; letter-spacing: 6px; line-height: 1.2; }
 .pwa-bar { margin-top: 12px; }
 
