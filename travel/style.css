@@ -600,3 +600,38 @@ body {
 .line-badge { display: inline-block; padding: 1px 9px; border-radius: 999px; font-size: 0.85rem; font-weight: 700; line-height: 1.5; white-space: nowrap; }
 .rail-stations { display: block; color: var(--muted); font-size: 0.86rem; }
 .rail-note { margin: 4px 0 0; color: var(--muted); font-size: 0.8rem; }
+
+/* 回到頂端：多拉A夢的鈴鐺 */
+.to-top {
+  position: fixed;
+  right: calc(env(safe-area-inset-right, 0px) + 14px);
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 18px);
+  z-index: 39;
+  display: flex; flex-direction: column; align-items: center;
+  width: 68px; padding: 6px 0 4px;
+  border: 3px solid #0096e0; border-radius: 22px;
+  background: #ffffff;
+  box-shadow: 0 6px 16px rgba(0, 80, 140, 0.35);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transform-origin: 50% 10%;
+}
+.to-top[hidden] { display: none; }
+.to-top svg { display: block; }
+.to-top-label { margin-top: -2px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; color: #0096e0; }
+.to-top:hover, .to-top:focus-visible { background: #e6f6ff; }
+.to-top:focus-visible { outline: 3px solid #e60012; outline-offset: 3px; }
+.to-top.ringing { animation: bell-ring 0.7s ease-in-out; }
+@keyframes bell-ring {
+  0%, 100% { transform: rotate(0); }
+  15% { transform: rotate(16deg); }
+  35% { transform: rotate(-14deg); }
+  55% { transform: rotate(9deg); }
+  75% { transform: rotate(-5deg); }
+}
+@media (prefers-reduced-motion: reduce) { .to-top.ringing { animation: none; } }
+@media (prefers-color-scheme: dark) {
+  .to-top { background: #0b2a40; border-color: #38bdf8; }
+  .to-top:hover, .to-top:focus-visible { background: #12405f; }
+  .to-top-label { color: #7dd3fc; }
+}
