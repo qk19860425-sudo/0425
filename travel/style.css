@@ -60,6 +60,8 @@ body {
 h1 { margin: 0; font-size: 1.6rem; }
 .subtitle { margin: 4px 0 12px; color: var(--muted); }
 .subtitle a { color: var(--accent); font-weight: 600; white-space: nowrap; }
+.slogan { display: block; margin-bottom: 6px; font-size: 1.15rem; font-weight: 700; letter-spacing: 0.04em; }
+.subtitle .slogan + a ~ a { margin-left: 12px; }
 
 /* ---- 分頁 ---- */
 .tabs {
