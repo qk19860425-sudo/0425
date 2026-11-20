@@ -1664,3 +1664,54 @@
   recalc();
   fetchFx(false);
 })();
+
+// ---------------------------------------------------------------
+// 回到頂端：多拉A夢的鈴鐺按鈕（往下捲一段後出現在右下角）
+// ---------------------------------------------------------------
+(function () {
+  "use strict";
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.id = "to-top";
+  btn.className = "to-top";
+  btn.setAttribute("aria-label", "回到頂端");
+  btn.title = "回到頂端";
+  btn.hidden = true;
+  btn.innerHTML =
+    '<svg viewBox="0 0 64 64" width="56" height="56" aria-hidden="true" focusable="false">' +
+      // 紅色項圈
+      '<rect x="4" y="6" width="56" height="12" rx="6" fill="#e60012" stroke="#1f2937" stroke-width="2"/>' +
+      // 鈴鐺本體
+      '<circle cx="32" cy="36" r="20" fill="#ffd400" stroke="#1f2937" stroke-width="2.5"/>' +
+      '<ellipse cx="25" cy="27" rx="5" ry="3.5" fill="#fff6b0" opacity="0.9"/>' +
+      // 中間的兩條橫線
+      '<path d="M13.5 32 H50.5 M12.5 37 H51.5" stroke="#1f2937" stroke-width="2.5" stroke-linecap="round" fill="none"/>' +
+      // 下方的圓孔與開口
+      '<circle cx="32" cy="45" r="3.5" fill="#1f2937"/>' +
+      '<path d="M32 48 V55" stroke="#1f2937" stroke-width="2.5" stroke-linecap="round"/>' +
+    "</svg>" +
+    '<span class="to-top-label" aria-hidden="true">TOP</span>';
+  document.body.append(btn);
+
+  const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let ticking = false;
+  function update() {
+    ticking = false;
+    btn.hidden = window.scrollY < 400;
+  }
+  window.addEventListener("scroll", () => {
+    if (!ticking) { ticking = true; requestAnimationFrame(update); }
+  }, { passive: true });
+  update();
+
+  btn.addEventListener("click", () => {
+    btn.classList.remove("ringing");
+    void btn.offsetWidth;
+    btn.classList.add("ringing");
+    window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
+    // 鍵盤使用者回到頂端後，焦點放在頁首
+    const h1 = document.querySelector(".site-header h1");
+    if (h1) { h1.setAttribute("tabindex", "-1"); h1.focus({ preventScroll: true }); }
+  });
+  btn.addEventListener("animationend", () => btn.classList.remove("ringing"));
+})();
