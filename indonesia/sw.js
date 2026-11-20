@@ -1,7 +1,7 @@
 // 印尼景點路線：Service Worker（離線快取）
 // 頁面在 indonesia/，共用的程式與資料在 travel/，一起快取。
 // 更新網站檔案時，請把 CACHE_VERSION 加 1，使用者下次開啟就會換成新版。
-const CACHE_VERSION = "v13";
+const CACHE_VERSION = "v14";
 const CACHE_NAME = "indonesia-" + CACHE_VERSION;
 
 // 離線也要能開的檔案（路徑相對於 sw.js 所在的 indonesia/ 資料夾）

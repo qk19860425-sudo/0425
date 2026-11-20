@@ -359,21 +359,43 @@ body {
 .site-header h1 { color: #ffffff; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25); }
 .site-header .subtitle { color: rgba(255, 255, 255, 0.95); margin-bottom: 4px; }
 .site-header .subtitle a { color: #ffffff; text-decoration: underline; }
-/* 日本版：LAWSON 風的天藍色招牌（只用顏色，不放商標） */
+/* 日本版、韓國版：頁首是超商店面（上方招牌放標題，下方是玻璃窗、門與人行道；只用顏色，不放商標） */
+.site-header.store-lawson, .site-header.store-gs25 {
+  --sign: 78px;
+  padding-top: 18px;
+  padding-bottom: 64px;
+  overflow: hidden;
+}
 .site-header.store-lawson {
   background:
-    linear-gradient(to bottom, transparent calc(100% - 14px), #ffffff calc(100% - 14px), #ffffff calc(100% - 8px), transparent calc(100% - 8px)),
-    linear-gradient(160deg, #2b95e0 0%, #1a7fcc 50%, #0a64b0 100%);
+    linear-gradient(#ffffff, #ffffff) 0 var(--sign) / 100% 6px no-repeat,
+    url("icons/store-jp.svg") center bottom / 100% calc(100% - var(--sign) - 6px) no-repeat,
+    linear-gradient(180deg, #2b95e0, #0a64b0) 0 0 / 100% var(--sign) no-repeat,
+    #f4f7fb;
   box-shadow: 0 6px 18px rgba(10, 100, 176, 0.3);
 }
-/* 韓國版：GS25 風的深藍到青藍（只用顏色，不放商標） */
 .site-header.store-gs25 {
   background:
-    linear-gradient(to bottom, transparent calc(100% - 12px), #00b4e6 calc(100% - 12px)),
-    linear-gradient(120deg, #072b6b 0%, #0a4aa6 45%, #0072ce 75%, #00a3db 100%);
+    linear-gradient(#00b4e6, #00b4e6) 0 var(--sign) / 100% 6px no-repeat,
+    url("icons/store-kr.svg") center bottom / 100% calc(100% - var(--sign) - 6px) no-repeat,
+    linear-gradient(120deg, #072b6b, #0a4aa6 60%, #0072ce) 0 0 / 100% var(--sign) no-repeat,
+    #eef3f8;
   box-shadow: 0 6px 18px rgba(0, 114, 206, 0.3);
 }
-.site-header.store-lawson, .site-header.store-gs25 { padding-bottom: 26px; }
+/* 標語、連結和美食圖案放在貼在玻璃上的半透明告示板上，文字才看得清楚 */
+.site-header.store-lawson .header-board, .site-header.store-gs25 .header-board {
+  display: inline-block;
+  max-width: calc(100% - 70px);
+  margin-top: 22px;
+  padding: 8px 12px 6px;
+  border-radius: 12px;
+  background: rgba(7, 43, 107, 0.74);
+}
+.site-header.store-lawson .header-board { background: rgba(10, 80, 150, 0.74); }
+.header-board .subtitle { margin: 0; }
+.header-board .slogan { font-size: 1rem; margin-bottom: 2px; }
+.header-board .motifs { padding-right: 0 !important; margin-top: 4px; font-size: 1.15rem; letter-spacing: 2px; }
+.site-header.store-lawson .header-buddy, .site-header.store-gs25 .header-buddy { height: 150px; bottom: 8px; right: 10px; }
 /* 頁首右下角站著的小人物（蠟筆畫） */
 .site-header { position: relative; }
 .header-buddy {
